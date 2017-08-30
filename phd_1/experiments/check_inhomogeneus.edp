@@ -1,0 +1,130 @@
+//calculations.edp && python draw_initial_optimal_final_control.py
+string outputfolder = "calculations"; int GN = 60; int side = GN/4; real step = 1./side;
+real a = 0.006, alpha = 0.33333333, ka = 1, b = 0.025, beta = 1, gamma = 0.3;
+
+func real theta0f(real xx, real yy){return 0;}
+int ITERATIONS = 10;
+real lambda = 20;
+int numiter = 5000; //число итераций к решению прямой задачи
+int primalSolveFails = 0;
+border gamma01(t=1,0){x=0; y=t;} //  Gamma 0
+border gamma1(t=0,1){x=t; y=0;} //  control boundary -- Gamma 1
+border gamma02(t=0,1){x=1; y=t;} //  Gamma 0
+border gamma2(t=1,0){x=t; y=1;} //  check boundary -- Gamma 2
+mesh mainMesh = buildmesh(gamma01(side)+gamma1(side)+gamma02(side)+gamma2(side));
+
+
+
+func real thetaBfunc(real xx, real yy)
+{
+    if((yy == 0) || (yy == 1)) return xx;
+    if(xx == 1) return a+1;
+    if(xx == 0) return -a;
+    return 0;
+}
+func thetaB = thetaBfunc(x,y);
+
+
+func real fonefunc(real xx, real yy)
+{
+    return -12*alpha*xx^2;
+}
+func fone = fonefunc(x,y);
+func real ftwofunc(real xx, real yy)
+{
+    if((yy == 0) || (yy == 1)) return 0;
+    if(xx == 1) return 4*alpha  +gamma*(1 - thetaB^4);
+    if(xx == 0) return - 4*gamma*thetaB^4;
+    return 0;
+}
+func ftwo = ftwofunc(x,y);
+
+macro Grad(w) [dx(w), dy(w)] //Gradient
+
+fespace Vh(mainMesh, P1);
+//constants
+Vh theta0 = theta0f(x,y);
+Vh thetaold = 0;
+Vh phiold = 0;
+real u0 = 0.01;
+real u1 = 0.5;
+Vh theta, phi, pone, ptwo, v, w;
+Vh complexTheta = theta^4;
+Vh u = 0.3;
+func real costFunc (){return int1d(mainMesh, gamma2)((theta - theta0)^2.) / 2.;}
+
+// Получить шаг на границе по точке х, у
+func real Discrepancy(){
+    v=100*x+100*y;
+    return int2d(mainMesh)(a * Grad(theta)' * Grad(v))
+        + int1d(mainMesh)(beta * v * theta)
+        + int2d(mainMesh)(b * ka * v * theta^4)
+        - int2d(mainMesh)(b * ka * v * phi)
+        - int1d(mainMesh)(beta * v * thetaB);
+}
+
+func real Discrepancy2(){
+    w = 100*x+100*y;
+    return int2d(mainMesh)(alpha * Grad(phi)' * Grad(w))
+        + int1d(mainMesh, gamma01)(gamma * phi * w)
+        + int1d(mainMesh, gamma02)(gamma * phi * w)
+        + int1d(mainMesh, gamma2)(gamma * phi * w)
+        + int1d(mainMesh, gamma1)(gamma * phi * w)
+        + int2d(mainMesh)(ka * (phi - theta^4) * w)
+        - int1d(mainMesh, gamma01)(gamma * thetaB^4 * w)
+        - int1d(mainMesh, gamma02)(gamma * thetaB^4 * w)
+        - int1d(mainMesh, gamma2)(gamma * thetaB^4 * w)
+        - int1d(mainMesh, gamma1)(gamma * thetaB^4 * w)
+        - int2d(mainMesh)(fone*w)
+        - int1d(mainMesh)(ftwo*w);
+}
+
+func int CountStateNewton()
+{
+    for (int i = 0; i <= numiter; i++) {
+        thetaold = theta;
+        phiold = phi;
+        solve CalcSol([theta, phi], [v, w]) =
+            int2d(mainMesh)(a * Grad(theta)' * Grad(v))
+            + int1d(mainMesh)(beta * v * theta)
+            + int2d(mainMesh)(4 * b * ka * v * thetaold^3*theta)
+            - int2d(mainMesh)(3 * b * ka * v * thetaold^4)
+            - int2d(mainMesh)(b * ka * v * phi)
+            - int1d(mainMesh)(beta * v * thetaB)
+            //
+            + int2d(mainMesh)(alpha * Grad(phi)' * Grad(w))
+            + int1d(mainMesh)(gamma * phi * w)
+            - int1d(mainMesh)(gamma * thetaB^4 * w)
+            + int2d(mainMesh)(ka * phi * w)
+            - int2d(mainMesh)(4 * ka * thetaold^3*theta * w) //TODO: CHANGE TO NEWTON
+            + int2d(mainMesh)(3 * ka * thetaold^4 * w)
+            - int2d(mainMesh)(fone*w)
+            - int1d(mainMesh)(ftwo*w);
+        Vh tmp = theta - thetaold;
+        if (i == numiter){
+            cout <<"FAIL TO COUNT STATE! ABORTING.";
+            primalSolveFails++;
+            theta = (theta+thetaold)/2.;
+            break;
+        }
+        if (( i > 7)&&(tmp[].max - tmp[].min < 1e-11)) {
+            if(Discrepancy() + Discrepancy2() > 1e-9) {
+                cout << "Discrepancy tetta: " << Discrepancy() << endl;
+                cout <<  "Discripancy phi: " << Discrepancy2() << endl;
+                /*assert(false);*/
+            }
+            break;
+        }
+    }
+    return 0;
+}
+
+func int SolvePrimal(){ return CountStateNewton();}
+
+SolvePrimal();
+cout << endl << Discrepancy() + Discrepancy2() << endl;
+
+plot(theta, fill=true,wait=true, value=true);
+plot(phi, fill=true,wait=true, value=true);
+
+cout<< endl << endl << " Number of fails:  " << primalSolveFails <<endl;

@@ -1,0 +1,350 @@
+//calculations.edp && python draw_initial_optimal_final_control.py
+string outputfolder = "calculations"; int GN = 120; int side = GN/4; real step = 1./side;
+real[int] uopt(side);
+real uinit;
+for(int i=0; i < side; i++){
+    // uopt[i] = 0.5;
+    // if(i < side/2){uopt[i]=0.01;}
+    // else{uopt[i]=0.5;}
+    real step1 = 0.49/(side-1);
+     uopt[i] = 0.01+i*step1;
+}
+func real theta0f(real xx, real yy){return 0;}
+int ITERATIONS = 5000;
+real[int] uwall(side);
+real lambda = 5;
+real a = 0.006, alpha = 0.33333333, ka = 1, b = 0.025, beta = 0.00005, gamma = 0.3;
+
+ofstream conditions(outputfolder+"/conditions.txt");
+conditions << "a: "      << a        << endl;
+conditions << "alpha: "  << alpha    << endl;
+conditions << "ka: "     << ka       << endl;
+conditions << "b: "      << b        << endl;
+conditions << "beta: "   << beta     << endl;
+conditions << "gamma: "  << gamma    << endl;
+conditions << "lambda: " << lambda   << endl;
+
+int numiter = 5000; //число итераций к решению прямой задачи
+int primalSolveFails = 0;
+border gamma01(t=1,0){x=0; y=t;} //  Gamma 0
+border gamma1(t=0,1){x=t; y=0;} //  control boundary -- Gamma 1
+border gamma02(t=0,1){x=1; y=t;} //  Gamma 0
+border gamma2(t=1,0){x=t; y=1;} //  check boundary -- Gamma 2
+mesh mainMesh = buildmesh(gamma01(side)+gamma1(side)+gamma02(side)+gamma2(side));
+
+macro Grad(w) [dx(w), dy(w)] //Gradient
+
+fespace Vh(mainMesh, P1);
+//constants
+Vh thetaB = (x^2+y^2)/3.;
+Vh theta0 = theta0f(x,y);
+Vh thetaold = 0;
+Vh phiold = 0;
+real u0 = 0.01;
+real u1 = 0.5;
+Vh theta, phi, pone, ptwo, v, w;
+Vh complexTheta = theta^4;
+func real costFunc (){return int1d(mainMesh, gamma2)((theta - theta0)^2.) / 2.;}
+
+// Получить шаг на границе по точке х, у
+func real uwallfunc(real xx, real yy)
+{
+    if (yy > 0) assert(false);
+    int i = xx/step;
+    if((xx - i *step) >= 0.5) i++;
+    return uwall[i];
+}
+
+func u = uwallfunc(x, y);
+
+func real uwalloptfunc(real xx, real yy)
+{
+    if (yy > 0) assert(false);
+    int i = xx/step;
+    if((xx - i *step) >= 0.5) i++;
+    return uopt[i];
+}
+func uoptf = uwalloptfunc(x, y);
+
+
+func real Discrepancyteta(){
+    v=100*x+100*y;
+    return int2d(mainMesh)(a * Grad(theta)' * Grad(v))
+        + int1d(mainMesh)(beta * v * theta)
+        + int2d(mainMesh)(b * ka * v * theta^4)
+        - int2d(mainMesh)(b * ka * v * phi)
+        - int1d(mainMesh)(beta * v * thetaB);
+}
+
+func real Discrepancyphi(){
+    w = 100*x+100*y;
+    return int2d(mainMesh)(alpha * Grad(phi)' * Grad(w))
+        + int1d(mainMesh, gamma01)(gamma * phi * w)
+        + int1d(mainMesh, gamma02)(gamma * phi * w)
+        + int1d(mainMesh, gamma2)(gamma * phi * w)
+        + int2d(mainMesh)(ka * (phi - theta^4) * w)
+        + int1d(mainMesh, gamma1)(u * phi * w)
+        - int1d(mainMesh, gamma01)(gamma * thetaB^4 * w)
+        - int1d(mainMesh, gamma02)(gamma * thetaB^4 * w)
+        - int1d(mainMesh, gamma1)(u * thetaB^4 * w)
+        - int1d(mainMesh, gamma2)(gamma * thetaB^4 * w);
+}
+
+func real proj(real val){
+    if(val < u0) return u0;
+    if(val > u1) return u1;
+    return val;
+}
+
+func int CalcControlFunc()
+{
+    real stepx = 0;
+    real stepy = 0;
+    real grad;
+    
+    cout << "PTWO: " << endl;
+    for(int i = 0; i < side; i++){
+        stepx = step*i;
+        cout << (phi(stepx, stepy)-thetaB(stepx, stepy)^4) << " ";
+    }
+    cout << endl;
+
+    for(int i = 0; i < side; i++){
+        stepx = step*i;
+        grad = (phi(stepx, stepy)-thetaB(stepx, stepy)^4)* ptwo(stepx, stepy);
+        cout << grad << " ";
+        uwall[i] = proj(uwall[i] - lambda*grad);
+        if(uwall[i] != u(stepx,stepy)){
+            cout << "U function indexing error! Aborting." << endl;
+            cout << "X: " << stepx << "  Y: " << stepy  << "  i: " <<  i<< endl;
+            assert(false);
+        }
+    }
+    cout << endl;
+    return 0;
+}
+
+ofstream costoutput(outputfolder+"/output_cost.txt");
+costoutput << "Cost output file" << endl;
+
+real costprevious = 100;
+func int checkCostFunction()
+{
+    real costFunctionality = costFunc();
+    if(costprevious < costFunctionality)
+        cout << "ERROR ERROR ERROR ERROR ERROR ERROR ERROR : "
+        << costprevious - costFunctionality<<endl;
+    cout << costFunctionality << " functionality" << endl;
+    costoutput << costFunctionality << " ";
+    if(costprevious < costFunctionality)
+        costoutput << "!";
+    costoutput << endl;
+    costprevious = costFunctionality;
+    return 0;
+}
+//checked
+problem CalcAdjoint([pone, ptwo], [v, w]) =
+    int2d(mainMesh)(a * Grad(pone)' * Grad(v))
+    + int1d(mainMesh)(beta * pone  * v)
+    + int1d(mainMesh, gamma2)((theta - theta0) *  v)
+    + int2d(mainMesh)(4 * ka * theta^3 * v * (b * pone - ptwo))
+    //
+    + int2d(mainMesh)(alpha * Grad(ptwo)' * Grad(w))
+    + int1d(mainMesh, gamma01)(gamma * ptwo * w)
+    + int1d(mainMesh, gamma02)(gamma * ptwo * w)
+    + int1d(mainMesh, gamma2)(gamma * ptwo * w)
+    + int1d(mainMesh, gamma1)(u * ptwo * w)
+    + int2d(mainMesh)(ka * w * (ptwo - b * pone));
+    //
+
+func int CountStateSimpleIteration()
+{
+    theta=0;
+    phi=0;
+    for (int i = 0; i <= numiter; i++) {
+        thetaold = theta^3;
+        solve MainEquationTheta(theta, v) =
+            int2d(mainMesh)(a * Grad(theta)' * Grad(v))
+            + int1d(mainMesh)(beta * v * theta)
+            + int2d(mainMesh)(b * ka * v * thetaold^3 * theta)
+            - int2d(mainMesh)(b * ka * v * phi)
+            - int1d(mainMesh)(beta * v * thetaB);
+        solve MainEquationPhi(phi, w) =
+            int2d(mainMesh)(alpha * Grad(phi)' * Grad(w))
+            + int1d(mainMesh, gamma01)(gamma * phi * w)
+            + int1d(mainMesh, gamma02)(gamma * phi * w)
+            + int1d(mainMesh, gamma2)(gamma * phi * w)
+            + int1d(mainMesh, gamma1)(u * phi * w)
+            + int2d(mainMesh)(ka * phi * w)
+            - int2d(mainMesh)(ka * theta^4 * w)
+            - int1d(mainMesh, gamma1)(thetaB * phi * w)
+            - int1d(mainMesh, gamma01)(gamma * thetaB^4 * w)
+            - int1d(mainMesh, gamma02)(gamma * thetaB^4 * w)
+            - int1d(mainMesh, gamma2)(gamma * thetaB^4 * w);
+        Vh tmp = theta - thetaold;
+        if (( i > 5)&&(tmp[].max - tmp[].min < 1e-11)) {cout << "calculated" << endl; break;}
+        thetaold = theta;
+        if (i == numiter){
+            cout <<"FAIL TO COUNT STATE! ABORTING.";
+            primalSolveFails++;
+            theta = (theta+thetaold)/2.;
+            break;
+        }
+    }
+    return 0;
+}
+func int CountStateNewton()
+{
+    for (int i = 0; i <= numiter; i++) {
+        thetaold = theta;
+        phiold = phi;
+        solve CalcSol([theta, phi], [v, w]) =
+            int2d(mainMesh)(a * Grad(theta)' * Grad(v))
+            + int1d(mainMesh)(beta * v * theta)
+            + int2d(mainMesh)(4 * b * ka * v * thetaold^3*theta)
+            - int2d(mainMesh)(3 * b * ka * v * thetaold^4)
+            - int2d(mainMesh)(b * ka * v * phi)
+            - int1d(mainMesh)(beta * v * thetaB)
+            //
+            + int2d(mainMesh)(alpha * Grad(phi)' * Grad(w))
+            + int1d(mainMesh, gamma01)(gamma * phi * w)
+            + int1d(mainMesh, gamma02)(gamma * phi * w)
+            + int1d(mainMesh, gamma2)(gamma * phi * w)
+            + int2d(mainMesh)(ka * phi * w)
+            - int2d(mainMesh)(4 * ka * thetaold^3*theta * w) //TODO: CHANGE TO NEWTON
+            + int2d(mainMesh)(3 * ka * thetaold^4 * w)
+            + int1d(mainMesh, gamma1)(u * phi * w)
+            - int1d(mainMesh, gamma1)(thetaB^4 * u * w)
+            - int1d(mainMesh, gamma01)(gamma * thetaB^4 * w)
+            - int1d(mainMesh, gamma02)(gamma * thetaB^4 * w)
+            - int1d(mainMesh, gamma2)(gamma * thetaB^4 * w);
+        Vh tmp = theta - thetaold;
+        if (i == numiter){
+            cout <<"FAIL TO COUNT STATE! ABORTING.";
+            primalSolveFails++;
+            theta = (theta+thetaold)/2.;
+            break;
+        }
+        if (( i > 5)&&(tmp[].max - tmp[].min < 1e-11)) {
+            if(Discrepancyteta() + Discrepancyphi() > 1e-9) {
+                cout << endl << Discrepancyteta() + Discrepancyphi() << endl;
+                assert(false);
+            }
+            break;
+        }
+    }
+    return 0;
+}
+
+func int SolvePrimal(){ return CountStateNewton();}
+
+func real checkPrimalProblem(){
+    real checku;
+    real uoptimalconst = 0;
+    real costprev = 100;
+    ofstream checkprimal(outputfolder+"/checkprimal.txt");
+    checkprimal << "Check primal file" << endl;
+    uwall = uopt;
+    SolvePrimal();
+    theta0 = theta;
+    SolvePrimal();
+    for (int i=0;i<=0.5/0.01;i++){
+        checku = 0.01*i;
+        cout << checku << endl;
+        uwall = checku;
+        SolvePrimal();
+        if((costprev - costFunc()) > 0)
+        {
+            costprev = costFunc();
+            uoptimalconst = checku;
+        }
+        checkprimal << checku <<"\t" << costFunc() << "\t Discrepancyteta: "
+        << Discrepancyteta() + Discrepancyphi() << endl;
+    }
+    cout << "Optimal constant control: " << uoptimalconst << endl;
+    checkprimal << "Optimal constant control: " << uoptimalconst << endl;
+    return uoptimalconst;
+}
+
+func int SetAndSolveOptimizationProblem(real ustart)
+{
+    ofstream control(outputfolder+"/control.txt");
+    ofstream thetafile(outputfolder+"/theta.txt");
+    control << "Optimal control: " << endl << uopt << endl;
+    uwall = uopt;
+    SolvePrimal();
+    theta0 = theta;
+    real costprev = 100;
+
+    thetafile << "theta_0: ";
+    for(int i = 0;i<=side;i++){thetafile << theta0(step*i, 1) << " ";}
+    thetafile << endl;
+
+    costoutput << costFunc() << endl;
+    SolvePrimal();
+    plot(theta, fill=true, value=true, ps=outputfolder+"/theta_optimal.eps");
+    costoutput << costFunc() << endl;
+
+    uwall = ustart;
+    control << "Initial control: " << endl << uwall << endl;
+    SolvePrimal();
+    real costinit = costFunc();
+    CalcAdjoint;
+    real ptwodeltda = (abs(ptwo[].max) + abs(ptwo[].min));
+
+    thetafile << "theta_init: ";
+    for(int i = 0;i<=side;i++){thetafile << theta(step*i, 1) << " ";}
+    thetafile << endl;
+    plot(theta, fill=true, value=true, ps=outputfolder+"/theta_initial.eps");
+
+    
+    costoutput << "Calculations: " << endl;
+    for (int i = 0; i < ITERATIONS; i++){
+        SolvePrimal();
+        CalcAdjoint;
+        plot(ptwo, fill=true, value=true, wait=true);
+        CalcControlFunc();
+        checkCostFunction();
+        costprev = costFunc();
+        if(i == 100){
+            thetafile << "theta_100: ";
+            for(int k = 0; k<=side; k++){thetafile << theta(step*k, 1) << " ";}
+            thetafile << endl;
+            ofstream control100(outputfolder+"/control_100.txt");
+            control100 << uwall << endl;
+            plot(theta, fill=true, value=true, ps=outputfolder+"/theta_100.eps");
+        }
+        if(i == 1000){
+            thetafile << "theta_1000: ";
+            for(int k = 0; k<=side; k++){thetafile << theta(step*k, 1) << " ";}
+            thetafile << endl;
+            ofstream control1000(outputfolder+"/control_1000.txt");
+            control1000 << uwall << endl;
+            plot(theta, fill=true, value=true, ps=outputfolder+"/theta_1000.eps");
+        }
+        cout << endl << i <<  endl;
+        if(costprev < 1e-10){break;}
+    }
+
+    control << "Final control: " << endl << uwall << endl;
+
+    SolvePrimal();
+    cout << "INITIAL VALUE: " << costinit <<" FINAL VALUE: "
+    << costFunc() << " DIFF: " << costinit - costFunc() << endl;
+
+    thetafile << "theta_end_" << ITERATIONS <<": ";
+    for(int q = 0;q<=side;q++){thetafile << theta(step*q, 1) << " ";}
+    thetafile << endl;
+    plot(theta, fill=true, value=true, ps=outputfolder+"/theta_end.eps");
+
+    costoutput << "int u_opt - u_final: " << int1d(mainMesh, gamma1)((uoptf - u)^2);
+
+    return 0;
+}
+
+
+//uinit = checkPrimalProblem();
+SetAndSolveOptimizationProblem(0.01);
+
+
+cout<< endl << endl << " Number of fails:  " << primalSolveFails <<endl;
