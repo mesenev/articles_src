@@ -1,0 +1,104 @@
+\documentclass[a4paper,12pt,twoside]{article}
+
+\usepackage[T1,T2A]{fontenc}
+\usepackage{femj}
+\usepackage{amsbib}
+\usepackage[noadjust]{cite}
+\usepackage{algorithmicx}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage[noend]{algpseudocode}
+% \usepackage[noend]{algpseudocode}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+% \usepackage{hyperref}
+% \usepackage{subfigure}
+% \usepackage{units}
+% \usepackage{setspace}
+% \usepackage[noadjust]{cite}
+% \usepackage[section,above,below]{placeins}
+% \usepackage{float}
+% \usepackage{color}
+% \usepackage{mathtext}
+% \usepackage{alltt}
+% \usepackage{amsmath}
+% \usepackage{amsthm}
+% \usepackage{amssymb}
+% \usepackage{graphics}
+% \usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{caption}
+% \usepackage{indentfirst}
+% \usepackage{multirow}
+% \usepackage{hhline}
+% \usepackage{tabularx}
+% \usepackage{longtable}
+% \usepackage{multicol}
+% \usepackage{rotating}
+% \usepackage{sectsty}
+% \usepackage{titlesec}
+% \usepackage{graphicx}
+
+\graphicspath{{img/}}
+
+\newcommand*{\mathcolor}{}
+\def\mathcolor#1#{\mathcoloraux{#1}}
+\newcommand*{\mathcoloraux}[3]{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+\newcommand{\fat}{\mathbf}
+
+\newtheorem{theorem}{Теорема}
+\newtheorem{lemma}{Лемма}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Определение}
+
+
+% \usepackage[left=2.5cm,right=1cm,top=2cm,bottom=2cm]{geometry}
+
+
+
+\begin{document}
+\count0=1\sbox{\pagebox}{1--6}                       %%%%%%%%%%%%%%%% Исправить
+
+\UDC{517.95}
+\AMS{35K55, 35Q79}
+
+\SupportedBy{Работа выполнена при поддержке \linebreak аспирантской стипендии Дальневосточного федерального университета}
+
+\Submitted{9 ноября 2017 г.}
+
+\Title{Заголовок статьи который будет здесь}
+
+\Author{П.\,Р.~Месенев, А.\,Ю.~Чеботарев}{Дальневосточный федеральный университет, 690950, г.~Владивосток, ул.~Суханова,~8}{cheb@iam.dvo.ru}
+
+\markboth{Какой-то текст непонять о чем}{Чеботарев, Месенев}
+
+\Summary{Mesenev~P.\,R., Chebotarev~A.\,Yu.}{Long-long title dispalyed here}
+{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nunc ligula, suscipit vel efficitur vitae, molestie ac lacus. Sed sagittis est sapien, vel luctus ante imperdiet eu. Sed lacinia libero sed erat aliquam, nec rhoncus ligula sagittis. Proin gravida diam sit amet bibendum scelerisque. Phasellus at odio diam. Aenean placerat ligula vel tempus placerat. Cras in massa in nisi tincidunt eleifend gravida id mauris. Mauris varius at massa sed tincidunt.
+
+\keywords{radiative heat transfer equations, other keywords etc.}}
+
+
+\makeface
+
+\Abstract{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nunc ligula, suscipit vel efficitur vitae, molestie ac lacus. Sed sagittis est sapien, vel luctus ante imperdiet eu. Sed lacinia libero sed erat aliquam, nec rhoncus ligula sagittis. Proin gravida diam sit amet bibendum scelerisque. Phasellus at odio diam. Aenean placerat ligula vel tempus placerat. Cras in massa in nisi tincidunt eleifend gravida id mauris. Mauris varius at massa sed tincidunt.
+
+
+Ключевые слова: \tit{уравнения радиационного теплообмена, ещё ключевые слова.}}
+
+\input{1_intro}
+\input{2_state}
+\input{3_formalization}
+\input{4_analysis}
+\input{5_experiments}
+
+\bibliographystyle{unsrt}
+\bibliography{bibliography}
+\end{document}

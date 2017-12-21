@@ -1,0 +1,70 @@
+\section*{Численные эксперименты}
+\subsection*{Алгоритм поиска квазирешения}
+    Пусть функционал $J$ удовлетворяет условиям, указанным в \autoref{sec:optimality}. Для удобства введем переобозначение $\hat{J}(u):=J(y(u)), \hat{J}:L^2(\Gamma_1) \to \mathbb{R}$. Здесь $y(u)$ отображение функции управления в состояние задачи (\ref{initial}-\ref{initial_boundary}).
+    Согласно формуле \eqref{therorem_2_eq3} градиент функционала $\hat{J}$ представлен как:
+
+    $$\hat{J}'(u)= (\varphi(u) -\theta_b^4)p_2;$$
+    где $\varphi(u)$ есть интенсивность излучения, $p_2$ -- соответствующая переменная сопряженной системы, полученных из управления $u$.
+
+    Исходная задача рассмотрена в двумерной области $\Omega = \{x = (x_1,x_2):0 < x_{1,2} < L\}$
+
+    Предлагаемый алгоритм решения выглядит следующим образом:
+
+
+\begin{algorithm}
+\caption{Алгоритм градиентного спуска с проекцией}\label{algo1}
+  \begin{algorithmic}[1]
+    \State Выбираем начальный коэфициент $\lambda, \; N$
+    \State Выбираем произвольное $u_0 \in U_{ad}$
+    \For{$k \gets 0,1,2,...,N$}
+        \State Для полученного $u_k$ расчитываем состояние $y_k = \{\theta_k, \varphi_k\}$ из  (\ref{weak_operational}).
+        \State Расчитываем значение функционала качества $J(\theta)$ из (\ref{quality}).
+        \State Расчитываем сопряженное состояние $p_k=\{p_{1k},p_{2k}\}$ из уравнений (\ref{therorem_2_eq1}--\ref{therorem_2_eq2}).
+        \State Пересчет функции управления $u_{k+1} = P_{ad}\left[ u_k - \lambda (\varphi_k - \theta_b^4)p_{2k} \right]$.
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+\subsection*{Нахождение квазирешения градиентным спуском}
+    В данном случае желаемая температура $\theta_0 = \theta(u_{opt})$, где $u_{opt}$ есть оптимальное управление. Начальное управление $u_{init} = 0.01$.
+    Модель выглядит следующим образом:
+        \begin{equation}
+        \begin{aligned}
+            - a \Delta \theta + b \kappa_a(\theta ^ 3 | \theta | - \varphi) = 0,  \\
+            - \alpha \Delta \varphi + \kappa_a (\varphi - \theta ^3 | \theta |) = 0.
+        \end{aligned}
+        % \qquad \text{в } \Omega.
+    \end{equation}
+
+    \begin{equation}
+        \begin{aligned}
+            \Gamma: \; a \partial_n \theta + \beta (\theta - \theta _b) = 0, \\
+            \Gamma_0 \cup \Gamma_2: \; \alpha \partial_n \varphi + \gamma(\varphi - \theta_b^4 ) = 0, \\
+            \Gamma_1: \; \alpha \partial_n \varphi + u(\varphi - \theta_b^4 ) = 0, \\
+        \end{aligned}
+    \end{equation}
+    Результат работы алгоритма продемонстрирован на следующих изображениях:
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{first/control_initial_optimal_final.png}
+  \caption{Control initial optimal and final}
+  \label{fig1:control}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=0.75\textwidth]{first/cost_functional_dynamics.png}
+  \caption{Функционал качества}
+  \label{fig1:cost}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=0.75\textwidth]{first/theta_funcs.png}
+  \caption{Значения $\theta$ на области контроля}
+  \label{fig1:theta}
+\end{figure}

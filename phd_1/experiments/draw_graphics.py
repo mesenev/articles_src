@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 
+print('Launched...')
 if sys.argv:
     folder = "calculations"
 else:
@@ -51,13 +52,13 @@ x = np.arange(0, 1.0, 1.0 / (y1.__len__() - 1)).tolist() + [1.0]
 
 
 plt.figure(1)
-plt.plot(x, y1, "g-", x, y2, 'b-', x, y3, 'r-')
+plt.plot(x, y1, "g-.", x, y2, 'b--', x, y3, 'r-')
 plt.axis([0, 1.0, -0.02, 0.52])
 plt.xlabel('x-coord')
 plt.ylabel('Value')
 
-green_legend = mlines.Line2D([], [], color='green', label="Optimal control function $u$", )
-blue_legend = mlines.Line2D([], [], color='blue', label="Initial control function $u$")
+green_legend = mlines.Line2D([], [], color='green', linestyle='-.', label="Optimal control function $u$", )
+blue_legend = mlines.Line2D([], [], color='blue', linestyle='--', label="Initial control function $u$")
 red_legend = mlines.Line2D([], [], color='red', label="Final control function $u$")
 plt.legend(handles=[green_legend, blue_legend, red_legend], prop={'size': 10})
 
@@ -80,18 +81,18 @@ allvals = input_data[0][1:] + input_data[1][1:] + input_data[2][1:]# + input_dat
 yscale = (max(allvals) - min(allvals)) / 8
 plt.axis([0, 1.0, min(allvals) - yscale, max(allvals) + yscale])
 
-green_legend = mlines.Line2D([], [], color='green', label=input_data[0][0], )
-blue_legend = mlines.Line2D([], [], color='blue', label=input_data[1][0])
-yellow_legend = mlines.Line2D([], [], color='yellow', label=input_data[2][0])
-red_legend = mlines.Line2D([], [], color='red', label=input_data[3][0])
+green_legend = mlines.Line2D([], [], color='green', linestyle='-.', label='Theta optimal value', )
+blue_legend = mlines.Line2D([], [], color='blue', linestyle='--', label="Theta initial value")
+yellow_legend = mlines.Line2D([], [], color='red', linestyle=':', label='Theta value on 100th iteration')
+red_legend = mlines.Line2D([], [], color='yellow', label='Theta value on 1000th iteration')
 
 plt.legend(handles=[green_legend, blue_legend, yellow_legend, red_legend], prop={'size': 10})
 
 y = input_data[0][1:]
 x = np.arange(0, 1.0, 1.0 / (y.__len__() - 1)).tolist() + [1.0]
-plt.plot(x, y, "g-", x, input_data[1][1:], 'b-')
-plt.plot(x, input_data[2][1:], 'y--')
-plt.plot(x, input_data[3][1:], 'r-')
+plt.plot(x, y, "g-.", x, input_data[1][1:], 'b--')
+plt.plot(x, input_data[2][1:], 'r:')
+plt.plot(x, input_data[3][1:], 'y-')
 plt.xlabel('x-coord')
 plt.ylabel('value')
 plt.savefig(folder + "/theta_funcs.png")

@@ -9,244 +9,286 @@
 % is maintained.    Also: even unpublished papers will be
 % called "article".
 
-
-@Preamble{"\def\germ{\frak} \def\scr{\cal}
- \ifx\documentclass\undefinedcs
-      \def\bf{\fam\bffam\tenbf}\def\rm{\fam0\tenrm}\fi
-                          % f**k-amstex!
- \def\defaultdefine#1#2{\expandafter\ifx\csname#1\endcsname\relax
- \expandafter\def\csname#1\endcsname{#2}\fi}
- \defaultdefine{Bbb}{\bf}   \defaultdefine{frak}{\bf}
-  \defaultdefine{=}{\B}   % doublef**k-amstex!!
-  \defaultdefine{mathfrak}{\frak}
-       \defaultdefine{mathbb}{\bf}
-       \defaultdefine{mathcal}{\cal}
-      \defaultdefine{beth}{BETH}\defaultdefine{cal}{\bf}
-     \def\bbfI{{\Bbb I}}   \def\mbox{\hbox}  \def\text{\hbox}
-   \def\om{\omega}    \def\Cal#1{{\bf #1}} \def\pcf{pcf}
-        \defaultdefine{cf}{cf}
-    \defaultdefine{reals}{{\Bbb R}} \defaultdefine{real}{{\Bbb R}}
-   \def\restriction{{|}}  \def\club{CLUB}
-   \def\w{\omega} \def\exist{\exists}
-   \def\se{{\germ se}}     \def\bb{{\bf b}}
-   \def\equivalence{\equiv}
-   \let\lt<  \let\gt>
-           "}
-
 @article{cancer_treatment,
-author={Amy J. Liu and Hong Zhou and Wei Kang},
-title={A Numerical Study on Microwave Coagulation Therapy},
-journal = {Applied Mathematical Sciences, Vol. 7, 2013, no. 104, 5151 - 5164},
+    author={Amy J. Liu and Hong Zhou and Wei Kang},
+    title={A Numerical Study on Microwave Coagulation Therapy},
+    journal = {Applied Mathematical Sciences, Vol. 7, 2013, no. 104, 5151 - 5164},
 },
 
+@article{pinnau_identification,
+    author = {O. Tse, R. Pinnau, N. Siedow},
+    title={Identification of temperature dependent parameters in a simplifed radiative heat transfer},
+    journal = {Aust. J. Basic Appl. Sci.},
+    year="2011",
+    pages="7-14",
+}
+
+@article{simlified_control_pinnau,
+    author={O. Tse, R. Pinnau},
+    title={Optimal control of a simplified natural convection-radiation model},
+    journal ={Commun. Math. Sci.},
+    year="2013",
+    pages="679-707",
+}
+
+@article{pinnau_glass,
+    author={G., Thomes and R., Pinnau and M., Seaid and T., Gotz and A. Klar},
+    title={Numerical methods and optimal control for glass cooling processes},
+    journal = {Trans. Theory Stat Phys. 31(4-6)},
+    year="2002",
+    pages="513–529",
+},
 
 @article{electronics,
-author={Arden L. Moore and Li Shi},
-title={Emerging challenges and materials for thermal management of electronics},
-journal = {Materials Today, May 2014},
+    author={Arden L. Moore and Li Shi},
+    title={Emerging challenges and materials for thermal management of electronics},
+    journal = {Materials Today},
+    year = "2014",
+    month = "4",
 },
 
-@article{steklo,
-author={G., Thomes and R., Pinnau and M., Seaid and T., Gotz and A. Klar},
-title={Numerical methods and optimal control for glass cooling processes},
-journal = {Trans. Theory Stat Phys. 31(4-6) (2002) 513вЂ“529},
-},
+
 @article{kuleshov,
-author={Рћ.Р®., РљСѓР»РµС€РѕРІ and Р’.Рњ., РЎРµРґРµР»РєРёРЅ},
-title={РљРѕСЂСЂРµРєС†РёРѕРЅРЅС‹Р№ Р·РѕРЅР°Р»СЊРЅС‹Р№ РјРµС‚РѕРґ СЂР°СЃС‡РµС‚Р° СЂР°РґРёР°С†РёРѕРЅРЅРѕРіРѕ Рё СЃР»РѕР¶РЅРѕРіРѕ С‚РµРїР»РѕРѕР±РјРµРЅР° РІ СЌРЅРµСЂРіРµС‚РёС‡РµСЃРєРёС… СѓСЃС‚Р°РЅРѕРІРєР°С…},
-journal = {РўРµРїР»РѕРјР°СЃСЃРѕРѕР±РјРµРЅ РњРњР¤-XIV: РўСЂ. 14-РіРѕ РњРёРЅСЃРєРѕРіРѕ РњРµР¶РґСѓРЅР°СЂ. С„РѕСЂСѓРјР°. вЂ“ РњРёРЅСЃРє, 2012. вЂ“ Рў.2. вЂ“ РЎ. 40-44.},
+author={О.Ю., Кулешов and В.М., Седелкин},
+title={Коррекционный зональный метод расчета радиационного и сложного теплообмена в энергетических установках},
+journal = {Тепломассообмен ММФ-XIV: Тр. 14-го Минского Междунар. форума. – Минск, 2012. – Т.2. – С. 40-44.},
 },
 
 @article{natural_gas,
-author={РќР°СѓРјРµРЅРєРѕ, A.B. and Р”РµР№РЅРµР¶РµРЅРєРѕ, Р’.Р. and Р“РѕС„РјР°РЅ, M.C.},
-title={Р­РЅРµСЂРіРѕСЃР±РµСЂРµР¶РµРЅРёРµ Рё СЂР°Р·СЂР°Р±РѕС‚РєР° РІС‹СЃРѕРєРѕСЌС„С„РµРєС‚РёРІРЅРѕРіРѕ РіР°Р·РѕРёСЃРїРѕР»СЊР·СѓСЋС‰РµРіРѕ РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЏ},
-journal = {В«Р“Р°Р·РѕРІР°СЏ РїСЂРѕРјС‹С€Р»РµРЅРЅРѕСЃС‚СЊВ», в„–1, 2005, РЎ. 55-58.},
+author={Науменко, A.B. and Дейнеженко, В.И. and Гофман, M.C.},
+title={Энергосбережение и разработка высокоэффективного газоиспользующего оборудования},
+journal = {«Газовая промышленность», №1, 2005, С. 55-58.},
 },
 
 @article{energosberejenie,
-author={Р”Р°РЅРёР»РѕРІ Рћ. Р›},
-title={Р­РЅРµСЂРіРѕСЃР±РµСЂРµР¶РµРЅРёРµ РІ С‚РµРїР»РѕСЌРЅРµСЂРіРµС‚РёРєРµ Рё С‚РµРїР»РѕС‚РµС…РЅРѕР»РѕРіРёСЏС…},
-journal = {Р­. -Рњ.: РњР­Р, 2004. 64 СЃ. },
+author={Данилов О. Л},
+title={Энергосбережение в теплоэнергетике и теплотехнологиях},
+journal = {Э. -М.: МЭИ, 2004. 64 с. },
 },
 
 @article{kovt_1,
 author={Andrey E., Kovtanyuk and Alexander Yu., Chebotarev and Nikolai D., Botkin and Karl-Heinz, Hoffmann},
 title={The unique solvability of a complex 3D heat transfer problem},
-journal = {Journal of Mathematical Analysis and Applications 409:808-815, January 2014},
+journal = {Journal of Mathematical Analysis and Applications 409:808-815},
+year = "2014",
+month = "1",
 },
 
 
 @article{cheb_origin_8,
 author={D. Clever and J. Lang},
 title={Optimal control of radiative heat transfer in glass cooling with restrictions on the temperature gradient},
-journal = {Optimal Control Appl. and Meth. 33(2) (2012) 157вЂ“175},
+journal = {Optimal Control Appl. and Meth. 33(2) (2012) 157–175},
 },
 
-@article{cheb_origin_1,
+@article{modest_rht,
 author={M.F., Modest},
 title={Radiative Heat Transfer},
-journal = {Academic Press, 2003},
+journal = {Academic Press},
+year="2003",
 },
 
 @article{cheb_origin,
 author={Andrey E., Kovtanyuk and Alexander Yu., Chebotarev and Nikolai D., Botkin and Karl-Heinz, Hoffmann},
-title={Theoretical analysis of an optimal control problem of conductiveвЂ“convectiveвЂ“radiative heat transfer},
-journal = {J. Math. Anal. Appl. 412 (2014) 520вЂ“528},
+title={Theoretical analysis of an optimal control problem of conductive convective radiative heat transfer},
+journal = {J. Math. Anal. Appl. 412 (2014) 520–528},
+year="2013",
 },
+
 
 @article{OControl,
 author={A.E., Kovtanyuk and A.Yu., Chebotarev},
 title={Boundary design of reflection properties of a steady-state complex heat transfer model},
-journal={ArticleвЂ‚inвЂ‚Key Engineering Materials 685:90-93 В· February 2016},
+journal={Article in Key Engineering Materials 685:90-93},
+year = "2016",
+month = "2",
 },
 
 @article{OControl_1,
 author={R., Pinnau},
 title={Analysis of optimal boundary control for radiative heat transfer modeled by the $SP_1$-system},
-journal={Comm. Math. Sci., 5(4) (2007) 951вЂ“969.},
+journal={Comm. Math. Sci., 5(4) 951–969.},
+year = "2007",
 },
 
 @article{OControl_2,
-author={M., Frank and A., Klar and R., Pinnau.},
-title={Optimal control of glass cooling using simplified PN theory },
-journal={Trans. Theory Stat. Phys., 39(2-4) (2010) 282вЂ“311.},
-},
-@article{theorem_proof_18,
-author={A.D. Ioffe and V.M. Tikhomirov},
-title={Theory of Extremal Problems},
-journal={NorthHolland, Amsterdam, 1979.}
+    author={M., Frank and A., Klar and R., Pinnau.},
+    title={Optimal control of glass cooling using simplified PN theory },
+    journal={Trans. Theory Stat. Phys., 39(2-4) 282–311.},
+    },
+    year = "2010",
+    month = "4",
+    @article{theorem_proof_18,
+    author={A.D. Ioffe and V.M. Tikhomirov},
+    title={Theory of Extremal Problems},
+    journal={NorthHolland, Amsterdam},
+    year = "1979",
 },
 
 @article{OControl_3,
 author={D., Clever and J., Lang},
 title={Optimal control of radiative heat transfer in glass cooling with restrictions on the temperature gradient, },
-journal={Optimal Control Appl. and Meth., 33(2) (2012) 157вЂ“175.},
+journal={Optimal Control Appl. and Meth., 33(2) (2012) 157–175.},
+year = "2012",
 },
 
 @article{OControl_4,
-author={O., Tse and R., Pinna},
+author={O., Tse and R., Pinnau},
 title={ Optimal control of a simplified natural convectionradiation model},
-journal={ Comm. Math. Sci., 11(3) (2013) 679вЂ“707.},
+journal={ Comm. Math. Sci., 11(3) 679–707.},
+year = "2013",
 },
 
 @article{lemma_proof,
 author={A.E., Kovtanyuk and A.Yu., Chebotarev and N.D., Botkin and Karl-Heinz, Hoffman},
 title={Unique solvability of a steady-state complex heat transfer model,},
-journal={Commun. Nonlinear Sci. Numer. Simulat. 20 (2015) 776вЂ“784.},
+journal={Commun. Nonlinear Sci. Numer. Simulat. 20 (2015) 776–784.},
+year = "2015",
 },
 
 @article{theorem_proof,
 author={ A.E., Kovtanyuk and A.Yu., Chebotarev},
 title={ Steady-state problem of complex heat transfer},
-journal={ Comput. Math. and Math. Phys. 54 (4) (2014) 719вЂ“726.},
+journal={ Comput. Math. and Math. Phys. 54 (4) 719–726.},
+year = "2014",
 },
 
 @article{theorem_2_proof,
 author={A. E., Kovtanyuk and A. Yu., Chebotarev and N.D, Botkin and Karl-Heinz, Hoffman},
 title={Theoretical analysis of an optimal control problem of conductive-convective-radiative heat transfer},
-journal={J. of Math. Analysis and Applications 412 (2014) 520вЂ“528.},
+journal={J. of Math. Analysis and Applications 412 520–528.},
+year = "2014",
 },
 
 @article{grenkin_1,
-author={РђР»РµРєСЃРµРµРІ Р“.Р’.},
-title={Р§РёСЃР»РµРЅРЅС‹Рµ РјРµС‚РѕРґС‹ РјР°С‚РµРјР°С‚РёС‡РµСЃРєРѕР№ С„РёР·РёРєРё. Р’РІРµРґРµРЅРёРµ РІ РјРµС‚РѕРґ РєРѕРЅРµС‡РЅС‹С… СЌР»РµРјРµРЅС‚РѕРІ },
-journal={Р’Р»Р°РґРёРІРѕСЃС‚РѕРє: Р”Р°Р»СЊРЅР°СѓРєР°, 1999.},
+author={Алексеев Г.В.},
+title={Численные методы математической физики. Введение в метод конечных элементов },
+journal={Владивосток: Дальнаука},
+year = "1999",
+month = "4",
 },
 
 
 @article{grenkin_2,
-author={РђР»РµРєСЃРµРµРІ Р“.Р’.},
-title={Р’РІРµРґРµРЅРёРµ РІ С‡РёСЃР»РµРЅРЅС‹Рµ РјРµС‚РѕРґС‹ СЂРµС€РµРЅРёСЏ РґРёС„С„РµСЂРµРЅС†РёР°Р»СЊРЅС‹С… СѓСЂР°РІРЅРµРЅРёР№. },
-journal={РЈС‡. РїРѕСЃ. Р’Р»Р°РґРёРІРѕСЃС‚РѕРє: Р”Р°Р»СЊСЂС‹Р±РІС‚СѓР· (РўРЈ), 2002.},
+author={Алексеев Г.В.},
+title={Введение в численные методы решения дифференциальных уравнений. },
+journal={Уч. пос. Владивосток: Дальрыбвтуз (ТУ)},
+year = "2002",
 },
 
 
 @article{grenkin_3,
-author={РђР»РµРєСЃРµРµРІ Р“.Р’.},
-title={РљР»Р°СЃСЃРёС‡РµСЃРєРёРµ РјРѕРґРµР»Рё Рё РјРµС‚РѕРґС‹ РјР°С‚РµРјР°С‚РёС‡РµСЃРєРѕР№ С„РёР·РёРєРё. РЈС‡РµР±РЅРѕРµ РїРѕСЃРѕР±РёРµ.},
-journal={ Р’Р»Р°РґРёРІРѕСЃС‚РѕРє: Р”Р°Р»СЊРЅР°СѓРєР°, 2011.},
+    author={Алексеев Г.В.},
+    title={Классические модели и методы математической физики. Учебное пособие.},
+    journal={ Владивосток: Дальнаука},
+    year = "2011",
 },
 
+@article{alekseev_monograph,
+    author={Алексеев Г.В.},
+    title={Анализ и оптимизация в гидродинамике вязкой жидкости},
+    journal={Дальнаука},
+    year="2008",
+},
 
 @article{grenkin_4,
-author={РђСЃС‚СЂР°С…Р°РЅС†РµРІР° Рђ.Рђ. and РљРѕРІС‚Р°РЅСЋРє Рђ.Р•.},
-title={РљРѕРјРїСЊСЋС‚РµСЂРЅРѕРµ РјРѕРґРµР»РёСЂРѕРІР°РЅРёРµ СЃР»РѕР¶РЅРѕРіРѕ С‚РµРїР»РѕРѕР±РјРµРЅР° РІ РїР°РєРµС‚Рµ FreeFem++ // Third International Conference В«High Performance ComputingВ» HPC-U},
-journal={2013 (Ukraine, Kyiv, October 7вЂ“11, 2013). РЎ. 20вЂ“22.},
+    author={Астраханцева А.А. and Ковтанюк А.Е.},
+    title={Компьютерное моделирование сложного теплообмена в пакете FreeFem++ // Third International Conference «High Performance Computing» HPC-U},
+    journal={2013 (Ukraine, Kyiv). С. 20–22.},
+    year = "2013",
+    month = "10",
 },
 
 
 @article{covt_last,
-title = "Nondegeneracy of optimality conditions in control problems for a radiative-conductive heat transfer model",
-abstract = "A boundary control problem for a nonlinear steady-state heat transfer model accounting for heat radiation effects is considered. The problem consists in the minimization of a cost functional by controlling the reflection properties of the boundary. The solvability of the control problem is proven, an optimality system is derived, and the nondegeneracy of optimality conditions is established. The results of numerical simulations are presented.",
-keywords = "Diffusion approximation, Necessary optimality conditions, Optimal control, Radiative-conductive heat transfer",
-author = "Chebotarev, {Alexander Yu.} and Kovtanyuk, {Andrey E.} and Grenkin, {Gleb V.} and Botkin, {Nikolai D.} and Hoffmann, {Karl Heinz}",
-year = "2016",
-month = "10",
-doi = "10.1016/j.amc.2016.05.036",
-volume = "289",
-pages = "371--380",
-journal = "Applied Mathematics and Computation",
-issn = "0096-3003",
-publisher = "Elsevier Inc.",
+    title = "Nondegeneracy of optimality conditions in control problems for a radiative-conductive heat transfer model",
+    abstract = "A boundary control problem for a nonlinear steady-state heat transfer model accounting for heat radiation effects is considered. The problem consists in the minimization of a cost functional by controlling the reflection properties of the boundary. The solvability of the control problem is proven, an optimality system is derived, and the nondegeneracy of optimality conditions is established. The results of numerical simulations are presented.",
+    keywords = "Diffusion approximation, Necessary optimality conditions, Optimal control, Radiative-conductive heat transfer",
+    author = "Chebotarev, {Alexander Yu.} and Kovtanyuk, {Andrey E.} and Grenkin, {Gleb V.} and Botkin, {Nikolai D.} and Hoffmann, {Karl Heinz}",
+    year = "2016",
+    month = "10",
+    doi = "10.1016/j.amc.2016.05.036",
+    volume = "289",
+    pages = "371--380",
+    journal = "Applied Mathematics and Computation",
+    issn = "0096-3003",
+    publisher = "Elsevier Inc.",
+},
+
+@article{tse_lasor,
+    author = {Tse, O. and Pinnau, R. and Siedow, N.},
+    title = {IDENTIFICATION OF TEMPERATURE-DEPENDENT PARAMETERS IN LASER-INTERSTITIAL THERMO THERAPY},
+    journal = {Mathematical Models and Methods in Applied Sciences},
+    volume = {22},
+    number = {09},
+    pages = {1250019},
+    year = {2012},
+    doi = {10.1142/S0218202512500194},
+
+    URL = {http://www.worldscientific.com/doi/abs/10.1142/S0218202512500194},
+    eprint = {http://www.worldscientific.com/doi/pdf/10.1142/S0218202512500194}
 }
 
 
 @article{grenkin_13,
-author={A., Chebotarev and A., Kovtanyuk and G., Grenkin and N., Botkin and K.-H., Hoffman},
-title={Boundary optimal control problem of complex heat transfer model},
-journal={ J. Math. Anal. Appl., 433:2 (2016), 1243вЂ“1260}
+    author={A., Chebotarev and A., Kovtanyuk and G., Grenkin and N., Botkin and K.-H., Hoffman},
+    title={Boundary optimal control problem of complex heat transfer model},
+    journal={ J. Math. Anal. Appl., 433:2, 1243–1260},
+    year="2016",
 },
 
 @article{grenkin_14,
-author={ A. Munch nad F. Periago},
-title={Numerical approximation of bang-bang controls for the heat equation: An optimal design approach},
-journal={ Systems Control Lett., 62:8 (2013), 643вЂ“65}
+    author={ A. Munch nad F. Periago},
+    title={Numerical approximation of bang-bang controls for the heat equation: An optimal design approach},
+    journal={ Systems Control Lett., 62:8 (2013), 643–65}
 },
 
 @article{grenkin_15,
-author={ K. Glashoff and E. Sachs},
-title={On theoretical and numerical aspects of the bang-bang-principle},
-journal={ Numer. Math., 29:1 (1977), 93вЂ“113}
+    author={ K. Glashoff and E. Sachs},
+    title={On theoretical and numerical aspects of the bang-bang-principle},
+    journal={ Numer. Math., 29:1, 93–113},
+    year="1977",
 },
 
 @article{grenkin_16,
-author={ K. Deckelnick and M. Hinze},
-title={A note on the approximation of elliptic control problems with bang-bang controls},
-journal={ Comput. Optim. Appl., 51:2 (2012), 931вЂ“939}
+    author={ K. Deckelnick and M. Hinze},
+    title={A note on the approximation of elliptic control problems with bang-bang controls},
+    journal={ Comput. Optim. Appl., 51:2 (2012), 931–939},
 },
 
 @article{grenkin_17,
-author={ C.Y. Kaya and S.K. Lucas and S.T. Simakov},
-title={Computations for bang-bang constrained optimal control using a mathematical programming formulation},
-journal={ Optimal Control Appl. Methods, 25:6 (2004), 295вЂ“308}
+    author={ C.Y. Kaya and S.K. Lucas and S.T. Simakov},
+    title={Computations for bang-bang constrained optimal control using a mathematical programming formulation},
+    journal={ Optimal Control Appl. Methods, 25:6 (2004), 295–308},
 },
 
 @article{grenkin_18,
-author={ T. Taleshian and A. Ranjbar Noei and R. Ghaderi},
-title={IPSO-SQP algorithm for solving time optimal bang-bang control problems and its application on autonomous underwater vehicle},
-journal={ Journal of Advances in Computer Research, 5:2 (2014), 69вЂ“88}
+    author={ T. Taleshian and A. Ranjbar Noei and R. Ghaderi},
+    title={IPSO-SQP algorithm for solving time optimal bang-bang control problems and its application on autonomous underwater vehicle},
+    journal={ Journal of Advances in Computer Research, 5:2, 69–88},
+    year="2014",
 },
 
 @article{grenkin_19,
 author={ H. Maurer and H.D. Mittelmann},
 title={Optimization techniques for solving elliptic control problems with control and state constraints: Part 1. Boundary control},
-journal={ Comput. Optim. Appl., 16:1 (2000), 29вЂ“55}
+journal={ Comput. Optim. Appl., 16:1 (2000), 29–55}
 },
 
 @article{grenkin_20,
 author={ H. Maurer and H.D. Mittelmann},
 title={Optimization techniques for solving elliptic control problems with control and state constraints: Part 2. Distributed control},
-journal={ Comput. Optim. Appl., 18:2 (2001), 141вЂ“160}
+journal={ Comput. Optim. Appl., 18:2 (2001), 141–160}
 },
 
 @article{grenkin_21,
 author={ A. Borz and K. Kunisch},
 title={A multigrid scheme for elliptic constrained optimal control problems},
-journal={ Comput. Optim. Appl., 31:3 (2005), 309вЂ“333}
+journal={ Comput. Optim. Appl., 31:3 (2005), 309–333}
 },
 
 @article{grenkin_22,
 author={ M.J., Zandvliet and O.H. Bosgra and J.D. Jansen and P.M.J. Van den Hof and J.F.B.M. Kraaijevanger},
 title={Bang-bang control and singular arcs in reservoir flooding},
-journal={ J. Pet. Sci. Eng., 58:1вЂ“2 (2007), 186вЂ“200}
+journal={ J. Pet. Sci. Eng., 58:1–2 (2007), 186–200}
 },
