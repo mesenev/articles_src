@@ -1,18 +1,19 @@
 //calculations.edp && python draw_initial_optimal_final_control.py
-string outputfolder = "calculations"; int GN = 120; int side = GN/4; real step = 1./side;
+string outputfolder = "calculations"; int GN = 100; int side = GN/4; real step = 1./side;
+int ITERATIONS = 200000;
+int DIRECTOCCURACY = 1e-10; 
 real[int] uopt(side);
 real uinit;
 for(int i=0; i < side; i++){
-    // uopt[i] = 0.5;
-    // if(i < side/2){uopt[i]=0.01;}
-    // else{uopt[i]=0.5;}
+    //uopt[i] = 0.5;
+    //if(i < side/2){uopt[i]=0.01;}
+    //else{uopt[i]=0.5;}
     real step1 = 0.49/(side-1);
-     uopt[i] = 0.01+i*step1;
+      uopt[i] = 0.01+i*step1;
 }
 func real theta0f(real xx, real yy){return 0;}
-int ITERATIONS = 5000;
 real[int] uwall(side);
-real lambda = 5;
+real lambda = 12;
 real a = 0.006, alpha = 0.33333333, ka = 1, b = 0.025, beta = 0.00005, gamma = 0.3;
 
 ofstream conditions(outputfolder+"/conditions.txt");
@@ -102,17 +103,17 @@ func int CalcControlFunc()
     real stepy = 0;
     real grad;
     
-    cout << "PTWO: " << endl;
-    for(int i = 0; i < side; i++){
-        stepx = step*i;
-        cout << (phi(stepx, stepy)-thetaB(stepx, stepy)^4) << " ";
-    }
-    cout << endl;
+    //cout << "PTWO: " << endl;
+    //for(int i = 0; i < side; i++){
+    //    stepx = step*i;
+    //    cout << (phi(stepx, stepy)-thetaB(stepx, stepy)^4) << " ";
+    //}
+    //cout << endl;
 
     for(int i = 0; i < side; i++){
         stepx = step*i;
         grad = (phi(stepx, stepy)-thetaB(stepx, stepy)^4)* ptwo(stepx, stepy);
-        cout << grad << " ";
+        //cout << grad << " ";
         uwall[i] = proj(uwall[i] - lambda*grad);
         if(uwall[i] != u(stepx,stepy)){
             cout << "U function indexing error! Aborting." << endl;
@@ -131,10 +132,11 @@ real costprevious = 100;
 func int checkCostFunction()
 {
     real costFunctionality = costFunc();
-    if(costprevious < costFunctionality)
-        cout << "ERROR ERROR ERROR ERROR ERROR ERROR ERROR : "
-        << costprevious - costFunctionality<<endl;
-    cout << costFunctionality << " functionality" << endl;
+    if(costprevious < costFunctionality){
+        cout << "ERROR ERROR ERROR ERROR ERROR ERROR ERROR : " << costprevious - costFunctionality<<endl;
+	lambda = lambda*0.75;	
+    }
+    // cout << costFunctionality << " functionality" << endl;
     costoutput << costFunctionality << " ";
     if(costprevious < costFunctionality)
         costoutput << "!";
@@ -182,7 +184,7 @@ func int CountStateSimpleIteration()
             - int1d(mainMesh, gamma02)(gamma * thetaB^4 * w)
             - int1d(mainMesh, gamma2)(gamma * thetaB^4 * w);
         Vh tmp = theta - thetaold;
-        if (( i > 5)&&(tmp[].max - tmp[].min < 1e-11)) {cout << "calculated" << endl; break;}
+        if (( i > 5)&&(tmp[].max - tmp[].min < DIRECTOCCURACY)) {cout << "calculated" << endl; break;}
         thetaold = theta;
         if (i == numiter){
             cout <<"FAIL TO COUNT STATE! ABORTING.";
@@ -282,7 +284,7 @@ func int SetAndSolveOptimizationProblem(real ustart)
 
     costoutput << costFunc() << endl;
     SolvePrimal();
-    plot(theta, fill=true, value=true, ps=outputfolder+"/theta_optimal.eps");
+    // plot(theta, fill=true, value=true, ps=outputfolder+"/theta_optimal.eps");
     costoutput << costFunc() << endl;
 
     uwall = ustart;
@@ -295,14 +297,14 @@ func int SetAndSolveOptimizationProblem(real ustart)
     thetafile << "theta_init: ";
     for(int i = 0;i<=side;i++){thetafile << theta(step*i, 1) << " ";}
     thetafile << endl;
-    plot(theta, fill=true, value=true, ps=outputfolder+"/theta_initial.eps");
+    // plot(theta, fill=true, value=true, ps=outputfolder+"/theta_initial.eps");
 
     
     costoutput << "Calculations: " << endl;
     for (int i = 0; i < ITERATIONS; i++){
         SolvePrimal();
         CalcAdjoint;
-        plot(ptwo, fill=true, value=true, wait=true);
+        //  plot(ptwo, fill=true, value=true, wait=true);
         CalcControlFunc();
         checkCostFunction();
         costprev = costFunc();
@@ -312,18 +314,21 @@ func int SetAndSolveOptimizationProblem(real ustart)
             thetafile << endl;
             ofstream control100(outputfolder+"/control_100.txt");
             control100 << uwall << endl;
-            plot(theta, fill=true, value=true, ps=outputfolder+"/theta_100.eps");
+            // plot(theta, fill=true, value=true, ps=outputfolder+"/theta_100.eps");
         }
         if(i == 1000){
             thetafile << "theta_1000: ";
             for(int k = 0; k<=side; k++){thetafile << theta(step*k, 1) << " ";}
             thetafile << endl;
-            ofstream control1000(outputfolder+"/control_1000.txt");
+	    ofstream control1000(outputfolder+"/control_1000.txt");
             control1000 << uwall << endl;
-            plot(theta, fill=true, value=true, ps=outputfolder+"/theta_1000.eps");
+            // plot(theta, fill=true, value=true, ps=outputfolder+"/theta_1000.eps");
         }
         cout << endl << i <<  endl;
-        if(costprev < 1e-10){break;}
+        if(i%1000==0){
+		lambda = lambda + 10;
+		//DIRECTOCCURACY = DIRECTOCCURACY/1.5;  
+	}
     }
 
     control << "Final control: " << endl << uwall << endl;
@@ -341,10 +346,20 @@ func int SetAndSolveOptimizationProblem(real ustart)
 
     return 0;
 }
+uwall = uopt;
+SolvePrimal();
+theta0 = theta;
+for(int i=1;i<=10;i++){
+	cout << endl << i << " " << costFunc() << endl;
+	uwall = 0.5/10*i;
+	SolvePrimal();
+	costoutput << uwall[0] << ":" << endl;
+	checkCostFunction();
+}
 
-
+cout << endl << uwall;
 //uinit = checkPrimalProblem();
-SetAndSolveOptimizationProblem(0.01);
+//SetAndSolveOptimizationProblem(0.25);
 
-
+cout<< endl << endl << " Lambda:  " << lambda <<endl;
 cout<< endl << endl << " Number of fails:  " << primalSolveFails <<endl;

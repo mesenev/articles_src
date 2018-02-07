@@ -24,9 +24,10 @@ plt.xlabel('Iterations')
 plt.ylabel('Cost function value')
 
 blue_line = mlines.Line2D([], [], color='blue',
-                          label="Cost function, initial: {}, final: {}".format(y[0], y[-1]))
-extra = mpatches.Patch(color='none', label=r'Cost function delta: {}'.format((max(y) - min(y))))
-plt.legend([blue_line, extra], [blue_line.get_label(), extra.get_label()], prop={'size': 10})
+                          label=r"Функционал качества $J$")
+extra1 = mpatches.Patch(color='none', label='Начальное значение: {}'.format(y[0]))
+extra2 = mpatches.Patch(color='none', label="Конечное значение: {}".format(y[-1]))
+plt.legend([blue_line, extra1, extra2], [blue_line.get_label(), extra1.get_label(), extra2.get_label()], prop={'size': 10})
 # plt.text((x.__len__()+10)*1/3, (max(y) + yscale)*4/5, , fontsize=14)
 plt.grid(True)
 plt.savefig(folder + "/cost_functional_dynamics.png")
@@ -57,9 +58,9 @@ plt.axis([0, 1.0, -0.02, 0.52])
 plt.xlabel('x-coord')
 plt.ylabel('Value')
 
-green_legend = mlines.Line2D([], [], color='green', linestyle='-.', label="Optimal control function $u$", )
-blue_legend = mlines.Line2D([], [], color='blue', linestyle='--', label="Initial control function $u$")
-red_legend = mlines.Line2D([], [], color='red', label="Final control function $u$")
+green_legend = mlines.Line2D([], [], color='green', linestyle='-.', label="Искомое значение $u$", )
+blue_legend = mlines.Line2D([], [], color='blue', linestyle='--', label="Начальное значение $u$")
+red_legend = mlines.Line2D([], [], color='red', label="Найденное значение $u$")
 plt.legend(handles=[green_legend, blue_legend, red_legend], prop={'size': 10})
 
 plt.grid(True)
@@ -81,12 +82,12 @@ allvals = input_data[0][1:] + input_data[1][1:] + input_data[2][1:]# + input_dat
 yscale = (max(allvals) - min(allvals)) / 8
 plt.axis([0, 1.0, min(allvals) - yscale, max(allvals) + yscale])
 
-green_legend = mlines.Line2D([], [], color='green', linestyle='-.', label='Theta optimal value', )
-blue_legend = mlines.Line2D([], [], color='blue', linestyle='--', label="Theta initial value")
-yellow_legend = mlines.Line2D([], [], color='red', linestyle=':', label='Theta value on 100th iteration')
-red_legend = mlines.Line2D([], [], color='yellow', label='Theta value on 1000th iteration')
+green_legend = mlines.Line2D([], [], color='green', linestyle='-.', label='$\Theta_0$', )
+blue_legend = mlines.Line2D([], [], color='blue', linestyle='--', label=r"$\Theta$ начальное значение")
+yellow_legend = mlines.Line2D([], [], color='red', linestyle=':', label=r'$\Theta$ на сотой итерации')
+red_legend = mlines.Line2D([], [], color='yellow', label=r'$\Theta$ на тысячной итерации')
 
-plt.legend(handles=[green_legend, blue_legend, yellow_legend, red_legend], prop={'size': 10})
+plt.legend(handles=[green_legend, blue_legend, yellow_legend, red_legend])
 
 y = input_data[0][1:]
 x = np.arange(0, 1.0, 1.0 / (y.__len__() - 1)).tolist() + [1.0]

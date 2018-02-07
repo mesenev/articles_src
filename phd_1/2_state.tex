@@ -1,5 +1,5 @@
-\section*{Постановка обратной задачи}
-    Нормализованная стационарная модель, описывающая процесс радиационного теплопереноса в области $\Omega \subset \mathbb{R}^3$ (см. \cite{OControl_1}), имеет следующий вид:
+\section{Постановка обратной задачи}
+    Нормализованная стационарная модель, описывающая процесс радиационного теплопереноса в области $\Omega \subset \mathbb{R}^3$ с липшицевой границей $\Gamma$ (см. \cite{OControl_1}), имеет следующий вид:
     \begin{equation}
         \label{initial}
         \begin{aligned}
@@ -13,9 +13,9 @@
     $$
     a = \frac{k}{\rho c_v}, \; b = \frac{4 \sigma n^2 T^3_{\text{max}}}{\rho c_v}, \; \alpha = \frac{1}{3\kappa -A \kappa_s}
     $$
-    где $k$ -- теплопроводность, $c_v$ -- удельная теплоёмкость, $\rho$ -- плотность, $\sigma$ -- постоянная Стефана -- Больцмана, $n$ -- индекс рефракции, $T_{\text{max}}$ -- максимальная температура, $\kappa := \kappa_s + \kappa_a$ -- коэфициент полного взаимодействия, $\kappa_s$ -- коэфициент рассеяния. Коэфициент $A \in [-1,1]$ описывает анизотропию рассеивания, при чем случай $A=0$ отвечает изотропному рассеиванию.
+    где $k$ -- теплопроводность, $c_v$ -- удельная теплоёмкость, $\rho$ -- плотность, $\sigma$ -- постоянная Стефана -- Больцмана, $n$ -- индекс рефракции, $T_{\text{max}}$ -- максимальная температура, $\kappa := \kappa_s + \kappa_a$ -- коэфициент полного взаимодействия, $\kappa_s$ -- коэфициент рассеяния. Коэфициент $A \in [-1,1]$ описывает анизотропию рассеивания; случай $A=0$ отвечает изотропному рассеиванию.
 
-    Уравнения \eqref{initial} дополняются граничными условиями на $\Gamma := \partial \Omega =\bar{\Gamma_0} \cup \bar{\Gamma_1} \cup \bar{\Gamma_2}$
+    Уравнения \eqref{initial} дополняются граничными условиями на $\Gamma := \partial \Omega =\bar{\Gamma}_0 \cup \bar{\Gamma}_1 \cup \bar{\Gamma}_2$, где $\Gamma_0, \Gamma_1, \Gamma_2$ не имеют пересечений.
 
     \begin{equation}
         \label{initial_boundary}
@@ -32,7 +32,7 @@
     \end{equation}
     где $u_1$ и $u_2$ - заданные ограниченные функции.
 
-    Обратная задача состоит в нахождении функций $u(x), x \in  \Gamma_1, \; \theta(x), \varphi(x), x \in \Omega $ удовлетворяющих условиям \eqref{initial}--\eqref{control_bounds}, а также дополнительному условию
+    Обратная задача состоит в нахождении функций $u(x), x \in  \Gamma_1, \; \theta(x), \varphi(x), x \in \Omega $ удовлетворяющих условиям \eqref{initial}--\eqref{control_bounds}, а также дополнительному условию на участке границы $\Gamma_2$:
     \begin{equation}
         \label{theta_gamma}
         \theta|_{\Gamma_2}=\theta_0
@@ -41,6 +41,7 @@
     Сформулированная обратная задача \eqref{initial}-\eqref{theta_gamma} сводится к экстремальной задаче, состоящей в минимизации функционала
     \begin{equation}
         \label{quality}
-        J(\theta) = \frac{1}{2} \int_{\Gamma_2} (\theta - \theta_0)^2 d\Gamma.
+        J(\theta) = \frac{1}{2} \int_{\Gamma_2} (\theta - \theta_0)^2 d\Gamma
     \end{equation}
+    на решениях краевой задачи \eqref{initial}--\eqref{control_bounds}.
     Решение задачи \eqref{initial}--\eqref{control_bounds}, \eqref{quality} называется {\i квазирешением} задачи \eqref{initial}--\eqref{theta_gamma}

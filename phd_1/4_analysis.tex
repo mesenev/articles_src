@@ -1,4 +1,4 @@
-\section*{Анализ экстремальной задачи}
+\section{Анализ экстремальной задачи}
 \label{sec:optimality}
 
 Для доказательства разрешимости задачи \eqref{minimization_operational} нам необходимо также установить некоторые свойства решения задачи \eqref{initial}, \eqref{initial_boundary}.
@@ -7,7 +7,7 @@
 
 \label{SolvabilityLemma}
 
-    Если условия (i)--(ii) выполняются, то для каждого $ u \in U_{ad} $ существует единственное слабое решение $\{\theta, \varphi \}$ для задачи (\ref{initial}--\ref{initial_boundary}), и верны следующие оценки:
+    Если условие (i) выполняются, то для каждого $ u \in U_{ad} $ существует единственное слабое решение $\{\theta, \varphi \}$ для задачи \eqref{initial},\eqref{initial_boundary} и верны следующие оценки:
     \begin{equation}
         \label{lemma_1}
      M_1 \le \theta \le M_2, \; M_1^4 \le \varphi \le M_2^4,
@@ -73,12 +73,12 @@ $$
     такая, что тройка $(\hat{y}, \hat{u}, p)$, удовлетворяет следующим условиям:
     \begin{equation}
         \label{therorem_2_eq1}
-         A_1 p_1 + 4 |\hat{\theta}|^3 \kappa_a(b p_1 - p_2) = f_c, \;\; (f_c,v) = - \int_{\Gamma_2} (\theta - \theta_0) v d\Gamma,
+         A_1 p_1 + 4 |\hat{\theta}|^3 \kappa_a(b p_1 - p_2) = f_c, \;\; (f_c,v) = - \int_{\Gamma_2} (\hat{\theta} - \theta_0) v d\Gamma,
     \end{equation}
 
     \begin{equation}
         \label{therorem_2_eq2}
-        A_2 p_2 + \kappa_a (p_2-b p_1) = g_c(( p_2, \hat{u}),v), \;\; g_c(( p_2, \hat{u}),v) = -\int_{\Gamma_1} u p_2 v\Gamma,
+        A_2 p_2 + \kappa_a (p_2-b p_1) = g_c(( p_2, \hat{u}),v), \;\; g_c(( p_2, \hat{u}),v) = -\int_{\Gamma_1} \hat{u} p_2 v\Gamma,
     \end{equation}
 
     \begin{equation}

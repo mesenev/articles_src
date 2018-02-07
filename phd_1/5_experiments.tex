@@ -1,70 +1,120 @@
-\section*{Численные эксперименты}
-\subsection*{Алгоритм поиска квазирешения}
-    Пусть функционал $J$ удовлетворяет условиям, указанным в \autoref{sec:optimality}. Для удобства введем переобозначение $\hat{J}(u):=J(y(u)), \hat{J}:L^2(\Gamma_1) \to \mathbb{R}$. Здесь $y(u)$ отображение функции управления в состояние задачи (\ref{initial}-\ref{initial_boundary}).
-    Согласно формуле \eqref{therorem_2_eq3} градиент функционала $\hat{J}$ представлен как:
+\section{Численный эксперимент}
+    Пусть функционал $J(\theta)$ удовлетворяет условиям, указанным в \autoref{sec:optimality}. Для удобства введем переобозначение $\hat{J}(u):=J(\theta(u)), \hat{J}:L^2(\Gamma_1) \to \mathbb{R}$. Здесь $\theta(u)$ -- температурное поле задачи  \eqref{initial}--\eqref{initial_boundary} отвечающее управлению $u \in L^2(\Gamma_1)$.
+    Согласно формуле \eqref{therorem_2_eq3} градиент функционала $\hat{J}(u)$ \cite{grenkin_13} представлен как
 
     $$\hat{J}'(u)= (\varphi(u) -\theta_b^4)p_2;$$
-    где $\varphi(u)$ есть интенсивность излучения, $p_2$ -- соответствующая переменная сопряженной системы, полученных из управления $u$.
-
-    Исходная задача рассмотрена в двумерной области $\Omega = \{x = (x_1,x_2):0 < x_{1,2} < L\}$
+    
+    где $\varphi(u)$ есть интенсивность излучения, $p_2$ -- соответствующая переменная сопряженной системы.
 
     Предлагаемый алгоритм решения выглядит следующим образом:
 
-
-\begin{algorithm}
-\caption{Алгоритм градиентного спуска с проекцией}\label{algo1}
+\begin{algorithm}[H]
+\caption{Алгоритм градиентного спуска с проекцией}
   \begin{algorithmic}[1]
-    \State Выбираем начальный коэфициент $\lambda, \; N$
-    \State Выбираем произвольное $u_0 \in U_{ad}$
-    \For{$k \gets 0,1,2,...,N$}
+    \State Выбираем значение градиентного шага $\lambda$, 
+    \State Выбираем количество итераций $N$,
+    \State Выбираем произвольное $u_0 \in U_{ad}$,
+    \For{$k \gets 0,1,2,...,N$}:
         \State Для полученного $u_k$ расчитываем состояние $y_k = \{\theta_k, \varphi_k\}$ из  (\ref{weak_operational}).
-        \State Расчитываем значение функционала качества $J(\theta)$ из (\ref{quality}).
-        \State Расчитываем сопряженное состояние $p_k=\{p_{1k},p_{2k}\}$ из уравнений (\ref{therorem_2_eq1}--\ref{therorem_2_eq2}).
-        \State Пересчет функции управления $u_{k+1} = P_{ad}\left[ u_k - \lambda (\varphi_k - \theta_b^4)p_{2k} \right]$.
+        \State Расчитываем значение функционала качества $J(\theta_k)$ из (\ref{quality}).
+        \State Расчитываем сопряженное состояние $p_k=\{p_{1k},p_{2k}\}$ из уравнений \eqref{therorem_2_eq1}--\eqref{therorem_2_eq2}, где $ \hat{\theta} := \theta_k, \hat{u}=u_k$.
+        \State Пересчитываем управление $u_{k+1} = P_{ad}\left[ u_k - \lambda (\varphi_k - \theta_b^4)p_{2k} \right]$.
     \EndFor
   \end{algorithmic}
 \end{algorithm}
+Оператор проекции $P_{ad} : U \to U_{ad}$ определен следующим образом
+$$
+  P_{ad}[v] =
+   \begin{cases}
+    u_0,   & \text{если } v \le u_0 \\
+    v,     & \text{если } u_0 < v < u_1 \\
+    u_1,   & \text{если } v \ge u_1
+   \end{cases}
+$$
+% 
+% border gamma01(t=1,0){x=0; y=t;} //  Gamma 0
+% border gamma1(t=0,1){x=t; y=0;} //  control boundary -- Gamma 1
+% border gamma02(t=0,1){x=1; y=t;} //  Gamma 0
+% border gamma2(t=1,0){x=t; y=1;} //  check boundary -- Gamma 2
+Приведем далее примеры расчетов для двумерного случая. Положим $\Omega = \{(x,y), 0 \leq x,y \leq 1\}$, $l = 1$ см. Границы $\Omega$ следующие: 
+$$
+\begin{aligned}
+		\Gamma_0 & = \{x=\{0,1\}, y \in [0,1]\} \\ 
+		\Gamma_1 & = \{x\in [0,1], y=0\} - \text{граница контроля,} \\
+		\Gamma_2 & = \{x \in [0,1], y=1\} - \text{граница наблюдения.}	
+\end{aligned}
+$$
+ Будем также далее считать, что $a = 0.006[\text{см}^2/\text{c}]$, $b=0.025[\text{см}/\text{с}]$, $\beta = 0.00005[\text{см}/\text{с}]$, $\kappa=1[\text{см}^{-1}]$, $\kappa_s = 0$, $A = 0$, $\gamma = 0.3$. Указанные параметры соответсвуют стеклу \cite{grenkin_13}.
+Температуру на границе $\Omega$ положим равной $\theta_b = (x^2+y^2)/3$. 
 
-\subsection*{Нахождение квазирешения градиентным спуском}
-    В данном случае желаемая температура $\theta_0 = \theta(u_{opt})$, где $u_{opt}$ есть оптимальное управление. Начальное управление $u_{init} = 0.01$.
-    Модель выглядит следующим образом:
-        \begin{equation}
-        \begin{aligned}
-            - a \Delta \theta + b \kappa_a(\theta ^ 3 | \theta | - \varphi) = 0,  \\
-            - \alpha \Delta \varphi + \kappa_a (\varphi - \theta ^3 | \theta |) = 0.
-        \end{aligned}
-        % \qquad \text{в } \Omega.
-    \end{equation}
+При указанных параметрах для первого эксперимента положим тестовое значение $u$ (рис. \ref{fig1:control}\subref{fig1:exp1}):
+\begin{equation}
+  \label{test_function_1}
+  u(x)=0.49x+0.01, \; 
+\end{equation}
+и для второго эксперимена (рис. \ref{fig1:control}\subref{fig1:exp2}):
+\begin{equation}
+u(x)=   
+\begin{cases}
+    0.01,   & \text{если } x \le 0.5, \\
+    0.5,    & \text{если } x > 0.5.
+\end{cases} 
+\end{equation}
+Посчитаем прямую задачу \eqref{initial}--\eqref{initial_boundary} для этих случаев. Полученный компонент состояния $\theta$ мы обозначим за $\theta_0$. Далее, применяя наш алгоритм восстановим тестовое значение $u(x)$. Эффективность предложенного алгоритма, а также значения $u_0(x)$ в первом и втором случаях также приведены на рис. \ref{fig1:control}. На рис. \ref{fig2:cost} показана динамика функционала качества по итерациям.
 
-    \begin{equation}
-        \begin{aligned}
-            \Gamma: \; a \partial_n \theta + \beta (\theta - \theta _b) = 0, \\
-            \Gamma_0 \cup \Gamma_2: \; \alpha \partial_n \varphi + \gamma(\varphi - \theta_b^4 ) = 0, \\
-            \Gamma_1: \; \alpha \partial_n \varphi + u(\varphi - \theta_b^4 ) = 0, \\
-        \end{aligned}
-    \end{equation}
-    Результат работы алгоритма продемонстрирован на следующих изображениях:
+{\it Замечание}: в предложенных примерах потребовалось $2*10^6$ итераций для восстановления функции контроля $u$. В то же время температурное поле на участке наблюдения $\Gamma_2$ становится близким к $\theta_0$ уже на $10^2$ итерации. Также наблюдается существенное падение скорости уменьшения функционала качества с каждой итерацией после того, как среднее значение найденной функции контроля становится близко к тестовой функции. Это наглядно видно из следующей таблицы ($\theta_0$ взята из второго эксперимента):
+\begin{center}
+    \begin{tabular}{ | l | l |}
+    \hline
+	Значение $u$ & Значение функционала качества $\hat{J}(u)$ \\ \hline
+    	0.05 & 9.71599e-05 \\ \hline
+	0.1 & 4.56573e-05  \\ \hline
+	0.15 & 1.67745e-05  \\\hline
+	0.2 & 3.18421e-06 \\  \hline
+	0.25 & 6.10619e-08 \\ \hline
+	0.3 & 4.15166e-06 \\  \hline
+	0.35 & 1.32197e-05 \\ \hline
+	0.4 & 2.57033e-05 \\  \hline
+	0.45 & 4.04976e-05 \\ \hline
+	0.5 & 5.68132e-05 \\  \hline
+    \end{tabular}
+\end{center}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{first/cost_functional_dynamics.png}
+    \caption{Динамика функционала качества для первого эксперимента}
+    \label{fig:sub1}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{second/cost_functional_dynamics.png}
+    \caption{Динамика функционала качества для второго эксперимента}
+    \label{fig:sub2}
+  \end{subfigure}
+  \caption{Динамика функции $J(u)$ по итерациям}
+  \label{fig2:cost}
+\end{figure}
+
 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\textwidth]{first/control_initial_optimal_final.png}
-  \caption{Control initial optimal and final}
+  \begin{subfigure}{1\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{first/control_initial_optimal_final.png}
+    \caption{Значения функции $u(x),u_0(x),u_{end}(x)$, первый эксперимент}
+    \label{fig1:exp1}
+  \end{subfigure}
+  \begin{subfigure}{1\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{second/control_initial_optimal_final.png}
+    \caption{Значения функции $u(x),u_0(x),u_{end}(x)$, второй эксперимент}
+    \label{fig1:exp2}
+  \end{subfigure}
+  \caption{Тестовая функция $u(x)$, начальная $u_0(x)$, конечная функция $u_{end}(x)$}
   \label{fig1:control}
 \end{figure}
 
-
-\begin{figure}[H]
-\centering
-  \includegraphics[width=0.75\textwidth]{first/cost_functional_dynamics.png}
-  \caption{Функционал качества}
-  \label{fig1:cost}
-\end{figure}
-
-
-\begin{figure}[H]
-\centering
-  \includegraphics[width=0.75\textwidth]{first/theta_funcs.png}
-  \caption{Значения $\theta$ на области контроля}
-  \label{fig1:theta}
-\end{figure}
