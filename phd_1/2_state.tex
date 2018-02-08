@@ -15,14 +15,14 @@
     $$
     где $k$ -- теплопроводность, $c_v$ -- удельная теплоёмкость, $\rho$ -- плотность, $\sigma$ -- постоянная Стефана -- Больцмана, $n$ -- индекс рефракции, $T_{\text{max}}$ -- максимальная температура, $\kappa := \kappa_s + \kappa_a$ -- коэфициент полного взаимодействия, $\kappa_s$ -- коэфициент рассеяния. Коэфициент $A \in [-1,1]$ описывает анизотропию рассеивания; случай $A=0$ отвечает изотропному рассеиванию.
 
-    Уравнения \eqref{initial} дополняются граничными условиями на $\Gamma := \partial \Omega =\bar{\Gamma}_0 \cup \bar{\Gamma}_1 \cup \bar{\Gamma}_2$, где $\Gamma_0, \Gamma_1, \Gamma_2$ не имеют пересечений.
+    Уравнения \eqref{initial} дополняются граничными условиями на $\Gamma := \partial \Omega =\bar{\Gamma_0} \cup \bar{\Gamma_1} \cup \bar{\Gamma_2}$, где части границы $\Gamma_0, \Gamma_1, \Gamma_2$ не имеют пересечений.
 
     \begin{equation}
         \label{initial_boundary}
         \begin{aligned}
-            \Gamma: \; a \partial_n \theta + \beta (\theta - \theta _b) = 0, \\
-            \Gamma_0 \cup \Gamma_2: \; \alpha \partial_n \varphi + \gamma(\varphi - \theta_b ^4 ) = 0, \\
-            \Gamma_1: \; \alpha \partial_n \varphi + u(\varphi - \theta_b ^4 ) = 0. \\
+            \Gamma &: \; a \partial_n \theta + \beta (\theta - \theta _b) = 0, \\
+            \Gamma_0 \cup \Gamma_2 &: \; \alpha \partial_n \varphi + \gamma(\varphi - \theta_b ^4 ) = 0, \\
+            \Gamma_1 &: \; \alpha \partial_n \varphi + u(\varphi - \theta_b ^4 ) = 0. \\
         \end{aligned}
     \end{equation}
     Функции $\gamma, \theta_b, \beta$ -- являются известными. Функция $u$ характеризует отражающие свойства участка границы $\Gamma_1$. Предполагается, что

@@ -1,13 +1,10 @@
 \section{Численный эксперимент}
     Пусть функционал $J(\theta)$ удовлетворяет условиям, указанным в \autoref{sec:optimality}. Для удобства введем переобозначение $\hat{J}(u):=J(\theta(u)), \hat{J}:L^2(\Gamma_1) \to \mathbb{R}$. Здесь $\theta(u)$ -- температурное поле задачи  \eqref{initial}--\eqref{initial_boundary} отвечающее управлению $u \in L^2(\Gamma_1)$.
-    Согласно формуле \eqref{therorem_2_eq3} градиент функционала $\hat{J}(u)$ \cite{grenkin_13} представлен как
+Согласно формуле \eqref{therorem_2_eq3} градиент функционала $\hat{J}(u)$ \cite{grenkin_13} имеет вид
+$$\hat{J}'(u)= (\varphi(u) -\theta_b^4)p_2,$$
+где $\varphi(u)$ есть интенсивность излучения, $p_2$ -- соответствующая переменная сопряженной системы.
 
-    $$\hat{J}'(u)= (\varphi(u) -\theta_b^4)p_2;$$
-    
-    где $\varphi(u)$ есть интенсивность излучения, $p_2$ -- соответствующая переменная сопряженной системы.
-
-    Предлагаемый алгоритм решения выглядит следующим образом:
-
+Предлагаемый алгоритм решения выглядит следующим образом:
 \begin{algorithm}[H]
 \caption{Алгоритм градиентного спуска с проекцией}
   \begin{algorithmic}[1]
@@ -40,8 +37,8 @@ $$
 $$
 \begin{aligned}
 		\Gamma_0 & = \{x=\{0,1\}, y \in [0,1]\} \\ 
-		\Gamma_1 & = \{x\in [0,1], y=0\} - \text{граница контроля,} \\
-		\Gamma_2 & = \{x \in [0,1], y=1\} - \text{граница наблюдения.}	
+		\Gamma_1 & = \{x\in [0,1], y=0\} - \text{участок с неизвестными отражающими свойствами,} \\
+		\Gamma_2 & = \{x \in [0,1], y=1\} - \text{участок наблюдения.}	
 \end{aligned}
 $$
  Будем также далее считать, что $a = 0.006[\text{см}^2/\text{c}]$, $b=0.025[\text{см}/\text{с}]$, $\beta = 0.00005[\text{см}/\text{с}]$, $\kappa=1[\text{см}^{-1}]$, $\kappa_s = 0$, $A = 0$, $\gamma = 0.3$. Указанные параметры соответсвуют стеклу \cite{grenkin_13}.
@@ -49,72 +46,55 @@ $$
 
 При указанных параметрах для первого эксперимента положим тестовое значение $u$ (рис. \ref{fig1:control}\subref{fig1:exp1}):
 \begin{equation}
-  \label{test_function_1}
-  u(x)=0.49x+0.01, \; 
-\end{equation}
-и для второго эксперимена (рис. \ref{fig1:control}\subref{fig1:exp2}):
-\begin{equation}
 u(x)=   
 \begin{cases}
     0.01,   & \text{если } x \le 0.5, \\
-    0.5,    & \text{если } x > 0.5.
+    0.5,    & \text{если } x > 0.5,
 \end{cases} 
 \end{equation}
-Посчитаем прямую задачу \eqref{initial}--\eqref{initial_boundary} для этих случаев. Полученный компонент состояния $\theta$ мы обозначим за $\theta_0$. Далее, применяя наш алгоритм восстановим тестовое значение $u(x)$. Эффективность предложенного алгоритма, а также значения $u_0(x)$ в первом и втором случаях также приведены на рис. \ref{fig1:control}. На рис. \ref{fig2:cost} показана динамика функционала качества по итерациям.
+и для второго эксперимена (рис. \ref{fig1:control}\subref{fig1:exp2}):
+\begin{equation}
+  \label{test_function_1}
+  u(x)=0.49x+0.01. \; 
+\end{equation}
 
-{\it Замечание}: в предложенных примерах потребовалось $2*10^6$ итераций для восстановления функции контроля $u$. В то же время температурное поле на участке наблюдения $\Gamma_2$ становится близким к $\theta_0$ уже на $10^2$ итерации. Также наблюдается существенное падение скорости уменьшения функционала качества с каждой итерацией после того, как среднее значение найденной функции контроля становится близко к тестовой функции. Это наглядно видно из следующей таблицы ($\theta_0$ взята из второго эксперимента):
-\begin{center}
-    \begin{tabular}{ | l | l |}
-    \hline
-	Значение $u$ & Значение функционала качества $\hat{J}(u)$ \\ \hline
-    	0.05 & 9.71599e-05 \\ \hline
-	0.1 & 4.56573e-05  \\ \hline
-	0.15 & 1.67745e-05  \\\hline
-	0.2 & 3.18421e-06 \\  \hline
-	0.25 & 6.10619e-08 \\ \hline
-	0.3 & 4.15166e-06 \\  \hline
-	0.35 & 1.32197e-05 \\ \hline
-	0.4 & 2.57033e-05 \\  \hline
-	0.45 & 4.04976e-05 \\ \hline
-	0.5 & 5.68132e-05 \\  \hline
-    \end{tabular}
-\end{center}
+Вычислим решение прямой задачи \eqref{initial}--\eqref{initial_boundary} для этих случаев. Полученное температурное поле обозначим за $\theta_0$. Далее, применяя предложенный алгоритм находим квазирешение обратной задачи \eqref{initial}--\eqref{theta_gamma}. Эффективностьалгоритма, а также значение $u_0$ в первом и втором случаях также приведены на рис. \ref{fig1:control}. На рис. \ref{fig2:cost} показана динамика функционала качества по итерациям.
+
+{\bf Замечание}: в предложенных примерах потребовалось $2*10^6$ итераций для нахождения квазирешения $u$. В то же время температурное поле на участке наблюдения $\Gamma_2$ становится близким к $\theta_0$ уже на $10^2$ итерации. Также наблюдается существенное падение скорости уменьшения функционала качества с каждой итерацией после того, как среднее значение найденной функции контроля становится близко к тестовой функции. 
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{.49\textwidth}
+    \centering
+    \label{fig1:exp1}
+    \includegraphics[width=1\linewidth]{first/control_initial_optimal_final.png}
+    \caption{Первый эксперимент}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \label{fig1:exp2}
+    \includegraphics[width=1\linewidth]{second/control_initial_optimal_final.png}
+    \caption{Второй эксперимент}
+  \end{subfigure}
+  \caption{Тестовая функция $u(x)$, начальная $u_0(x)$, конечная функция $u_{end}(x).$}
+  \label{fig1:control}
+\end{figure}
 
 \begin{figure}[H]
   \centering
   \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=1\linewidth]{first/cost_functional_dynamics.png}
-    \caption{Динамика функционала качества для первого эксперимента}
+    \caption{Первый эксперимент}
     \label{fig:sub1}
   \end{subfigure}%
   \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=1\linewidth]{second/cost_functional_dynamics.png}
-    \caption{Динамика функционала качества для второго эксперимента}
+    \caption{Второй эксперимент}
     \label{fig:sub2}
   \end{subfigure}
-  \caption{Динамика функции $J(u)$ по итерациям}
+  \caption{Динамика функции $\hat{J}(u)$ по итерациям.}
   \label{fig2:cost}
-\end{figure}
-
-
-
-\begin{figure}[H]
-  \centering
-  \begin{subfigure}{1\linewidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{first/control_initial_optimal_final.png}
-    \caption{Значения функции $u(x),u_0(x),u_{end}(x)$, первый эксперимент}
-    \label{fig1:exp1}
-  \end{subfigure}
-  \begin{subfigure}{1\linewidth}
-    \centering
-    \includegraphics[width=0.8\linewidth]{second/control_initial_optimal_final.png}
-    \caption{Значения функции $u(x),u_0(x),u_{end}(x)$, второй эксперимент}
-    \label{fig1:exp2}
-  \end{subfigure}
-  \caption{Тестовая функция $u(x)$, начальная $u_0(x)$, конечная функция $u_{end}(x)$}
-  \label{fig1:control}
 \end{figure}
 

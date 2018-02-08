@@ -37,10 +37,10 @@
 
 \begin{equation}
 \label{lemma_proof_1}
-J(\theta + h) = J(\theta) + J'(\theta)\langle h \rangle + r(\theta, h) \; \forall h \in V, \; \text{ где } \; J'(\theta)\langle h \rangle = \int_{\Gamma_2} (\theta - \theta_0)h d\Gamma.
+J(\theta + h) = J(\theta) + J'(\theta)\langle h \rangle + r(\theta, h) \; \forall h \in V, \; \text{ где } \; J'(\theta)\langle h \rangle = \int_{\Gamma_2} (\theta - \theta_0)h d\Gamma
 \end{equation}
 
-Причем для остаточного члена $r(\theta,h)$ должно быть верно соотношение:
+где для остаточного члена $r(\theta,h)$ справедливо соотношение:
 \begin{equation}
 \label{lemma_proof_2} \frac{1}{2} \frac{|r(\theta,h)|}{\|h\|_V} \rightarrow 0 \quad \text{при} \quad \|h\|_V \rightarrow 0.
 \end{equation}
@@ -61,12 +61,12 @@ $$
 $$
 \frac{1}{2}
 \frac{r(\theta,h)}{\| h \|_V} \leq
-\frac{1}{2} C^2 \| h \|_V \rightarrow 0 \quad \text{при } \| h \|_V \rightarrow 0
+\frac{1}{2} C^2 \| h \|_V \rightarrow 0 \quad \text{при } \| h \|_V \rightarrow 0.
 $$
 
 \end{proof}
 
-Вывод условий оптимальности основан на принципе множителей Лагранжа для гладких выпуклых задач минимизации.
+Вывод условий оптимальности основан на принципе множителей Лагранжа для гладко-выпуклых задач минимизации.
 \begin{theorem}
 \label{adjoint_theorem}
     Пусть $\hat{y}=\{\hat{\theta},\hat{\varphi} \} \in Y, \hat{u} \in U_{ad}$ решение  экстремальной задачи \eqref{minimization_operational}. Тогда существует пара $p = (p_1, p_2), p \in \mathbb{R}_{+} \times Y \setminus \{0\}$
@@ -95,26 +95,25 @@ $$
     Заметим, что для всех $u \in U_{ad}$, отображение $y \to J(\theta) $ и $y \to H(y,u)$ непрерывно дифференцируемо в окрестности $\mathcal{O}(\hat{y})$ точки $\hat{y}$. Непрерывная дифференцируемость членов в $H$ следует из непрерывной дифференцируемости функции $t \in \mathbb{R} \to | t | t^3$, а также из непрерывности вложения  $V \subset L^6(\Omega)$.
     В дополнение, отображение $u \to H(y,u)$ непрерывно из $U \to Y'$ и афинно.
 
-    В статье \cite{theorem_2_proof} показано, что $\text{Im}H_y'(\hat{y}, \hat{u}) = Y$, что влечёт невырожденность условий оптимальности.
-    а также условие $\text{codim}(\text{Im}H_y') < \infty$.
-
+    В \cite{theorem_2_proof} показано, что $\text{Im}H_y'(\hat{y}, \hat{u}) = Y$, что влечёт невырожденность условий оптимальности.
+    
     Рассмотрим функцию Лагранжа
     $L(y,u,p) = J(\theta) + (H(y,u),p),$
     где $y,p \in Y,\, u \in U_{ad}$. Согласно принципу Лагранжа \cite[Гл.2, Теорема 1.5]{theorem_proof_18} существует пара $p = \{p_1,p_2\} \in Y$ такая, что
 
     \begin{equation}
         \label{th2_proof_1}
-        (L_\theta,\zeta) =\int_{\Gamma_2}(\hat\theta -\theta_0) \zeta d\Gamma + (A_1 \zeta + 4b\kappa_a |\hat\theta|^3 \zeta,p_1) - 4\kappa_a(|\hat\theta|^3 \zeta,p_2) = 0, \; \forall \zeta \in V,
+        (L_\theta,\zeta) =\int_{\Gamma_2}(\hat\theta -\theta_0) \zeta d\Gamma + (A_1 \zeta + 4b\kappa_a |\hat\theta|^3 \zeta,p_1) - 4\kappa_a(|\hat\theta|^3 \zeta,p_2) = 0 \; \forall \zeta \in V,
     \end{equation}
 
     \begin{equation}
         \label{th2_proof_2}
-        (L_\varphi, \zeta) = (A_2 \zeta + \kappa_a \zeta, p_2) - b \kappa_a(\zeta,p_1) +\int_{\Gamma_1} \hat u \zeta p_2 = 0, \; \forall \zeta \in V,
+        (L_\varphi, \zeta) = (A_2 \zeta + \kappa_a \zeta, p_2) - b \kappa_a(\zeta,p_1) +\int_{\Gamma_1} \hat u \zeta p_2 = 0 \; \forall \zeta \in V,
     \end{equation}
 
     \begin{equation}
         \label{th2_proof_3}
-        (L_u,\tau) = \int_{\Gamma_1} \tau (\varphi - \theta^4_b) p_2 d\Gamma  \leq 0, \; \tau := \hat u - w, \forall w \in U_{ad}.
+        (L_u,\tau) = \int_{\Gamma_1} \tau (\varphi - \theta^4_b) p_2 d\Gamma  \leq 0, \; \tau := \hat u - w \; \forall w \in U_{ad}.
     \end{equation}
 
     Сопряженные уравнения являются прямым следствием \eqref{th2_proof_1} и \eqref{th2_proof_2}.
