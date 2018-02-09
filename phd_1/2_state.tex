@@ -13,9 +13,9 @@
     $$
     a = \frac{k}{\rho c_v}, \; b = \frac{4 \sigma n^2 T^3_{\text{max}}}{\rho c_v}, \; \alpha = \frac{1}{3\kappa -A \kappa_s}
     $$
-    где $k$ -- теплопроводность, $c_v$ -- удельная теплоёмкость, $\rho$ -- плотность, $\sigma$ -- постоянная Стефана -- Больцмана, $n$ -- индекс рефракции, $T_{\text{max}}$ -- максимальная температура, $\kappa := \kappa_s + \kappa_a$ -- коэфициент полного взаимодействия, $\kappa_s$ -- коэфициент рассеяния. Коэфициент $A \in [-1,1]$ описывает анизотропию рассеивания; случай $A=0$ отвечает изотропному рассеиванию.
+    где $k$ -- теплопроводность, $c_v$ -- удельная теплоёмкость, $\rho$ -- плотность, $\sigma$ -- постоянная Стефана\,--\, Больцмана, $n$ -- индекс рефракции, $T_{\text{max}}$ -- максимальная температура, $\kappa := \kappa_s + \kappa_a$ -- коэфициент полного взаимодействия, $\kappa_s$ -- коэфициент рассеяния. Коэфициент $A \in [-1,1]$ описывает анизотропию рассеивания; случай $A=0$ отвечает изотропному рассеиванию.
 
-    Уравнения \eqref{initial} дополняются граничными условиями на $\Gamma := \partial \Omega =\bar{\Gamma_0} \cup \bar{\Gamma_1} \cup \bar{\Gamma_2}$, где части границы $\Gamma_0, \Gamma_1, \Gamma_2$ не имеют пересечений.
+    Уравнения \eqref{initial} дополняются граничными условиями на $\Gamma := \partial \Omega =\overline{\Gamma}_0 \cup \overline{\Gamma}_1 \cup \overline{\Gamma}_2$, где части границы $\Gamma_0, \Gamma_1, \Gamma_2$ не имеют пересечений.
 
     \begin{equation}
         \label{initial_boundary}
@@ -23,12 +23,12 @@
             \Gamma &: \; a \partial_n \theta + \beta (\theta - \theta _b) = 0, \\
             \Gamma_0 \cup \Gamma_2 &: \; \alpha \partial_n \varphi + \gamma(\varphi - \theta_b ^4 ) = 0, \\
             \Gamma_1 &: \; \alpha \partial_n \varphi + u(\varphi - \theta_b ^4 ) = 0. \\
-        \end{aligned}
-    \end{equation}
+\end{aligned}
+\end{equation}
     Функции $\gamma, \theta_b, \beta$ -- являются известными. Функция $u$ характеризует отражающие свойства участка границы $\Gamma_1$. Предполагается, что
     \begin{equation}
         \label{control_bounds}
-        0 \leq u_1 \leq u \leq u_2,
+        0 < u_1 \leq u \leq u_2,
     \end{equation}
     где $u_1$ и $u_2$ - заданные ограниченные функции.
 

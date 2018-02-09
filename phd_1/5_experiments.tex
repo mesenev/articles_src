@@ -44,7 +44,7 @@ $$
  Будем также далее считать, что $a = 0.006[\text{см}^2/\text{c}]$, $b=0.025[\text{см}/\text{с}]$, $\beta = 0.00005[\text{см}/\text{с}]$, $\kappa=1[\text{см}^{-1}]$, $\kappa_s = 0$, $A = 0$, $\gamma = 0.3$. Указанные параметры соответсвуют стеклу \cite{grenkin_13}.
 Температуру на границе $\Omega$ положим равной $\theta_b = (x^2+y^2)/3$. 
 
-При указанных параметрах для первого эксперимента положим тестовое значение $u$ (рис. \ref{fig1:control}\subref{fig1:exp1}):
+При указанных параметрах для первого эксперимента положим тестовое значение $u$ (рис. \ref{control}\subref{fig1:exp1}):
 \begin{equation}
 u(x)=   
 \begin{cases}
@@ -52,49 +52,43 @@ u(x)=
     0.5,    & \text{если } x > 0.5,
 \end{cases} 
 \end{equation}
-и для второго эксперимена (рис. \ref{fig1:control}\subref{fig1:exp2}):
+и для второго эксперимена (рис. \ref{control}\subref{fig1:exp2}):
 \begin{equation}
   \label{test_function_1}
   u(x)=0.49x+0.01. \; 
 \end{equation}
 
-Вычислим решение прямой задачи \eqref{initial}--\eqref{initial_boundary} для этих случаев. Полученное температурное поле обозначим за $\theta_0$. Далее, применяя предложенный алгоритм находим квазирешение обратной задачи \eqref{initial}--\eqref{theta_gamma}. Эффективностьалгоритма, а также значение $u_0$ в первом и втором случаях также приведены на рис. \ref{fig1:control}. На рис. \ref{fig2:cost} показана динамика функционала качества по итерациям.
+Вычислим решение прямой задачи \eqref{initial}--\eqref{initial_boundary} для этих случаев. Полученное температурное поле обозначим за $\theta_0$. Далее, применяя предложенный алгоритм находим квазирешение обратной задачи \eqref{initial}--\eqref{theta_gamma}. Эффективность алгоритма, а также значение $u_0$ в первом и втором случаях также приведены на рис. \ref{control}. На рис. \ref{cost} показана динамика функционала качества по итерациям.
 
 {\bf Замечание}: в предложенных примерах потребовалось $2*10^6$ итераций для нахождения квазирешения $u$. В то же время температурное поле на участке наблюдения $\Gamma_2$ становится близким к $\theta_0$ уже на $10^2$ итерации. Также наблюдается существенное падение скорости уменьшения функционала качества с каждой итерацией после того, как среднее значение найденной функции контроля становится близко к тестовой функции. 
-
 \begin{figure}[H]
-  \centering
-  \begin{subfigure}{.49\textwidth}
-    \centering
-    \label{fig1:exp1}
-    \includegraphics[width=1\linewidth]{first/control_initial_optimal_final.png}
-    \caption{Первый эксперимент}
-  \end{subfigure}
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \label{fig1:exp2}
-    \includegraphics[width=1\linewidth]{second/control_initial_optimal_final.png}
-    \caption{Второй эксперимент}
-  \end{subfigure}
-  \caption{Тестовая функция $u(x)$, начальная $u_0(x)$, конечная функция $u_{end}(x).$}
-  \label{fig1:control}
+\centering    
+\subfloat[Первый эксперимент]
+{
+	\label{fig1:exp1}
+	\includegraphics[width=.51\linewidth]{first/control_initial_optimal_final.png}
+}
+\subfloat[Второй эксперимент]
+{
+	\label{fig1:exp2}
+	\includegraphics[width=.51\linewidth]{second/control_initial_optimal_final.png}
+}
+\caption{Тестовая функция $u$, начальная $u_0$, конечная функция $u_{end}.$}
+\label{control}
 \end{figure}
 
 \begin{figure}[H]
-  \centering
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=1\linewidth]{first/cost_functional_dynamics.png}
-    \caption{Первый эксперимент}
-    \label{fig:sub1}
-  \end{subfigure}%
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=1\linewidth]{second/cost_functional_dynamics.png}
-    \caption{Второй эксперимент}
-    \label{fig:sub2}
-  \end{subfigure}
-  \caption{Динамика функции $\hat{J}(u)$ по итерациям.}
-  \label{fig2:cost}
+\centering    
+\subfloat[Первый эксперимент]
+{
+	\label{fig2:exp1}
+	\includegraphics[width=.51\linewidth]{first/cost_functional_dynamics.png}
+}
+\subfloat[Второй эксперимент]
+{
+	\label{fig2:exp2}
+	\includegraphics[width=.51\linewidth]{second/cost_functional_dynamics.png}
+}
+\caption{Динамика функции $\hat{J}(u)$ по итерациям.}
+\label{cost}
 \end{figure}
-

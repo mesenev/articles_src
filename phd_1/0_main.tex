@@ -1,99 +1,39 @@
-\documentclass[a4paper,12pt,twoside]{article}
-
-\usepackage[T1,T2A]{fontenc}
-\usepackage{femj}
-\usepackage{amsbib}
-\usepackage[noadjust]{cite}
+\documentclass[10pt]{article}
+\usepackage{femj_ru}
 \usepackage{algorithmicx}
 \usepackage{algorithm}% http://ctan.org/pkg/algorithms
-\usepackage[noend]{algpseudocode}
-\usepackage{hyperref}
-\usepackage{graphicx}
-\usepackage{caption}
-\usepackage{float}
 \captionsetup[algorithm]{labelformat=empty}
-\usepackage{subcaption}
-
-% \makeatletter
-% \def\BState{\State\hskip-\ALG@thistlm}
-% \makeatother
-% \renewcommand\thesection{}
-
-% \usepackage{subfigure}
-% \usepackage{units}
-% \usepackage{setspace}
-% \usepackage[noadjust]{cite}
-% \usepackage[section,above,below]{placeins}
-% \usepackage{color}
-% \usepackage{mathtext}
-% \usepackage{alltt}
-% \usepackage{amsmath}
-% \usepackage{amsthm}
-% \usepackage{amssymb}
-% \usepackage{graphics}
-% \usepackage{graphicx}
-% \usepackage{fancyhdr}
-% \usepackage{caption}
-% \usepackage{indentfirst}
-% \usepackage{multirow}
-% \usepackage{hhline}
-% \usepackage{tabularx}
-% \usepackage{longtable}
-% \usepackage{multicol}
-% \usepackage{rotating}
-% \usepackage{sectsty}
-% \usepackage{titlesec}
-% \usepackage{graphicx}
-
+\usepackage[noend]{algpseudocode}
+\usepackage{subfig}
+\usepackage{caption}
 \graphicspath{{img/}}
 
-\newcommand*{\mathcolor}{}
-\def\mathcolor#1#{\mathcoloraux{#1}}
-\newcommand*{\mathcoloraux}[3]{%
-  \protect\leavevmode
-  \begingroup
-    \color#1{#2}#3%
-  \endgroup
-}
-\newcommand{\fat}{\mathbf}
-
-\newtheorem{theorem}{Теорема}
-\newtheorem{lemma}{Лемма}
-\newtheorem{proposition}{Proposition}
-\newtheorem{corollary}{Corollary}
-\newtheorem{definition}{Определение}
-
-
-% \usepackage[left=2.5cm,right=1cm,top=2cm,bottom=2cm]{geometry}
-
-
-
 \begin{document}
-\count0=1\sbox{\pagebox}{1--6}                       %%%%%%%%%%%%%%%% Исправить
+\Pages(1--8)
+\def\Im{\mathop{\mathrm{Im}}\nolimits}
+\summary Mesenev~P.\,R., Chebotarev~A.\,Yu. \author
+Boundary inverse problem for conductive-radiative equations of heat transfer\title
+Problem of re-isteblishment of reflection properties of part of the boundary for stationary model of radiative-conductive heat transfer in a three0dimensional domain is considered. Presented an algorithm for solving the problem, which effectiveness is demonstrated by numerical experiments.
+\keywords{functional equations, theta functions, Weierstrass sigma-function, nonlinear sequences.}
+%Boundary inverse problem for complex equations of heat transfer\title
+%Problem of re-esteblishment of relfeсtion properties of boundary part for stationary model of radiative-conductive heat transfer in a three-dimensional domain is considered. Presented an algorithm for solving the problem, which effectiveness is demonstrated by numerical experiments. \keywords{adiative heat transfer equations.}
 
 \UDC{517.95}
 \AMS{35K55, 35Q79}
+\SupportedBy{}
+\submitted{20 февраля 2018 г.}
 
-\SupportedBy{Работа выполнена при поддержке \linebreak аспирантской стипендии Дальневосточного федерального университета}
+\title{Граничная обратная задача для уравнений сложного теплообмена}
 
-\Submitted{9 ноября 2017 г.}
-
-\Title{Граничная обратная задача для уравнений сложного теплообмена}
-
-\Author{П.\,Р.~Месенев, А.\,Ю.~Чеботарев}{Дальневосточный федеральный университет, 690950, г.~Владивосток, ул.~Суханова,~8}{cheb@iam.dvo.ru}
-
-\markboth{Граничная обратная задача для уравнений сложного теплообмена}{П.\,Р.~Месенев, А.\,Ю.~Чеботарев}
-
-\Summary{Mesenev~P.\,R., Chebotarev~A.\,Yu.}{The boundary inverse problem for complex equations of heat transfer}
-{Рассмотрена задача по восстановлению отражающих свойств участка границы для стационарной модели радиационно-кондуктивного теплообмена в трехмерной области.Предложен алгоритм решения задачи, эффективность которого проиллюстрирована численными примерами. \keywords{уравнения радиационного теплообмена, квазирешение обратной задачи, градиентный спуск}}
-
+\author{П.\,Р.~Месенев}{Дальневосточный федеральный университет, 690950, г.~Владивосток, ул.~Суханова,~8;}{mesenev.pr@gmail.com}
+\author{А.\,Ю.~Чеботарев}{Институт прикладной математики ДВО РАН, 690041, Владивосток, ул. Радио, 7}{cheb.iam@dvo.ru}
 
 \makeface
 
-\Abstract{Рассмотрена задача по восстановлению отражающих свойств участка границы для стационарной модели радиационно-кондуктивного теплообмена в трехмерной области. Приведен алгоритм по нахождению свойств границы и произведены численные эксперименты. 
+\abstract Рассмотрена задача по восстановлению отражающих свойств участка границы для стационарной модели радиационно-кондуктивного теплообмена в трехмерной области. Приведен алгоритм решения задачи, эффективность которого проиллюстрирована численными примерами. 
 	
-Ключевые слова: \tit{уравнения радиационного теплообмена, квазирешение обратной задачи, метод градиентного спуска.}
-}
+\keywords{уравнения радиационного теплообмена, квазирешение обратной задачи, метод градиентного спуска.}
+
 
 \input{1_intro}
 \input{2_state}

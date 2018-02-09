@@ -3,11 +3,11 @@
 
 Для доказательства разрешимости задачи \eqref{minimization_operational} нам необходимо также установить некоторые свойства решения задачи \eqref{initial}, \eqref{initial_boundary}.
 
-\begin{lemma}[\cite{lemma_proof}]
+\begin{lem}[\cite{lemma_proof}]
 
 \label{SolvabilityLemma}
 
-    Если условие (i) выполняются, то для каждого $ u \in U_{ad} $ существует единственное слабое решение $\{\theta, \varphi \}$ для задачи \eqref{initial},\eqref{initial_boundary} и верны следующие оценки:
+    Если условие (i) выполняется, то для каждого $ u \in U_{ad} $ существует единственное слабое решение $\{\theta, \varphi \}$ для задачи \eqref{initial},\eqref{initial_boundary}, также верны следующие оценки:
     \begin{equation}
         \label{lemma_1}
      M_1 \le \theta \le M_2, \; M_1^4 \le \varphi \le M_2^4,
@@ -18,19 +18,19 @@
      \| \nabla \varphi \|^2 \le C.
      \end{equation}
     Здесь $M_1 = \text{ess inf } \theta_b, M_2 = \text{ess sup } \theta_b$, и константа $C > 0$ зависит только от \\ $a, b, \alpha, \kappa_a, \|u\|_{L^\infty(\Gamma)}, \| \gamma \|_{L^\infty(\Gamma)}$ и области $\Omega$.
-\end{lemma}
+\end{lem}
 
 На основе оценок \eqref{lemma_1} и \eqref{lemma_2} доказывается разрешимость экстремальной задачи \eqref{minimization_operational}.
-\begin{theorem}[см. \cite{cheb_origin}]
+\begin{thm}[см. \cite{cheb_origin}]
     Если условие (i) выполняется, тогда существует хотя бы одно решение задачи \eqref{minimization_operational}.
-\end{theorem}
+\end{thm}
 
 
 Для вывода системы оптимальности, покажем дифференцируемость функционала $J$.
-\begin{lemma}
+\begin{lem}
 \label{freshet_diff}
     Функционал $J : V \rightarrow \mathbb{R}$ дифференцируем по Фреше.
-\end{lemma}
+\end{lem}
 
 \begin{proof}
 Покажем, что для произвольной функции $\theta \in V$ выполняется следующее равенство:
@@ -67,7 +67,7 @@ $$
 \end{proof}
 
 Вывод условий оптимальности основан на принципе множителей Лагранжа для гладко-выпуклых задач минимизации.
-\begin{theorem}
+\begin{thm}
 \label{adjoint_theorem}
     Пусть $\hat{y}=\{\hat{\theta},\hat{\varphi} \} \in Y, \hat{u} \in U_{ad}$ решение  экстремальной задачи \eqref{minimization_operational}. Тогда существует пара $p = (p_1, p_2), p \in \mathbb{R}_{+} \times Y \setminus \{0\}$
     такая, что тройка $(\hat{y}, \hat{u}, p)$, удовлетворяет следующим условиям:
@@ -85,7 +85,7 @@ $$
         \label{therorem_2_eq3}
         \int_{\Gamma_1} p_2 (\hat{\varphi} - \theta_b^4)(u-w) \leq 0 \quad \forall w \in U_{ad}.
     \end{equation}
-\end{theorem}
+\end{thm}
 \begin{proof}
     Перепишем уравнения \eqref{weak_operational} следующим образом:
     $$H(y,u) = 0,\;\; y = \{\theta,\varphi\} \in Y,$$
@@ -123,14 +123,14 @@ $$
 % Чеботарев: Дальше не нужно, так как ImH'_y =  Y'
 
 % Для доказательства следующей теоремы, нам потребуется лемма
-% \begin{lemma}[Лемма 2 в \cite{covt_last}]
+% \begin{lem}[Лемма 2 в \cite{covt_last}]
 %     Пусть $h > 0$ некоторая функция из $L^\infty(\Omega)$. Если функции $q_1,q_2 \in V$ удовлетворяют уравнениям
 %     \begin{equation}
 %     \label{lemma_eq_for_theorem}
 %         A_1q_1 +b \kappa_a(hq_1 - q_2) = 0, A2q_2 + F(q_2,\hat{u}) + \kappa_a(q_2 - h q_1) = 0,
 %     \end{equation}
 %     тогда $q_1 = q_2 = 0$.
-% \end{lemma}
+% \end{lem}
 
 % Теперь, ссылаясь на приведенную лемму мы можем доказать следующую теорему
 % \begin{theorem}[Теорема 3 в \cite{covt_last}]
