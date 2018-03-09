@@ -2,9 +2,12 @@ from subprocess import call
 
 import numpy as np
 import sys
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
+
 
 print('Launched...')
 if len(sys.argv) == 1:
@@ -30,7 +33,7 @@ plt.legend([blue_line, extra1, extra2], [blue_line.get_label(),
                                          extra1.get_label(), extra2.get_label()], prop={'size': 10})
 # plt.text((x.__len__()+10)*1/3, (max(y) + yscale)*4/5, , fontsize=14)
 plt.grid(True)
-plt.savefig(folder + "/cost_functional_dynamics.png")
+plt.savefig(folder + "/cost_functional_dynamics.eps")
 # plt.show()
 plt.close()
 
@@ -60,11 +63,11 @@ plt.ylabel('Значение')
 
 green_legend = mlines.Line2D([], [], color='green', linestyle='-.', label="Тестовое значение $u$", )
 blue_legend = mlines.Line2D([], [], color='blue', linestyle='--', label="Начальное значение $u_0$")
-red_legend = mlines.Line2D([], [], color='red', label="Найденное значение $u$")
+red_legend = mlines.Line2D([], [], color='red', label="Найденное значение $u_{end}$")
 plt.legend(handles=[green_legend, blue_legend, red_legend], prop={'size': 10})
 
 plt.grid(True)
-plt.savefig(folder + "/control_initial_optimal_final.png")
+plt.savefig(folder + "/control_initial_optimal_final.eps")
 plt.close()
 
 plt.figure(2)
@@ -96,5 +99,5 @@ plt.plot(x, input_data[2][1:], 'r:')
 plt.plot(x, input_data[3][1:], 'y-')
 plt.xlabel('$x$ координата')
 plt.ylabel('Значение')
-plt.savefig(folder + "/theta_funcs.png")
+plt.savefig(folder + "/theta_funcs.eps")
 plt.close()

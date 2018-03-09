@@ -1,0 +1,453 @@
+\NeedsTeXFormat{LaTeX2e}[2001/01/27] % Для авторов!!!
+\ProvidesPackage{femj_ru}[2017/08/02 09:17 v1.00 Far Eastern Mathematical Journal]
+
+\lccode`\-=`\-
+
+% загрузка пакетов
+\usepackage[twoside,papersize={170mm,240mm},top=20mm,textwidth=135mm,textheight=210mm, left =16mm,%bindingoffset=40mm,
+            ignoreheadfoot,headsep=5ex,headheight=12pt,footskip=0pt,marginparwidth=0pt,marginparsep=0pt,columnsep=0pt]{geometry}
+\RequirePackage[cp1251]{inputenc}
+\RequirePackage[T2A]{fontenc}
+\RequirePackage[english, russian]{babel}
+\RequirePackage{amsbib}
+\RequirePackage{amsmath,amssymb,amsthm,amsfonts,amscd}% amscd - диаграммы
+\IfFileExists{tensor.sty}{\RequirePackage{tensor}}{\typeout{no tensor.sty}}% тензоры
+\IfFileExists{cite.sty}{\RequirePackage{cite}}{\typeout{no cite.sty}}
+% шрифты
+\IfFileExists{mathrsfs.sty}{\RequirePackage{mathrsfs}}{\typeout{no mathrsfs.sty}}
+\IfFileExists{dsfont.sty}{\RequirePackage[sans]{dsfont}}{\typeout{no dsfont.sty}}
+\IfFileExists{calligra.sty}{\RequirePackage{calligra}
+	\DeclareMathAlphabet{\mathcalligra}{T1}{calligra}{m}{n}}{\typeout{no calligra.sty}}
+\RequirePackage{mflogo}
+\RequirePackage[nointegrals]{wasysym}
+\IfFileExists{pzccal.sty}{\RequirePackage{pzccal}}{\typeout{no pzccal.sty}}
+
+\IfFileExists{faktor.sty}{\RequirePackage{faktor}}{\typeout{no faktor.sty}}% строчные дроби
+\RequirePackage{graphicx}
+\IfFileExists{caption3.sty}{\RequirePackage{caption3}}{\RequirePackage[centerlast,small]{caption}\renewcommand{\captionlabeldelim}{.}}
+\RequirePackage{epstopdf}
+\RequirePackage{soul}% печать в разрядку (можно сжимать текст)
+\RequirePackage{misccorr}
+
+% Определение шрифтов
+\DeclareSymbolFont{euex}{U}{euex}{m}{n}
+\DeclareFontEncoding{OT2}{wncyr}{\wncyr}
+\DeclareSymbolFont{wncyr}{OT2}{wncyr}{m}{n}
+\DeclareSymbolFont{wncyi}{OT2}{wncyr}{m}{it}
+
+% Определение стиля теоремоподобных окружений и доказательств
+\newtheoremstyle{femj}{1ex}{1ex}{\slshape}{}{\bf}{.}{.5em}{\thmname{#1}\thmnumber{ #2}\thmnote{\normalfont\ #3}}
+\theoremstyle{femj}
+\newtheorem{thm}{\indent Теорема}                                               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem{lem}{\indent Лемма}                                                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem{stat}{\indent Утверждение}                                          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem{prop}{\indent Предложение}                                          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem{cor}{\indent Следствие}[thm]                                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem*{thm*}{\indent Теорема}                                             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem*{lem*}{\indent Лемма}                                               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem*{stat*}{\indent Утверждение}                                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem*{prop*}{\indent Предложение}                                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem*{cor*}{\indent Следствие}                                           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheoremstyle{defin}{1ex}{1ex}{\normalfont}{}{\bf}{.}{.25em}{\thmname{#1}\thmnumber{ #2}\thmnote{\normalfont\ #3}}
+\theoremstyle{defin}
+\newtheorem{defin}{\indent Определение}                                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem*{defin*}{\indent Определение}                                       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\theoremstyle{remark}
+\newtheorem{rem}{\indent Замечание}                                             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem*{rem*}{\indent Замечание}                                           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewenvironment{proof}[1]{\vskip1ex\indent\Proof#1}{\hfill$\Box$}
+\sodef\tso{}{.2em}{.75em}{\z@}                                                  % параметры печати в разрядку Proof
+\def\Proof{\normalfont\tso{Доказательство}\ifpoint.\else\global\pointtrue\fi\hskip.75em}
+\def\Nopoint{\pointfalse}
+
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+% Дополнительные команды и определения
+\def\bs#1{\ifcat#1a{\mathbf#1}\else{\boldsymbol#1}\fi}  % печать жирным шрифтом цифр, латинских и греческих букв (например, \bs u, \bs1, \bs\sigma)
+\def\rms#1{{\mathrm#1}}
+
+\def\sign{\mathop{\operator@font sign}\nolimits}
+\def\const {\mathop{\operator@font const}\nolimits}
+\def\mes{\mathop{\operator@font mes}\nolimits}
+\def\rot{\mathop{\operator@font rot}\nolimits}
+\def\grad {\mathop{\operator@font grad}\nolimits}
+\def\divg {\mathop{\operator@font div}\nolimits}
+\def\rank {\mathop{\operator@font rank}\nolimits}
+\def\deff{\stackrel{\rm def}=}              % равно по определению (команда \def - примтив TEX'а)
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+\newcounter{titl}
+
+\newbox\wbox
+\newbox\Submitted
+\newbox\udc
+\newbox\ams
+\newbox\supportedby
+\newbox\SummarY
+\newtoks\AUTHOR
+\newtoks\TITLE
+\newcount\PAGES
+\newcount\countA
+\newcount\countB
+\newcount\countC
+\newdimen\dA
+
+\chardef\@@atcode=\the\catcode`|                                                % Добавление к буквенным символам (кроме @) символа |
+\catcode`|=11                                                                   % позволяет исключить какое-либо переопределение команд (LA)TEX'а
+
+\newtoks\|TITLE
+\newcount\|countAut
+\newcount\|page
+\newcount\||page
+\newcount\|cA
+\newif\if|Russian
+\newif\ifpoint
+\pointtrue
+
+% Основные команды журнала и заголовков
+\countA=\number\year
+\edef\YEAR{\the\countA}
+\advance\countA-2000
+\edef\VOLUME{\the\countA}
+\countA\z@
+\def\NUM{1}
+\let\RHeadtext\relax
+\let\LHeadtext\relax
+%\def\refname{Список литературы}
+\def\No{\iflanguage{russian}{\textnumero}{No}}
+
+\def\UDC#1{\setbox\udc=\hbox{\textup{УДК\quad #1}}}
+\def\AMS#1{\setbox\ams=\hbox{\selectlanguage{english}\textup{MSC2010\quad #1}}}
+\setbox\udc=\vbox to \z@{}
+\setbox\ams=\vbox to \z@{}
+
+\long\def\submitted#1{\setbox\wbox=\hbox{\small Поступила в редакцию}
+     \setbox\Submitted=\vtop{\hsize=\wd\wbox\small\noindent\box\wbox\par
+                            \strut\hfill#1}}
+
+\def\SupportedBy{\@ifnextchar[{\|by}{\||by}}
+\def\|by[#1]#2{\dA=\hsize\hsize=#1\dA                                    % ширина бокса #1 ширины полосы
+    \setbox\supportedby=\vtop{\small\noindent#2}\hsize=\dA}
+\def\||by#1{\dA=\hsize\hsize=.5\dA                                       % ширину бокса можно менять, по умолчанию 0.5 ширины полосы
+    \setbox\supportedby=\vtop{\small\noindent#1}\hsize=\dA}
+
+\def\title#1{\TITLE={#1}\refstepcounter{titl}\@listdepth=0}
+\def\|title#1\\#2&{\ifx#2\|end\|TITLE=\expandafter{\the\|TITLE #1}\let\||title\@gobbletwo
+                   \else\|TITLE=\expandafter{\the\|TITLE #1}\let\||title\|title
+                   \fi\||title#2&}
+\let\||title\|title
+
+\edef\|AUTHOR{}
+\edef\EMAIL{}
+\edef\ORG{}
+\edef\|||{}
+\let\|end\relax
+\def\author{\@ifnextchar[{\let\next\|email\|author}{\||author}}
+\long\def\|author[#1]#2#3#4{\ifnum\|countAut=\z@\AUTHOR={#2}\else\AUTHOR=\expandafter{\the\AUTHOR, #2}\fi\advance\|countAut\@ne
+    \countC\countB\ifnum\countB>\z@\edef\|||{\hskip-.35em,\ }\fi\ifx\empty#3\empty\else\advance\countB\@ne\fi
+    \edef\|AUTHOR{\|AUTHOR\|||#2${}^{#1}$}\ifnum\countC<\countB\edef\ORG{\ORG\par${}^{\the\countB}$\hskip.1em#3}\fi
+    \ifx\empty#4\empty\else\edef\EMAIL{\EMAIL#4(#2)}\fi}
+\long\def\||author#1#2#3{\ifnum\|countAut=\z@\AUTHOR={#1}\else\AUTHOR=\expandafter{\the\AUTHOR, #1}\fi\advance\|countAut\@ne
+    \countC\countB\ifnum\countB>\z@\edef\|||{\hskip-.35em,\ }\fi\ifx\empty#2\empty\else\advance\countB\@ne\fi
+    \edef\|AUTHOR{\|AUTHOR\|||#1${}^{\the\countB}$}\ifnum\countC<\countB\edef\ORG{\ORG\par${}^{\the\countB}$\hskip.1em#2}\fi
+    \ifx\empty#3\empty\else\edef\EMAIL{\EMAIL#3(#1)}\fi}
+\def\|email#1(#2)#3\|end{\if#3\relax\let\next\relax\else\let\next\|email\fi\texttt{#1}\ \textrm{(#2)}\ifx\next\relax.\else,\fi\ \next#3\|end}
+\def\||email#1(#2){\texttt{#1}}
+
+\def\markboth#1#2{\def\RHeadtext{#1}\def\LHeadtext{#2}}
+\def\markright#1{\def\RHeadtext{#1}}
+\def\markleft#1{\def\LHeadtext{#1}}
+
+\long\def\abstract#1\keywords#2{\begin{quote}\small #1\vskip.5ex Ключевые слова: \it #2\end{quote}\vskip2ex plus .25ex minus .5ex}
+
+\long\def\makeface{
+    \daublesine
+    \defaulthyphenchar=127
+    \edef\EMAIL{\EMAIL\relax\|end}
+    \ifnum\|cA=\@ne\let\next\||email\else\let\next\|email\fi
+    \clearpage
+    \thispagestyle{titl}
+    \|page\c@page
+    \noindent\box\udc\par
+    \noindent\box\ams
+    \vskip 8ex plus 1ex minus 2ex
+    \begin{center}
+    \copyright~\large\|AUTHOR\\[4ex]
+    \LARGE\bf\the\TITLE
+    \end{center}
+    \expandafter\||title\the\TITLE\\\|end&
+    \@ifundefined{RHeadtext}{\def\RHeadtext{\the\|TITLE}}{}
+    \@ifundefined{LHeadtext}{\def\LHeadtext{\the\AUTHOR}}{}
+    \vskip 1ex
+    {\def\thefootnote{\empty}\footnote{\vtop{\advance\hsize-16.17pt\footnotesize{\parindent-.6em\ORG}\ifnum\|cA=\@ne\ \else\par\fi
+    \noindent  Электронная почта:\ \expandafter\next\EMAIL}}}
+}
+
+\let\||Pages\relax
+\def\Pages(#1--#2){\ifnum#1=#2\edef\||Pages{#1}\else\edef\||Pages{#1--#2}\fi\c@page=#1}
+
+\long\def\summary#1\author#2\title#3\keywords#4{\selectlanguage{english}
+\setbox\SummarY=\vbox{\hsize115mm
+{\noindent\it #1} \rm #2.
+\textsl{Far Eastern Mathematical Journal.} \YEAR. V.~\VOLUME. No~\NUM. \hbox{P.~\||Pages.}      % Для авторов 1--24!?
+\vskip2ex
+\centerline{ABSTRACT}
+\vskip1ex
+\noindent#3
+\vskip2ex\noindent
+Key words: \textit{#4}}
+\selectlanguage{russian}}
+\let\keywords\relax
+
+\def\nosummary#1\author#2\title{}
+
+\def\titleup{
+\thispagestyle{empty}
+\parindent=0pt
+\global\|page\c@page
+\scalebox{1.2}[1.15]{\textbf{РОССИЙСКАЯ АКАДЕМИЯ НАУК}}\\[.66ex]
+\scalebox{1.1}[1.05]{\textbf{ДАЛЬНЕВОСТОЧНОЕ ОТДЕЛЕНИЕ}}\\[2ex]
+\scalebox{1.3}{\textbf{\textsf{ДАЛЬНЕВОСТОЧНЫЙ МАТЕМАТИЧЕСКИЙ ЖУРНАЛ}}}\\[1.25ex]
+\scalebox{1.3}[1.25]{\textbf{\YEAR\qquad том \VOLUME\qquad \textnumero~\NUM}}
+\vskip2.25ex
+\hrule height 3pt
+\vskip2pt
+\hrule height .4pt}
+
+\def\EndArticle{\penalty10000%
+    \vskip2ex
+    \noindent\hbox{\box\Submitted}\hfill\hbox{\box\supportedby}
+    \vskip3ex
+    \centerline{\vbox{\hrule width 115mm}}
+    \vskip1.75ex\noindent\hfil\box\SummarY\hfil
+    \vfill
+    \eject
+}
+
+\def\EndPreambule{
+    \vfill
+    \eject
+    \||page=\c@page\advance\||page-\@ne
+}
+
+%колонтитулы
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+\def\ps@femj{\let\@mkboth\@gobbletwo% постраничные колонтитулы чётной и нечётной страницы
+     \def\@oddhead{\vbox to 12pt{\hbox to \hsize{\hfill\selectlanguage{russian}\RHeadtext\hfill\thepage}\vfill\hrule\hss}}                          % нечётная
+     \def\@evenhead{\vbox to 12pt{\hbox to \hsize{\thepage\hfill\selectlanguage{russian}\LHeadtext\hfill}\vfill\hrule\hss}}                         % чётная
+     \let\@oddfoot\@empty%
+     \let\@evenfoot\@empty}
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+\def\ps@titl{\let\@mkboth\@gobbletwo%
+    \def\@oddhead{\setbox\wbox=\hbox{\textsl{Дальневосточный математический журнал.} \YEAR. Т.~\VOLUME. \textnumero~\NUM. \hbox{С.~\||Pages}}
+        \hsize = \wd\wbox
+        \hfill\vbox to12pt{\box\wbox\vfill\hrule}\hfill}
+    \let\@evenhead\@oddhead\let\@oddfoot\@empty\let\@evenfoot\@empty}
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+\def\nobox{\|squarefalse}
+
+\theoremstyle{femj}
+
+\def\@ssect#1#2#3#4#5{\@tempskipa #3\relax
+   \ifdim \@tempskipa>\z@
+     \begingroup \def\\{\hfill\break\indent\ignorespaces} #4\@hangfrom{\hskip #1}{\interlinepenalty \@M
+\indent\ignorespaces #5\par}\endgroup
+   \else \def\@svsechd{ \def\\{\hfill\break\indent\ignorespaces} #4\hskip #1\relax
+\indent\ignorespaces #5}\fi
+    \@xsect{#3}}
+
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+                                   {3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\normalfont\fontsize{12}{\baselineskip}\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\fontsize{11}{\baselineskip}\bfseries}}
+
+
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+\newcount\|countA
+\newcount\|countB
+\newcount\|maxstr
+
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+%%  Перевод переменной размера в десятичное число --
+% макрос на основе "Все про ТЕХ" приложение D стр. 441
+% в таком виде используется в пакете pictex
+\def\@|edef#1#2{\edef#2{\expandafter\@|removePT\the#1}}
+{\catcode`p=12 \catcode`t=12 \gdef\@|removePT#1pt{#1}}
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+% определение интерлиньяжа
+\def\baselns#1{\|maxstr=#1\dA=\textheight\divide\dA by \|maxstr%
+    \@|edef\dA\@|bsln\xdef\|chbls{\@|bsln}\countA=\|maxstr\advance\countA by 5%
+    \divide\dA\countA\@|edef\dA\@|pbsln%
+    \divide\dA by \tw@\@|edef\dA\@|mbsln%
+    \chads{.75}{.2}{.4}{-.25}{.2}
+    \normalsize
+    \normalfont}
+\def\chads#1#2#3#4#5{\edef\|ads{#1}\edef\|adsp{#2}\edef\|adsm{#3}\edef\|adss{#4}\edef\|adssp{#5}}
+
+\def\normalsize{\let\@|fontsize\@|normalsize\@|normalsize}
+\def\@|normalsize{\@setfontsize\normalsize\@xpt{\|chbls}%
+                  \baselineskip\@|bsln\p@\@plus\@|pbsln\p@\@minus\@|mbsln\p@%
+                  \abovedisplayskip\|ads\baselineskip\@plus\|adsp\baselineskip\@minus\|adsm\baselineskip%
+                  \abovedisplayshortskip\|adss\baselineskip\@plus\|adssp\baselineskip%
+                  \belowdisplayshortskip\abovedisplayskip%
+                  \belowdisplayskip\abovedisplayskip%
+}
+
+\baselns{44}
+
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+%формирование отступа первого абзаца
+\let\@afterindentfalse\@afterindenttrue \@afterindenttrue
+
+%\rdefinedsymbolg
+\mathchardef\g="167
+\mathcode`g="67
+\let\|ldots\ldots
+\def\ldots{\ifmmode\ifinner\mathinner{\ldotp\mkern-1.5mu\ldotp\mkern-1.5mu\ldotp}\else\mathinner{\ldotp\mkern-.5mu\ldotp\mkern-.5mu\ldotp}\fi
+           \else\|ldots\fi}     % переопределение многоточия
+\def\cdots{\ifmmode\ifinner\mathinner{\cdotp\mkern-1.5mu\cdotp\mkern-1.5mu\cdotp}\else\mathinner{\cdotp\mkern-.5mu\cdotp\mkern-.5mu\cdotp}\fi
+           \else\|ldots\fi}
+\let\dots\ldots
+
+%интегралы
+\def\@cdots{\mathinner{\cdotp\mkern-.5mu\cdotp\mkern-.5mu\cdotp}}
+\def\intdots@{\mathchoice{\@cdots}%
+ {\mkern-2mu{\cdotp}\mkern-.75mu{\cdotp}\mkern-.75mu{\cdotp}\mkern-2mu}%
+ {\mkern-2.5mu{\cdotp}\mkern-1mu{\cdotp}\mkern-1mu{\cdotp}\mkern-2.5mu}%
+ {\mkern-3mu{\cdotp}\mkern-1.5mu{\cdotp}\mkern-1.5mu{\cdotp}\mkern-3mu}}
+
+% Russian double quotes  << >>
+\def\qlr#1{\guillemotleft\ignorespaces#1\ignorespaces\guillemotright}
+
+% Замена английских названий функции
+\let\tan\tg
+\let\arctan\arctg
+\let\cot\ctg
+\let\arccot\arcctg
+\let\sinh\sh
+\let\cosh\ch
+\def\tanh{\mathop{\operator@font th}\nolimits}
+\let\coth\cth
+\let\csc\cosec
+
+\def\sum{\DOTSB\sum@\limits}
+\let\ilimits@\limits
+\let\ilimits@@\limits
+\let\le\leqslant
+\let\ge\geqslant
+\let\leq\leqslant
+\let\geq\geqslant
+
+\def\Every{\everymath{\thinmuskip=1.5mu plus .75mu minus 1mu\medmuskip2mu plus 1mu minus 2mu\thickmuskip=2.5mu plus 1.25mu minus 2mu}}
+\def\EVERY{\everymath{\thinmuskip=3mu\medmuskip4mu plus 2mu minus 4mu\thickmuskip=5mu}}
+
+\def\begin#1{\EVERY
+  \@ifundefined{#1}%
+    {\def\reserved@a{\@latex@error{Environment #1 undefined}\@eha}}%
+    {\def\reserved@a{\def\@currenvir{#1}%
+     \edef\@currenvline{\on@line}%
+     \csname #1\endcsname}}%
+  \@ignorefalse
+  \begingroup\@endpefalse\reserved@a}
+\def\end#1{%
+  \csname end#1\endcsname\@checkend{#1}%
+  \expandafter\endgroup\if@endpe\@doendpe\fi\Every
+  \if@ignore\@ignorefalse\ignorespaces\fi}
+
+\def\>{\mskip4mu plus 2mu minus 3mu}
+\Every
+
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+\def\hcenter$$#1$${\vskip.5ex plus .25ex minus .125ex\centerline{\hbox{$\displaystyle#1$}}\vskip.5ex  plus .25ex minus .125ex\noindent\ignorespaces}
+\def\vds#1{\vadjust{\vskip#1ex}}
+\def\vje{\vadjust{\eject}}
+
+%Производные
+\def\dd#1#2{\dfrac{d#1}{d#2}}
+\def\ddi#1#2{\dfrac{d\mkern1mu#1\hfill}{d#2\hfill}}
+\def\@|dnd#1#2#3{\kern#2\raise#3\hbox{$\scriptstyle#1$}}
+\def\dnd#1#2#3{\dfrac{d\@|dnd{#1}{.1em}{1ex}#2}{d#3^#1}}
+\def\dndi#1#2#3{\dfrac{d\@|dnd{#1}{.1em}{1ex}#2\hfill}{d#3^#1\hfill}}
+%Частные производные
+\def\Dp#1#2{\dfrac{\partial#1}{\partial#2}}
+\def\Dpi#1#2{\dfrac{\partial\mkern1mu#1\hfill}{\partial#2\hfill}}
+\def\Dpn#1#2#3{\dfrac{\partial\@|dnd{#1}{.06em}{1ex}#2}{\partial#3^#1}}
+\def\Dpni#1#2#3{\dfrac{\partial\@|dnd{#1}{.06em}{1ex}#2\hfill}{\partial#3^#1\hfill}}
+\def\DDp#1#2#3{\dfrac{\partial\@|dnd{2}{.06em}{1ex}#1}{\partial#2\partial#3}}
+
+%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+% Текст в выключенной формуле (см. Спивак)
+
+\newif\iftopfolded@
+\newif\ifbotfolded@
+\def\DNii@{\def\nextii@}
+\def\topfoldedtext{\topfolded@true\botfolded@false
+    \@ifnextchar\foldedwidth{\let\next\foldedwidth\foldedtext@}{\let\next\relax\foldedtext@}}
+\def\botfoldedtext{\botfolded@true\topfolded@false
+    \@ifnextchar\foldedwidth{\let\next\foldedwidth\foldedtext@}{\let\next\relax\foldedtext@}}
+\def\foldedtext{\topfolded@false\botfolded@false%
+    \@ifnextchar\foldedwidth{\let\next\foldedwidth\foldedtext@}{\let\next\relax\foldedtext@}}
+\def\foldedtext@{\relaxnext@
+ \DN@{\ifx\next\foldedwidth\let\next@\nextii@\else
+  \DN@{\nextii@\foldedwidth{.3\hsize}}\fi\next@}%
+ \DNii@\foldedwidth##1##2{\setbox\z@\vbox
+  {\normalbaselines\hsize##1\relax
+  \tolerance1600 \noindent\ignorespaces##2}\ifbotfolded@\boxz@\else
+  \iftopfolded@\vtop{\unvbox\z@}\else\vcenter{\boxz@}\fi\fi}%
+ \FN@\next@}
+
+\def\intertext@{%
+  \def\intertext##1##2##3{%\@ifnextchar
+    \ifvmode\else\\\@empty\fi
+    \noalign{%
+      \penalty\postdisplaypenalty\if##20\vskip\z@\else\vskip##2\fi
+      \vbox{\normalbaselines
+        \ifdim\linewidth=\columnwidth
+        \else \parshape\@ne \@totalleftmargin \linewidth
+        \fi
+        \noindent##1\par}%
+      \penalty\predisplaypenalty\if##30\vskip\z@\else\vskip##3\fi%
+    }%
+}}
+
+\catcode`|=\the\@@atcode
+
+\def\daublesine{
+\mathcode`\==32768
+\mathcode`\<=32768
+\mathcode`\>=32768
+\mathcode`\+=32768
+\mathcode`\-=32768
+}
+
+%пернос символов бинарных операций в строчных формулах
+{
+\catcode`\+\active\gdef+{\mathchar8235\nobreak\discretionary{}{\hbox{$\mathchar8235$}}{}}
+\catcode`\-\active\gdef-{\mathchar"3200\nobreak\discretionary{}{\hbox{$\mathchar"3200$}}{}}
+\catcode`\=\active\gdef={\mskip\thickmuskip\mathchar"3D\mskip\thickmuskip\nobreak\discretionary{}{\hbox{$\mathchar"3D\mskip\thickmuskip$}}{}}
+\catcode`\<\active\gdef<{\mathchar"313C\nobreak\discretionary{}{\hbox{$\mathchar"313C$}}{}}
+\catcode`\>\active\gdef>{\mathchar"313E\nobreak\discretionary{}{\hbox{$\mathchar"313E$}}{}}
+}
+\def\ast{\mathchar"2203\nobreak\discretionary{}{\hbox{$\mathsurround=0pt\mathchar"2203$}}{}}
+\def\times{\mathchar"2202\nobreak\discretionary{}{\hbox{$\mathsurround=0pt\mathchar"2202$}}{}}
+\def\leqslant{\mathchar"3436\nobreak\discretionary{}{\hbox{$\mathsurround=0pt\mathchar"3436$}}{}}
+\def\geqslant{\mathchar"343E\nobreak\discretionary{}{\hbox{$\mathsurround=0pt\mathchar"343E$}}{}}
+\def\neq{\mskip\thickmuskip\mathchar"3D\mskip-2mu\llap/\mskip\thickmuskip\nobreak\discretionary{}{\hbox{$\mathchar"3D\mskip-2mu\llap/\mskip\thickmuskip$}}{}}
+
+\pagestyle{femj}
+\flushbottom
+\hfuzz=10pt
+
+\endinput

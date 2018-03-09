@@ -1,0 +1,7 @@
+a: 0.006
+alpha: 0.333333
+ka: 1
+b: 0.025
+beta: 5e-05
+gamma: 0.3
+lambda: 12
