@@ -239,3 +239,9 @@ TSWLatexianTemp*
 /phd_1/experiments/calculations*
 /phd_1/experiments/compromised/*
 *.swp
+asp_session_2_1
+izluchenie
+dissertation
+.idea*
+__pycache__*
+*.pyc
