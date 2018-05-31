@@ -1,6 +1,6 @@
 //calculations.edp && python draw_initial_optimal_final_control.py
 string outputfolder = "calculations"; int GN = 60; int side = GN/4; real step = 1./side;
-real a = 0.006, alpha = 0.33333333, ka = 1, b = 0.025, beta = 1, gamma = 0.3;
+real a = 0.006, alpha = 0.33333333, ka = 1, b = 0.025, beta = 0.000005, gamma = 0.3;
 
 func real theta0f(real xx, real yy){return 0;}
 int ITERATIONS = 10;
@@ -18,8 +18,8 @@ mesh mainMesh = buildmesh(gamma01(side)+gamma1(side)+gamma02(side)+gamma2(side))
 func real thetaBfunc(real xx, real yy)
 {
     if((yy == 0) || (yy == 1)) return xx;
-    if(xx == 1) return a+1;
-    if(xx == 0) return -a;
+    if(xx == 1) return 0.5;
+    if(xx == 0) return 0.5;
     return 0;
 }
 func thetaB = thetaBfunc(x,y);

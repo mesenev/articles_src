@@ -1,17 +1,17 @@
 //calculations.edp && python draw_initial_optimal_final_control.py
-string outputfolder = "calculations"; int GN = 100; int side = GN/4; real step = 1./side;
-int ITERATIONS = 200000;
+string outputfolder = "calculations"; int GN = 120; int side = GN/4; real step = 1./side;
 int DIRECTOCCURACY = 1e-10; 
 real[int] uopt(side);
 real uinit;
 for(int i=0; i < side; i++){
-    //uopt[i] = 0.5;
-    //if(i < side/2){uopt[i]=0.01;}
-    //else{uopt[i]=0.5;}
+    // uopt[i] = 0.5;
+    // if(i < side/2){uopt[i]=0.01;}
+    // else{uopt[i]=0.5;}
     real step1 = 0.49/(side-1);
-      uopt[i] = 0.01+i*step1;
+     uopt[i] = 0.01+i*step1;
 }
 func real theta0f(real xx, real yy){return 0;}
+int ITERATIONS = 25000;
 real[int] uwall(side);
 real lambda = 12;
 real a = 0.006, alpha = 0.33333333, ka = 1, b = 0.025, beta = 0.00005, gamma = 0.3;
@@ -320,14 +320,14 @@ func int SetAndSolveOptimizationProblem(real ustart)
             thetafile << "theta_1000: ";
             for(int k = 0; k<=side; k++){thetafile << theta(step*k, 1) << " ";}
             thetafile << endl;
-	    ofstream control1000(outputfolder+"/control_1000.txt");
+            ofstream control1000(outputfolder+"/control_1000.txt");
             control1000 << uwall << endl;
             // plot(theta, fill=true, value=true, ps=outputfolder+"/theta_1000.eps");
         }
         cout << endl << i <<  endl;
         if(i%1000==0){
 		lambda = lambda + 10;
-		//DIRECTOCCURACY = DIRECTOCCURACY/1.5;  
+		DIRECTOCCURACY = DIRECTOCCURACY/5;  
 	}
     }
 
@@ -346,20 +346,10 @@ func int SetAndSolveOptimizationProblem(real ustart)
 
     return 0;
 }
-uwall = uopt;
-SolvePrimal();
-theta0 = theta;
-for(int i=1;i<=10;i++){
-	cout << endl << i << " " << costFunc() << endl;
-	uwall = 0.5/10*i;
-	SolvePrimal();
-	costoutput << uwall[0] << ":" << endl;
-	checkCostFunction();
-}
 
-cout << endl << uwall;
+
 //uinit = checkPrimalProblem();
-//SetAndSolveOptimizationProblem(0.25);
+SetAndSolveOptimizationProblem(0.01);
 
-cout<< endl << endl << " Lambda:  " << lambda <<endl;
+
 cout<< endl << endl << " Number of fails:  " << primalSolveFails <<endl;
