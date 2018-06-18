@@ -3,7 +3,7 @@ import time
 
 from dolfin import Constant
 
-from phd_2.experiments.SolveDirect import SolveReverse
+from phd_2.experiments.solvers import SolveReverse
 from phd_2.experiments.utilities import print_3d_boundaries_single
 
 
