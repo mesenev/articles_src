@@ -1,12 +1,17 @@
 from copy import copy, deepcopy
 
 import dolfin
-from dolfin import FunctionSpace, Function, split, TestFunctions, inner, grad, solve, FiniteElement, dx, ds, \
+from dolfin import (
+    FunctionSpace,
+    Function, split, TestFunctions, inner, grad, solve, FiniteElement, dx, ds,
     TrialFunctions, Expression, assemble, interpolate, Constant
-from dolfin.cpp.mesh import UnitCubeMesh
+)
+from dolfin.cpp.generation import UnitCubeMesh
+
+
 # noinspection PyUnresolvedReferences
 
-dolfin.cpp.common.set_log_level(50)
+# dolfin.cpp.common.set_log_level(50)
 
 
 class SolveDirect:
@@ -50,7 +55,8 @@ class SolveDirect:
 class SolveReverse(SolveDirect):
     lambda_ = 1000
     epsilon = 0.1 ** 20
-    max_iterations = 10**7
+    max_iterations = 10 ** 7
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.p1, self.p2 = TrialFunctions(super().state_space)

@@ -3,8 +3,9 @@ from os import mkdir
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 from dolfin import DirichletBC, Function, AutoSubDomain, FunctionSpace, interpolate, Expression
-from dolfin.cpp.function import near
-from dolfin.cpp.mesh import Point, UnitCubeMesh, UnitSquareMesh
+from dolfin.cpp.math import near
+from dolfin.cpp.geometry import Point
+from dolfin.cpp.generation import UnitCubeMesh, UnitSquareMesh
 from matplotlib import pyplot as plt, cm, gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from numpy import array, linspace, meshgrid, random

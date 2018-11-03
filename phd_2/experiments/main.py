@@ -3,16 +3,18 @@ import time
 
 from dolfin import Constant
 
-from phd_2.experiments.solvers import SolveReverse
-from phd_2.experiments.utilities import print_3d_boundaries_single
+from solvers import SolveReverse
+from utilities import print_3d_boundaries_single
 
 
 def main():
     start_time = time.time()
     # checkers()
-    print('Cleaning up a results folder!')
-    try: shutil.rmtree('results/*')
-    except: pass
+    print('Cleaning up a results folder')
+    try:
+        shutil.rmtree('results/*')
+    except:
+        pass
     problem = SolveReverse(theta_b=Constant(0.5))
     state = problem.solve_boundary_with_deflection()
     problem.set_theta_0(state[0])
