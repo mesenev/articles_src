@@ -6,23 +6,24 @@ from dolfin import (
     Function, split, TestFunctions, inner, grad, solve, FiniteElement, dx, ds,
     TrialFunctions, Expression, assemble, interpolate, Constant
 )
-from dolfin.cpp.generation import UnitCubeMesh
-
+from dolfin.cpp.generation import UnitCubeMesh, UnitSquareMesh
 
 # noinspection PyUnresolvedReferences
 
-# dolfin.cpp.common.set_log_level(50)
+dolfin.cpp.log.set_log_level(50)
 
 
 class SolveDirect:
-    omega = UnitCubeMesh(*[5] * 3)
+    # omega = UnitCubeMesh(*[5] * 3)
+    omega = UnitSquareMesh(10, 10)
     finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 1)
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
     v, h = TestFunctions(state_space)
 
-    def __init__(self, theta_b, a=0.006, alpha=0.333, ka=1, b=0.025, beta=1, gamma=3):
-        self.theta_b = theta_b
+    def __init__(self, theta_0, a=0.006, alpha=0.333, ka=1, b=0.025, beta=1, gamma=3):
+        self.theta_0 = theta_0
+        self.theta_b = theta_0
         self.a = a
         self.alpha = alpha
         self.ka = ka
@@ -33,6 +34,7 @@ class SolveDirect:
         self.theta, self.phi = split(self._state_solve)
         self.state = None
 
+    # TODO: CHECK BOUNDARY
     def solve_boundary_with_deflection(self):
         boundary_problem = \
             self.a * inner(grad(self.theta), grad(self.v)) * dx \
@@ -49,7 +51,7 @@ class SolveDirect:
         to_print = self.state
         for i in to_print:
             f = dolfin.interpolate(i, self.simple_space).vector()
-            print("Minimum: {} \t maximum: {}".format(f.min(), f.max()))
+            print(f"Minimum: {f.min()} \t maximum: {f.max()}")
 
 
 class SolveReverse(SolveDirect):
@@ -57,22 +59,22 @@ class SolveReverse(SolveDirect):
     epsilon = 0.1 ** 20
     max_iterations = 10 ** 7
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, phi_n=Constant(0.1), **kwargs):
         super().__init__(*args, **kwargs)
         self.p1, self.p2 = TrialFunctions(super().state_space)
         self.conjugate = Function(super().state_space)
-        self.theta_0 = None
         self.quality_history = []
-        self.phi_n_derivative = Constant(0.1)
+        self.phi_n_derivative = phi_n
         self.p_1, self.p_2 = Constant(0), Constant(0)
 
+    # TODO: CHECK BOUNDARY
     def solve_boundary_with_phi_n_der(self):
         boundary_problem = \
             self.a * inner(grad(self.theta), grad(self.v)) * dx + \
             self.alpha * inner(grad(self.phi), grad(self.h)) * dx + \
             self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx + \
             self.ka * inner(self.phi - self.theta ** 4, self.h) * dx - \
-            self.beta * inner(self.theta - self.theta_b, self.v) * ds + \
+            self.beta * inner(self.theta - self.theta_0, self.v) * ds + \
             self.phi_n_derivative * self.h * ds
         solve(boundary_problem == 0, self._state_solve)
         self.state = self._state_solve.split()
@@ -81,7 +83,8 @@ class SolveReverse(SolveDirect):
     def recalculate_phi_n_derivative(self):
         self.phi_n_derivative = interpolate(
             Expression('u + lmbd*(p_2 - eps*u)', u=self.phi_n_derivative,
-                       lmbd=self.lambda_, p_2=self.p_2, eps=self.epsilon, degree=3), self.simple_space)
+                       lmbd=self.lambda_, p_2=self.p_2, eps=self.epsilon, degree=3), self.simple_space
+        )
         return
 
     def quality(self):
@@ -89,9 +92,6 @@ class SolveReverse(SolveDirect):
                            + self.epsilon * 0.5 * self.phi_n_derivative ** 2 * ds(self.omega))
         self.quality_history.append(quality)
         return quality
-
-    def set_theta_0(self, func):
-        self.theta_0 = interpolate(Expression('f', f=func, degree=3), self.simple_space)
 
     def solve_conjugate(self):
         if not self.theta_0:
@@ -122,18 +122,3 @@ class SolveReverse(SolveDirect):
             self.solve_boundary_with_phi_n_der()
             self.p_1, self.p_2 = self.solve_conjugate()
             self.recalculate_phi_n_derivative()
-
-    def get_phi_n_derivative_from_gamma(self):
-        self.phi_n_derivative = interpolate(
-            Expression(" - gamma * (phi - theta_b * theta_b * theta_b * theta_b)/alpha",
-                       gamma=self.gamma, phi=self.state[1],
-                       theta_b=self.theta_b, alpha=self.alpha,
-                       degree=3), self.simple_space)
-        return
-
-    def get_gamma_from_phi_n_derivative(self):
-        self.gamma = interpolate(
-            Expression("-(alpha*phin)/(phi-tb*tb*tb*tb)", alpha=self.alpha,
-                       phin=self.phi_n_derivative, tb=self.theta_b, phi=self.state[1],
-                       degree=3), self.simple_space)
-        return

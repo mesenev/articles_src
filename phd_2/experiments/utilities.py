@@ -28,6 +28,9 @@ def print_all_variations(v, name, folder):
 
 
 def print_2d_boundaries(v, name, folder='results'):
+    mesh = UnitSquareMesh(10, 10)
+    space = FunctionSpace(mesh, 'P', 1)
+    v = interpolate(v, space)
     f_s = v.ufl_function_space()
     b_function = Function(f_s)
     boundaries = [
