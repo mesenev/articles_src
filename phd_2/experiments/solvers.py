@@ -34,24 +34,11 @@ class SolveDirect:
         self.theta, self.phi = split(self._state_solve)
         self.state = None
 
-    # TODO: CHECK BOUNDARY
-    def solve_boundary_with_deflection(self):
-        boundary_problem = \
-            self.a * inner(grad(self.theta), grad(self.v)) * dx \
-            + self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
-            + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx \
-            + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx \
-            + self.beta * inner(self.theta - self.theta_b, self.v) * ds \
-            + self.gamma * (self.phi - self.theta_b ** 4) * self.h * ds
-        solve(boundary_problem == 0, self._state_solve)
-        self.state = self._state_solve.split()
-        return self.state
-
     def print_min_max_functions(self):
         to_print = self.state
         for i in to_print:
             f = dolfin.interpolate(i, self.simple_space).vector()
-            print(f"Minimum: {f.min()} \t maximum: {f.max()}")
+            print("Minimum:", f.min(), "\t maximum:", f.max())
 
 
 class SolveReverse(SolveDirect):
@@ -67,15 +54,15 @@ class SolveReverse(SolveDirect):
         self.phi_n_derivative = phi_n
         self.p_1, self.p_2 = Constant(0), Constant(0)
 
-    # TODO: CHECK BOUNDARY
+    # TODO: WRITE TESTS FOR BOUNDARY
     def solve_boundary_with_phi_n_der(self):
         boundary_problem = \
-            self.a * inner(grad(self.theta), grad(self.v)) * dx + \
-            self.alpha * inner(grad(self.phi), grad(self.h)) * dx + \
-            self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx + \
-            self.ka * inner(self.phi - self.theta ** 4, self.h) * dx - \
-            self.beta * inner(self.theta - self.theta_0, self.v) * ds + \
-            self.phi_n_derivative * self.h * ds
+            self.a * inner(grad(self.theta), grad(self.v)) * dx \
+            + self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
+            + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx \
+            + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx \
+            + self.beta * inner(self.theta - self.theta_0, self.v) * ds \
+            - self.alpha * self.phi_n_derivative * self.h * ds
         solve(boundary_problem == 0, self._state_solve)
         self.state = self._state_solve.split()
         return self.state
@@ -118,7 +105,7 @@ class SolveReverse(SolveDirect):
         iteration = 0
         while self.quality() > tolerance and iteration < iterations:
             iteration += 1
-            print('Iteration: ', str(iteration).ljust(len(str(iterations))), '\tQuality: ', self.quality())
+            print('Iteration:', str(iteration).ljust(len(str(iterations))), '\tQuality:', self.quality())
             self.solve_boundary_with_phi_n_der()
             self.p_1, self.p_2 = self.solve_conjugate()
             self.recalculate_phi_n_derivative()

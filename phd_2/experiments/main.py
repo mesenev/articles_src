@@ -3,8 +3,8 @@ import time
 
 from dolfin import Constant
 
-from solvers import SolveReverse
-from utilities import *
+from .solvers import SolveReverse
+from .utilities import *
 
 
 def main():
