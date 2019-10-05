@@ -3,7 +3,7 @@ import time
 
 from dolfin import Constant
 
-from .solvers import SolveReverse
+from .solvers_old import SolveReverse
 from .utilities import *
 
 

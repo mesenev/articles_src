@@ -2,20 +2,18 @@ from os import mkdir
 
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
-from dolfin import DirichletBC, Function, AutoSubDomain, FunctionSpace, interpolate, Expression
-from dolfin.cpp.math import near
-from dolfin.cpp.geometry import Point
-from dolfin.cpp.generation import UnitCubeMesh, UnitSquareMesh
 from matplotlib import pyplot as plt, cm, gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from numpy import array, linspace, meshgrid, random
+from dolfin import *
+import numpy as np
 
 font = {'family': 'sans-serif',
-        'name': 'Sans',
-        'color': 'black',
-        'weight': 'ultralight',
-        'size': 10,
-        }
+    'name': 'Sans',
+    'color': 'black',
+    'weight': 'ultralight',
+    'size': 10,
+}
 
 
 def print_all_variations(v, name, folder):
@@ -204,7 +202,7 @@ def draw_simple_graphic(data, target_file, logariphmic=False, folder='results', 
     extra1 = mpatches.Patch(color='none', label='Начальное значение: {}'.format(data[0]))
     extra2 = mpatches.Patch(color='none', label="Конечное значение: {}".format(data[-1]))
     plt.legend([extra1, extra2], [blue_line.get_label(),
-                                  extra1.get_label(), extra2.get_label()], prop={'size': 10})
+        extra1.get_label(), extra2.get_label()], prop={'size': 10})
     plt.grid(True)
     plt.savefig("{}/{}.eps".format(folder, target_file))
     plt.close()
@@ -229,3 +227,37 @@ def checkers():
     print_2d_boundaries(u, 'test_2d_boundary', folder='checker')
 
     return
+
+
+def get_facet_normal(bmesh):
+    # https://bitbucket.org/fenics-project/dolfin/issues/53/dirichlet-boundary-conditions-of-the-form
+    '''Manually calculate FacetNormal function'''
+
+    if not bmesh.type().dim() == 2:
+        raise ValueError('Only works for 2-D mesh')
+
+    vertices = bmesh.coordinates()
+    cells = bmesh.cells()
+
+    vec1 = vertices[cells[:, 1]] - vertices[cells[:, 0]]
+    vec2 = vertices[cells[:, 2]] - vertices[cells[:, 0]]
+
+    normals = np.cross(vec1, vec2)
+    normals /= np.sqrt((normals ** 2).sum(axis=1))[:, np.newaxis]
+
+    # Ensure outward pointing normal
+    bmesh.init_cell_orientations(Expression(('x[0]', 'x[1]', 'x[2]')))
+    normals[bmesh.cell_orientations() == 1] *= -1
+
+    V = VectorFunctionSpace(bmesh, 'DG', 0)
+    norm = Function(V)
+    nv = norm.vector()
+
+    for n in (0, 1, 2):
+        dofmap = V.sub(n).dofmap()
+        for i in xrange(dofmap.global_dimension()):
+            dof_indices = dofmap.cell_dofs(i)
+            assert len(dof_indices) == 1
+            nv[dof_indices[0]] = normals[i, n]
+
+    return norm

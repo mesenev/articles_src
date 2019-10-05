@@ -33,11 +33,19 @@
         \label{initial_boundary}
         \begin{aligned}
             \theta|_{\partial \Omega} = \theta_b, \\
-            a \partial_n \theta |_{\partial \Omega} = q_b
+            \partial_n \theta |_{\partial \Omega} = q_b
         \end{aligned}
         \qquad \text{на } \partial \Omega.
     \end{equation}
     Функции $q_b, \theta_b$ являются известными.
+
+    Найдя из~\eqref{initial}--\eqref{initial_boundary} функции состояния
+    $\theta, \varphi$ мы можем также найти $\gamma$ из стандартного
+    краевого условия для интенсивности излучения:
+    \begin{equation}
+        \label{initial_boundary_phi}
+        a \partial_n \varphi + \gamma (\varphi -\theta_b^4) = 0.
+    \end{equation}
 
     Решение краевой задачи заключается в нахождении функций $\theta, \varphi$,
     удовлетворяющих~\eqref{initial}--\eqref{initial_boundary}.
@@ -75,10 +83,11 @@
     состоящей в минимизации функционала
 
     На решениях краевой задачи~\eqref{initial}--\eqref{initial_boundary}.
-    Решение задачи~\eqref{initial}--\eqref{initial_boundary}, \eqref{quality}
+    Решение задачи~\eqref{initial}--\eqref{initial_boundary},~\eqref{quality}
     называется квазирешением задачи~\eqref{initial}--\eqref{additional}.
 
-    Для удобства введём переобозначение $\hat{J}(u):=J(\theta(u),u), \hat{J}:L^2(\partial \Omega) \to \mathbb{R}$.
+    Для удобства введём переобозначение
+    $\hat{J}(u):=J(\theta(u),u), \hat{J}:L^2(\partial \Omega) \to \mathbb{R}$.
     Здесь $\theta(u)$ -- температурное поле задачи~\eqref{initial}--\eqref{initial_boundary}
     отвечающее управлению $u \in L^2(\partial \Omega)$.
     Согласно формуле~\eqref{adjoint_3} градиент функционала $\hat J(u)$ имеет вид:
