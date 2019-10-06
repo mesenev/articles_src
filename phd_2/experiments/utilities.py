@@ -204,7 +204,7 @@ def draw_simple_graphic(data, target_file, logariphmic=False, folder='results', 
     plt.legend([extra1, extra2], [blue_line.get_label(),
         extra1.get_label(), extra2.get_label()], prop={'size': 10})
     plt.grid(True)
-    plt.savefig("{}/{}.eps".format(folder, target_file))
+    plt.savefig("{}/{}.png".format(folder, target_file))
     plt.close()
     return
 

@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
-from dolfin import dx, ds
 from dolfin import *
+from dolfin import dx, ds
 
+from phd_2.experiments.normal import Normal
 from phd_2.experiments.utilities import print_2d_boundaries
 
 a = 0.6
@@ -32,8 +33,8 @@ v = TestFunction(state_space)
 
 F = a * inner(grad(theta), grad(v)) * dx \
     + b * k_a * inner(theta ** 4, v) * dx \
-    + a * k_a / alpha * inner(theta, v) * dx \
-    + a * q_b * v * ds
+    + a * k_a / alpha * inner(theta, v) * dx
+    # + a * q_b * v * ds
 
 solve(F == 0, theta, bc,
       solver_parameters={"newton_solver": {
@@ -42,7 +43,9 @@ solve(F == 0, theta, bc,
       }})
 
 phi = project(- a * div(grad(theta)) / (b * k_a) + theta ** 4, state_space)
-phi_n = assemble(inner(n, grad(theta)))
+n = Normal(mesh=mesh, degree=2)
+theta_n = project(dot(n, grad(theta)), state_space)
 plt.figure()
-plot(phi_n, title="Solution")
-plt.savefig('full.png')
+print_2d_boundaries(theta_n, name='theta_n')
+plot(theta_n, title="Solution", scalarbar=True)
+# plt.savefig('full.png')
