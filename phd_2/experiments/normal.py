@@ -21,14 +21,9 @@ class Normal(UserExpression):
             values[1] = -1
         if x[1] + DOLFIN_EPS > 1:
             values[1] = 1
-        # if values[0] ** 2 + values[1] ** 2 == 2:
-        #     values[0] = values[0] / 2
-        #     values[1] = values[1] / 2
-        # cell = Cell(self.mesh, ufc_cell.index)
-        # n = cell.normal(ufc_cell.local_facet)
-        # g = sin(5 * x[0])
-        # values[0] = g * n[0]
-        # values[1] = g * n[1]
+        if abs(values[0]) == abs(values[1]) == 1:
+            values[0] *= 0.65
+            values[1] *= 0.65
 
     def value_shape(self):
         return (2,)

@@ -1,14 +1,10 @@
+from dolfin import Expression, VectorFunctionSpace, UnitCubeMesh, BoundaryMesh, \
+    facets, vertices, dx, ds, assemble, Constant, inner, plot, dot, Function
 import numpy as np
-from dolfin import *
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
 
 def get_facet_normal(bmesh):
-    """Manually calculate FacetNormal function"""
-
-    # if not bmesh.type().dim() == 2:
-    #     raise ValueError('Only works for 2-D mesh')
-
     vertices = bmesh.coordinates()
     cells = bmesh.cells()
 
@@ -36,18 +32,19 @@ def get_facet_normal(bmesh):
     return norm
 
 
-mesh = UnitCubeMesh(10, 10, 10)
+mesh = UnitCubeMesh(5, 5, 5)
 bmesh = BoundaryMesh(mesh, 'exterior')
 n = get_facet_normal(bmesh)
 
 # Check values on facet midpoints
 for f in facets(bmesh):
     p = f.midpoint()
-    f.index(), [v.index() for v in vertices(f)], n(p)
+    print(f.index(), [v.index() for v in vertices(f)], n(p))
 
 # Check correctness of mean value
 area = assemble(Constant(1.) * dx(bmesh))
-nds = assemble(inner(n, n) * dx)
-plt.figure()
-plot(n)
-plt.savefig('normal.png')
+nds = assemble(inner(n, n) * dx(bmesh))
+print("Average value of RT1 normal on boundary:", nds / area)
+f = Expression(('x[0]/2', 'x[1]*3', 'x[2]/3'), degree=3)
+plot(n, title="Normal")
+plt.savefig('norm.png')

@@ -15,6 +15,8 @@ font = {'family': 'sans-serif',
     'size': 10,
 }
 
+points_2d = [Point(0, 0.5), Point(0.5, 1), Point(1, 0.5), Point(0.5, 0)]
+
 
 def print_all_variations(v, name, folder):
     print_3d_boundaries_on_cube(v, name=name + '_cube', folder=folder)
@@ -25,28 +27,17 @@ def print_all_variations(v, name, folder):
         print_3d_boundaries_separate(v, name=name, folder=folder + '/separate')
 
 
-def print_2d_boundaries(v, name, folder='results'):
-    mesh = UnitSquareMesh(10, 10)
-    space = FunctionSpace(mesh, 'P', 1)
-    v = interpolate(v, space)
-    f_s = v.ufl_function_space()
-    b_function = Function(f_s)
-    boundaries = [
-        AutoSubDomain(lambda x, on_bnd: near(x[0], 0) and on_bnd),
-        AutoSubDomain(lambda x, on_bnd: near(x[1], 1) and on_bnd),
-        AutoSubDomain(lambda x, b: near(x[0], 1) and b),
-        AutoSubDomain(lambda x, b: near(x[1], 0) and b),
-    ]
-    [DirichletBC(f_s, i + 1, _).apply(b_function.vector()) for i, _ in enumerate(boundaries)]
-    print("Values on left = ", *v.vector()[b_function.vector() == 1][::-1])
-    print("Values on top = ", *v.vector()[b_function.vector() == 2])
-    print("Values on right = ", *v.vector()[b_function.vector() == 3])
-    print("Values on bottom = ", *v.vector()[b_function.vector() == 4][::-1])
-    draw_simple_graphic(list(v.vector()[b_function.vector() == 1][::-1]) +
-                        list(v.vector()[b_function.vector() == 2]) +
-                        list(v.vector()[b_function.vector() == 3]) +
-                        list(v.vector()[b_function.vector() == 4][::-1]),
-                        target_file=name, folder=folder)
+def print_2d_boundaries(v, name, folder='results', steps=10):
+    left = list(map(lambda x: v(Point(0, x)), (1 / (steps - 1) * _ for _ in range(0, steps))))
+    top = list(map(lambda x: v(Point(x, 1)), (1 / (steps - 1) * _ for _ in range(0, steps))))
+    right = list(map(lambda x: v(Point(1, x)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
+    bottom = list(map(lambda x: v(Point(x, 0)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
+
+    print("Values on left = ", *left)
+    print("Values on top = ", *top)
+    print("Values on right = ", *right)
+    print("Values on bottom = ", *bottom)
+    draw_simple_graphic(left[:-1] + top[:-1] + right[:-1] + bottom, target_file=name, folder=folder)
     return
 
 
@@ -255,7 +246,7 @@ def get_facet_normal(bmesh):
 
     for n in (0, 1, 2):
         dofmap = V.sub(n).dofmap()
-        for i in xrange(dofmap.global_dimension()):
+        for i in range(dofmap.global_dimension()):
             dof_indices = dofmap.cell_dofs(i)
             assert len(dof_indices) == 1
             nv[dof_indices[0]] = normals[i, n]
