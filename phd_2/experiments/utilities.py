@@ -6,14 +6,14 @@ from matplotlib import pyplot as plt, cm, gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from numpy import array, linspace, meshgrid, random
 from dolfin import *
-import numpy as np
+import asciichartpy
 
 font = {'family': 'sans-serif',
-    'name': 'Sans',
-    'color': 'black',
-    'weight': 'ultralight',
-    'size': 10,
-}
+        'name': 'Sans',
+        'color': 'black',
+        'weight': 'ultralight',
+        'size': 10,
+        }
 
 points_2d = [Point(0, 0.5), Point(0.5, 1), Point(1, 0.5), Point(0.5, 0)]
 
@@ -27,7 +27,7 @@ def print_all_variations(v, name, folder):
         print_3d_boundaries_separate(v, name=name, folder=folder + '/separate')
 
 
-def print_2d_boundaries(v, name, folder='results', steps=10):
+def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=False):
     left = list(map(lambda x: v(Point(0, x)), (1 / (steps - 1) * _ for _ in range(0, steps))))
     top = list(map(lambda x: v(Point(x, 1)), (1 / (steps - 1) * _ for _ in range(0, steps))))
     right = list(map(lambda x: v(Point(1, x)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
@@ -37,7 +37,11 @@ def print_2d_boundaries(v, name, folder='results', steps=10):
     print("Values on top = ", *top)
     print("Values on right = ", *right)
     print("Values on bottom = ", *bottom)
-    draw_simple_graphic(left[:-1] + top[:-1] + right[:-1] + bottom, target_file=name, folder=folder)
+    print_simple_graphic(left[:-1] + top[:-1] + right[:-1] + bottom)
+    if not terminal_only:
+        if not name:
+            raise Exception
+        draw_simple_graphic(left[:-1] + top[:-1] + right[:-1] + bottom, target_file=name, folder=folder)
     return
 
 
@@ -180,10 +184,10 @@ def print_3d_boundaries_separate(v, name='solution', folder='results'):
     return
 
 
-def draw_simple_graphic(data, target_file, logariphmic=False, folder='results', x_label='', y_label='', ):
+def draw_simple_graphic(data, target_file, logarithmic=False, folder='results', x_label='', y_label='', ):
     x = [i for i in range(0, data.__len__())]
     plt.figure()
-    plt.semilogx(x, data) if logariphmic else plt.plot(x, data)
+    plt.semilogx(x, data) if logarithmic else plt.plot(x, data)
     # scale = (max(data) - min(data)) / 8
     # plt.semilogx([-0.01, x.__len__(), min(y) - scale, max(y) + scale])
     # plt.text((x.__len__()+10)*1/3, (max(y) + scale)*4/5, , fontsize=14)
@@ -193,11 +197,15 @@ def draw_simple_graphic(data, target_file, logariphmic=False, folder='results', 
     extra1 = mpatches.Patch(color='none', label='Начальное значение: {}'.format(data[0]))
     extra2 = mpatches.Patch(color='none', label="Конечное значение: {}".format(data[-1]))
     plt.legend([extra1, extra2], [blue_line.get_label(),
-        extra1.get_label(), extra2.get_label()], prop={'size': 10})
+                                  extra1.get_label(), extra2.get_label()], prop={'size': 10})
     plt.grid(True)
     plt.savefig("{}/{}.png".format(folder, target_file))
     plt.close()
     return
+
+
+def print_simple_graphic(data):
+    print(asciichartpy.plot(data))
 
 
 def checkers():
@@ -220,35 +228,3 @@ def checkers():
     return
 
 
-def get_facet_normal(bmesh):
-    # https://bitbucket.org/fenics-project/dolfin/issues/53/dirichlet-boundary-conditions-of-the-form
-    '''Manually calculate FacetNormal function'''
-
-    if not bmesh.type().dim() == 2:
-        raise ValueError('Only works for 2-D mesh')
-
-    vertices = bmesh.coordinates()
-    cells = bmesh.cells()
-
-    vec1 = vertices[cells[:, 1]] - vertices[cells[:, 0]]
-    vec2 = vertices[cells[:, 2]] - vertices[cells[:, 0]]
-
-    normals = np.cross(vec1, vec2)
-    normals /= np.sqrt((normals ** 2).sum(axis=1))[:, np.newaxis]
-
-    # Ensure outward pointing normal
-    bmesh.init_cell_orientations(Expression(('x[0]', 'x[1]', 'x[2]')))
-    normals[bmesh.cell_orientations() == 1] *= -1
-
-    V = VectorFunctionSpace(bmesh, 'DG', 0)
-    norm = Function(V)
-    nv = norm.vector()
-
-    for n in (0, 1, 2):
-        dofmap = V.sub(n).dofmap()
-        for i in range(dofmap.global_dimension()):
-            dof_indices = dofmap.cell_dofs(i)
-            assert len(dof_indices) == 1
-            nv[dof_indices[0]] = normals[i, n]
-
-    return norm

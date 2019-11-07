@@ -1,57 +1,110 @@
-import matplotlib.pyplot as plt
-from dolfin import *
-from dolfin import dx, ds
+import dolfin
+# noinspection PyUnresolvedReferences
+from dolfin import (
+    FunctionSpace,
+    Function, split, TestFunctions, inner, grad, solve, FiniteElement, dx, ds,
+    TrialFunctions, Expression, assemble, interpolate, Constant
+)
+from dolfin.cpp.generation import UnitCubeMesh, UnitSquareMesh
 
-from phd_2.experiments.normal import Normal
-from phd_2.experiments.utilities import print_2d_boundaries, get_facet_normal, points_2d
-
-a = 0.6
-alpha = 0.33
-k_a = 1
-b = 0.025
-theta_b = Expression("x[0]*cos(x[1])/2 + 0.1", degree=2)
-q_b = Expression("x[0]*cos(x[1])/2 + 0.1", degree=2)
+dolfin.cpp.log.set_log_level(50)
 
 
-def boundary(x):
-    return x[0] - DOLFIN_EPS < 0 or x[0] > 1.0 - DOLFIN_EPS or \
-           x[1] - DOLFIN_EPS < 0 or x[1] > 1.0 - DOLFIN_EPS
+class SolveDirect:
+    # omega = UnitCubeMesh(*[5] * 3)
+    omega = UnitSquareMesh(10, 10)
+    finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 1)
+    state_space = FunctionSpace(omega, finite_element * finite_element)
+    simple_space = FunctionSpace(omega, finite_element)
+    v, h = TestFunctions(state_space)
+
+    def __init__(
+            self, theta_0=Constant(0.5), q_b=Constant(-0.1),
+            a=0.006, alpha=0.333, ka=1, b=0.025, beta=0.1
+    ):
+        self.theta_0 = theta_0
+        self.theta_b = q_b
+        self.a = a
+        self.alpha = alpha
+        self.ka = ka
+        self.b = b
+        self.beta = beta
+        self._state_solve = Function(self.state_space)
+        self.theta, self.phi = split(self._state_solve)
+        self.state = None
+
+    def print_min_max_functions(self):
+        to_print = self.state
+        for i in to_print:
+            f = dolfin.interpolate(i, self.simple_space).vector()
+            print("Minimum:", f.min(), "\t maximum:", f.max())
 
 
-omega = UnitSquareMesh(50, 50)
-omega_b = BoundaryMesh(omega, 'exterior')
+class SolveReverse(SolveDirect):
+    lambda_ = 1000
+    epsilon = 0.1 ** 20
+    max_iterations = 10 ** 7
 
-function_space = FunctionSpace(omega, 'Lagrange', 3)
-vector_space = VectorFunctionSpace(omega, 'Lagrange', 2)
+    def __init__(self, *args, phi_n=Constant(0.1), **kwargs):
+        super().__init__(*args, **kwargs)
+        self.p1, self.p2 = TrialFunctions(super().state_space)
+        self.conjugate = Function(super().state_space)
+        self.quality_history = []
+        self.phi_n_derivative = phi_n
+        self.p_1, self.p_2 = Constant(0), Constant(0)
 
-boundary_space = FunctionSpace(omega_b, 'Lagrange', 3)
-boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
+    # TODO: WRITE TESTS FOR BOUNDARY
+    def solve_boundary_with_phi_n_der(self):
+        boundary_problem = \
+            self.a * inner(grad(self.theta), grad(self.v)) * dx \
+            + self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
+            + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx \
+            + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx \
+            + self.beta * inner(self.theta - self.theta_0, self.v) * ds \
+            - self.alpha * self.phi_n_derivative * self.h * ds
+        solve(boundary_problem == 0, self._state_solve)
+        self.state = self._state_solve.split()
+        return self.state
 
-bc = DirichletBC(function_space, theta_b, boundary)
-n = FacetNormal(omega)
+    def recalculate_phi_n_derivative(self):
+        self.phi_n_derivative = interpolate(
+            Expression('u + lmbd*(p_2 - eps*u)', u=self.phi_n_derivative,
+                       lmbd=self.lambda_, p_2=self.p_2, eps=self.epsilon, degree=3), self.simple_space
+        )
+        return
 
-theta = Function(function_space)
-phi = Function(function_space)
-v = TestFunction(function_space)
+    def quality(self):
+        quality = assemble(0.5 * (self.state[0] - self.theta_0) ** 2 * ds(self.omega)
+                           + self.epsilon * 0.5 * self.phi_n_derivative ** 2 * ds(self.omega))
+        self.quality_history.append(quality)
+        return quality
 
-F = - a * inner(grad(theta), grad(v)) * dx \
-    + b * k_a * inner(theta ** 4, v) * dx \
-    + a * k_a / alpha * inner(theta, v) * dx \
-    + a * q_b * v * ds
+    def solve_conjugate(self):
+        if not self.theta_0:
+            print('Set theta_0 first!')
+            return
+        conjugate_problem = \
+            self.a * inner(grad(self.p1), grad(self.v)) * dx + \
+            self.alpha * inner(grad(self.p2), grad(self.h)) * dx + \
+            4 * self.ka * self.state[0] ** 3 * inner(self.b * self.p1 - self.p2, self.v) * dx \
+            + self.beta * inner(self.p1, self.v) * ds + \
+            self.ka * inner(self.p2 - self.b * self.p1, self.h) * dx
+        j_theta = - (self.state[0] - self.theta_0) * self.v * ds
+        solve(conjugate_problem == j_theta, self.conjugate)
+        return self.conjugate.split()
 
-solve(F == 0, theta, # bc,
-      solver_parameters={"newton_solver": {
-          "relative_tolerance": 1e-6,
-          "maximum_iterations": 50,
-      }})
-
-phi = project(- a * div(grad(theta)) / (b * k_a) + theta ** 4, function_space)
-n = project(Normal(omega), boundary_vector_space)
-grad_theta = project(grad(theta), vector_space)
-dn_theta = project(dot(n, interpolate(grad_theta, boundary_vector_space)), boundary_space)
-print(*map(lambda x: str(dn_theta(x))[:8].rjust(8, ' '), points_2d), sep='\t')
-print(*map(lambda x: str(theta(x))[:8].rjust(8, ' '), points_2d), sep='\t')
-print(*map(lambda x: str(theta_b(x))[:8].rjust(8, ' '),  points_2d), sep='\t')
-print_2d_boundaries(dn_theta, name='theta_n')
-print_2d_boundaries(q_b, name='theta_n_orig')
-
+    def solve_reverse(self, iterations=None, tolerance=None):
+        if not iterations and not tolerance:
+            iterations = 10
+            tolerance = 1
+        elif not iterations:
+            iterations = self.max_iterations
+        elif not tolerance:
+            tolerance = 1
+        iteration = 0
+        while self.quality() > tolerance and iteration < iterations:
+            iteration += 1
+            print('Iteration:', str(iteration).ljust(len(str(iterations))), '\tQuality:', self.quality())
+            self.solve_boundary_with_phi_n_der()
+            self.p_1, self.p_2 = self.solve_conjugate()
+            self.recalculate_phi_n_derivative()

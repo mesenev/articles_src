@@ -3,8 +3,8 @@ import time
 
 from dolfin import Constant
 
-from .solvers_old import SolveReverse
-from .utilities import *
+from phd_2.experiments.solvers import SolveReverse
+from phd_2.experiments.utilities import print_2d_boundaries
 
 
 def main():

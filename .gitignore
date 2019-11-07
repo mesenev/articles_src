@@ -246,3 +246,4 @@ dissertation
 __pycache__*
 *.pyc
 *.swo
+!/phd_1/article.pdf
