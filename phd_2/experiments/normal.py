@@ -1,63 +1,60 @@
 import numpy as np
 from dolfin import *
+import matplotlib.pyplot as plt
+from dolfin import *
+# noinspection PyUnresolvedReferences
+from dolfin import dx, ds
+
+from phd_2.experiments.utilities import print_2d_boundaries, get_facet_normal, points_2d, Normal
 
 mesh = UnitSquareMesh(10, 10)
 bmesh = BoundaryMesh(mesh, 'exterior')
+a = 0.6
+alpha = 0.33
+k_a = 1
+b = 0.025
+theta_b = Expression("x[0]*cos(x[1])/2 + 0.1", degree=2)
+q_b = Expression("x[0]*cos(x[1])/2 + 0.1", degree=2)
 
 
-class Normal(UserExpression):
-    def __init__(self, mesh, **kwargs):
-        self.mesh = mesh
-        super().__init__(**kwargs)
-
-    def eval_cell(self, values, x, ufc_cell):
-        values[0] = 0
-        values[1] = 0
-        if x[0] < DOLFIN_EPS:
-            values[0] = -1
-        if x[0] + DOLFIN_EPS > 1:
-            values[0] = 1
-        if x[1] < DOLFIN_EPS:
-            values[1] = -1
-        if x[1] + DOLFIN_EPS > 1:
-            values[1] = 1
-        if abs(values[0]) == abs(values[1]) == 1:
-            values[0] *= 0.65
-            values[1] *= 0.65
-
-    def value_shape(self):
-        return (2,)
+def boundary(x):
+    return x[0] - DOLFIN_EPS < 0 or x[0] > 1.0 - DOLFIN_EPS or \
+           x[1] - DOLFIN_EPS < 0 or x[1] > 1.0 - DOLFIN_EPS
 
 
-def get_facet_normal(bmesh):
-    # https://bitbucket.org/fenics-project/dolfin/issues/53/dirichlet-boundary-conditions-of-the-form
-    '''Manually calculate FacetNormal function'''
+omega = UnitSquareMesh(50, 50)
+omega_b = BoundaryMesh(omega, 'exterior')
 
-    if not bmesh.type().dim() == 2:
-        raise ValueError('Only works for 2-D mesh')
+function_space = FunctionSpace(omega, 'Lagrange', 3)
+vector_space = VectorFunctionSpace(omega, 'Lagrange', 2)
 
-    vertices = bmesh.coordinates()
-    cells = bmesh.cells()
+boundary_space = FunctionSpace(omega_b, 'Lagrange', 3)
+boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
 
-    vec1 = vertices[cells[:, 1]] - vertices[cells[:, 0]]
-    vec2 = vertices[cells[:, 2]] - vertices[cells[:, 0]]
+bc = DirichletBC(function_space, theta_b, boundary)
+n = FacetNormal(omega)
 
-    normals = np.cross(vec1, vec2)
-    normals /= np.sqrt((normals ** 2).sum(axis=1))[:, np.newaxis]
+theta = Function(function_space)
+phi = Function(function_space)
+v = TestFunction(function_space)
 
-    # Ensure outward pointing normal
-    bmesh.init_cell_orientations(Expression(('x[0]', 'x[1]', 'x[2]')))
-    normals[bmesh.cell_orientations() == 1] *= -1
+F = - a * inner(grad(theta), grad(v)) * dx \
+    + b * k_a * inner(theta ** 4, v) * dx \
+    + a * k_a / alpha * inner(theta, v) * dx \
+    + a * q_b * v * ds
 
-    V = VectorFunctionSpace(bmesh, 'DG', 0)
-    norm = Function(V)
-    nv = norm.vector()
+solve(F == 0, theta,  # bc,
+      solver_parameters={"newton_solver": {
+          "relative_tolerance": 1e-6,
+          "maximum_iterations": 50,
+      }})
 
-    for n in (0, 1, 2):
-        dofmap = V.sub(n).dofmap()
-        for i in range(dofmap.global_dimension()):
-            dof_indices = dofmap.cell_dofs(i)
-            assert len(dof_indices) == 1
-            nv[dof_indices[0]] = normals[i, n]
-
-    return norm
+phi = project(- a * div(grad(theta)) / (b * k_a) + theta ** 4, function_space)
+n = project(Normal(omega), boundary_vector_space)
+grad_theta = project(grad(theta), vector_space)
+dn_theta = project(dot(n, interpolate(grad_theta, boundary_vector_space)), boundary_space)
+print(*map(lambda x: str(dn_theta(x))[:8].rjust(8, ' '), points_2d), sep='\t')
+print(*map(lambda x: str(theta(x))[:8].rjust(8, ' '), points_2d), sep='\t')
+print(*map(lambda x: str(theta_b(x))[:8].rjust(8, ' '), points_2d), sep='\t')
+print_2d_boundaries(dn_theta, name='theta_n')
+print_2d_boundaries(q_b, name='theta_n_orig')

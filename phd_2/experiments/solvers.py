@@ -3,16 +3,15 @@ import dolfin
 from dolfin import (
     FunctionSpace,
     Function, split, TestFunctions, inner, grad, solve, FiniteElement, dx, ds,
-    TrialFunctions, Expression, assemble, interpolate, Constant
-)
+    TrialFunctions, Expression, assemble, interpolate, Constant,
+    NonlinearVariationalProblem, derivative)
+from dolfin.cpp.fem import NonlinearVariationalSolver
 from dolfin.cpp.generation import UnitCubeMesh, UnitSquareMesh
-
-dolfin.cpp.log.set_log_level(50)
 
 
 class SolveDirect:
     # omega = UnitCubeMesh(*[5] * 3)
-    omega = UnitSquareMesh(10, 10)
+    omega = UnitSquareMesh(100, 100)
     finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 1)
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
@@ -45,7 +44,7 @@ class SolveReverse(SolveDirect):
     epsilon = 0.1 ** 20
     max_iterations = 10 ** 7
 
-    def __init__(self, *args, phi_n=Constant(0.1), **kwargs):
+    def __init__(self, *args, phi_n=Constant(-0.1), **kwargs):
         super().__init__(*args, **kwargs)
         self.p1, self.p2 = TrialFunctions(super().state_space)
         self.conjugate = Function(super().state_space)

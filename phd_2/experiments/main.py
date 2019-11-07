@@ -1,7 +1,7 @@
 import shutil
 import time
 
-from dolfin import Constant
+from dolfin import *
 
 from phd_2.experiments.solvers import SolveReverse
 from phd_2.experiments.utilities import print_2d_boundaries
@@ -18,8 +18,8 @@ def main():
     problem = SolveReverse(theta_0=Constant(0.3))
     print('Solving boundary problem with deflection')
     state = problem.solve_boundary_with_phi_n_der()
-    print_2d_boundaries(state[0], 'initial_theta', folder='results')
-    print_2d_boundaries(state[1], 'initial_phi', folder='results')
+    print_2d_boundaries(state[0], terminal_only=True)
+    print_2d_boundaries(state[1], terminal_only=True)
     # Set up theta_0 for quality functional
     print(problem.quality())
     # print('Solving boundary problem with phi_n')
@@ -27,7 +27,7 @@ def main():
     print(problem.quality())
     print('Solve reverse problem')
     problem.solve_reverse(tolerance=1e-20, iterations=5000)
-    print_2d_boundaries(problem.gamma, name='founded_gamma_latest', folder='results')
+    # print_2d_boundaries(problem.gamma, name='founded_gamma_latest', folder='results')
     end_time = time.gmtime(time.time() - start_time)
     print("Job's done! Elapsed time: {}".format(time.strftime("%H:%M:%S", end_time)))
     return problem

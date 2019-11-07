@@ -202,10 +202,10 @@ func int CountStateNewton()
         phiold = phi;
         solve CalcSol([theta, phi], [v, w]) =
             int2d(mainMesh)(a * Grad(theta)' * Grad(v))
-            + int1d(mainMesh)(beta * v * theta)
             + int2d(mainMesh)(4 * b * ka * v * thetaold^3*theta)
             - int2d(mainMesh)(3 * b * ka * v * thetaold^4)
             - int2d(mainMesh)(b * ka * v * phi)
+            + int1d(mainMesh)(beta * v * theta)
             - int1d(mainMesh)(beta * v * thetaB)
             //
             + int2d(mainMesh)(alpha * Grad(phi)' * Grad(w))
