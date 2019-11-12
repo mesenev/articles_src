@@ -4,7 +4,7 @@ from solver import SolveDirect
 
 def main():
     problem = SolveDirect()
-    state = problem.solve_boundary()
+    state = problem.solve_boundary().split()
     print('Theta: ')
     print_2d_boundaries(state[0], terminal_only=True)
     print('Phi: ')

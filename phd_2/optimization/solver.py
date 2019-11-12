@@ -1,16 +1,16 @@
 # noinspection PyUnresolvedReferences
 from dolfin import (
-    Function, inner, grad, solve, interpolate, dx, ds
-)
+    Function, inner, grad, solve, interpolate, dx, ds,
+    Constant, DirichletBC)
+from ufl import dot
 
-from phd_2.optimization.default_values import DefaultValues
+from phd_2.optimization.default_values import DefaultValues, Boundary, partial_n, _n
 
 
 class SolveDirect(DefaultValues):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
 
     def print_min_max_functions(self):
         for i in self.state:
@@ -24,8 +24,9 @@ class SolveDirect(DefaultValues):
             + self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
             + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx \
             + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx \
-            - self.a * inner(self.theta_n, self.v) * ds
-        solve(boundary_problem == 0, self.state)
+            - self.a * inner(dot(_n, grad(self.theta)), self.v) * ds \
+            - self.alpha * inner(self.phi_n, self.h) * ds
+        solve(boundary_problem == 0, self.state, self.theta_bc)
         return self.state
 
 #  WIP
