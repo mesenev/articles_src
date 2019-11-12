@@ -15,7 +15,8 @@ class DefaultValues:
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
     v, h = TestFunctions(state_space)
-    theta, phi = split(Function(state_space))
+    state = Function(state_space)
+    theta, phi = split(state)
 
     def __init__(self, theta_n=theta_n_default, phi_n=phi_n_default, **kwargs):
         self.a = 0.006

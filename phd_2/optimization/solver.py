@@ -10,7 +10,7 @@ class SolveDirect(DefaultValues):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.state = Function(self.state_space)
+
 
     def print_min_max_functions(self):
         for i in self.state:
@@ -19,16 +19,14 @@ class SolveDirect(DefaultValues):
 
     # TODO: WRITE TESTS FOR BOUNDARY PROBLEM
     def solve_boundary(self):
-        w = Function(self.state_space)
         boundary_problem = \
             self.a * inner(grad(self.theta), grad(self.v)) * dx \
             + self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
             + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx \
             + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx \
             - self.a * inner(self.theta_n, self.v) * ds
-        # - self.alpha * inner(self.phi_n, self.h) * ds
-        solve(boundary_problem == 0, w)
-        return w
+        solve(boundary_problem == 0, self.state)
+        return self.state
 
 #  WIP
 #

@@ -32,7 +32,6 @@ boundary_space = FunctionSpace(omega_b, 'Lagrange', 3)
 boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
 
 bc = DirichletBC(function_space, theta_b, boundary)
-n = FacetNormal(omega)
 
 theta = Function(function_space)
 phi = Function(function_space)

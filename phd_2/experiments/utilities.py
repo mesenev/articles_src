@@ -27,7 +27,7 @@ def print_all_variations(v, name, folder):
         print_3d_boundaries_separate(v, name=name, folder=folder + '/separate')
 
 
-def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=False):
+def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=True):
     left = list(map(lambda x: v(Point(0, x)), (1 / (steps - 1) * _ for _ in range(0, steps))))
     top = list(map(lambda x: v(Point(x, 1)), (1 / (steps - 1) * _ for _ in range(0, steps))))
     right = list(map(lambda x: v(Point(1, x)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
