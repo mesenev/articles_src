@@ -1,19 +1,21 @@
 from dolfin import (
     FunctionSpace,
     Function, split, TestFunctions, FiniteElement,
-    Expression,
-    Constant, DirichletBC, FacetNormal)
+    Expression, DirichletBC, FacetNormal, project)
 from dolfin.cpp.generation import UnitSquareMesh
 from dolfin.cpp.mesh import SubDomain
 from ufl import grad, dot
 
-theta_n_default = Expression("exp(-(pow(x[0] - 0.5, 2) + pow(x[1] - 0.5, 2)) / 0.02)", degree=2)
+theta_n_default = Expression(
+    "exp(-(pow(x[0] - 0.5, 2) + pow(x[1] - 0.5, 2)) / 0.02)", degree=2
+)
 phi_n_default = Expression("x[0] * sin(x[1])", degree=2)
 theta_b = Expression("x[1] * sin(x[0]) + 0.1", degree=2)
 
 
 # Define Dirichlet boundary
 class Boundary(SubDomain):
+    # noinspection PyMethodOverriding
     def inside(self, x, on_boundary):
         return on_boundary
 
@@ -37,8 +39,24 @@ class DefaultValues:
         self.gamma = 3
         self.theta_n = theta_n
         self.phi_n = phi_n
+        self.theta_b = theta_b  # Warning! Might be ambiguous
+        self._r = project(
+            Expression('a * theta_n + beta * theta_b',
+                       element=self.finite_element,
+                       a=self.a, theta_n=self.theta_n,
+                       beta=self.beta, theta_b=self.theta_b
+                       ),
+            self.simple_space)
         for key, val in kwargs:
             setattr(self, key, val)
+
+    def _r(self):
+        _ = Expression(
+            'a * theta_n + beta * theta_b',
+            a=self.a, theta_n=self.theta_n,
+            beta=self.beta, theta_b=self.theta_b
+        )
+        return _
 
 
 _n = FacetNormal(DefaultValues.omega)
