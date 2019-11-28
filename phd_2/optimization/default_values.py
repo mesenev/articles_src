@@ -1,9 +1,9 @@
 from dolfin import (
     FunctionSpace,
     Function, split, TestFunctions, FiniteElement,
-    Expression, DirichletBC, FacetNormal, project)
+    Expression, DirichletBC, FacetNormal, project, VectorFunctionSpace)
 from dolfin.cpp.generation import UnitSquareMesh
-from dolfin.cpp.mesh import SubDomain
+from dolfin.cpp.mesh import SubDomain, BoundaryMesh
 from ufl import grad, dot
 
 theta_n_default = Expression(
@@ -22,9 +22,13 @@ class Boundary(SubDomain):
 
 class DefaultValues:
     omega = UnitSquareMesh(32, 32)
+    omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 2)
+
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
+    boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
+
     v, h = TestFunctions(state_space)
     state = Function(state_space)
     theta, phi = split(state)
@@ -49,14 +53,6 @@ class DefaultValues:
             self.simple_space)
         for key, val in kwargs:
             setattr(self, key, val)
-
-    def _r(self):
-        _ = Expression(
-            'a * theta_n + beta * theta_b',
-            a=self.a, theta_n=self.theta_n,
-            beta=self.beta, theta_b=self.theta_b
-        )
-        return _
 
 
 _n = FacetNormal(DefaultValues.omega)

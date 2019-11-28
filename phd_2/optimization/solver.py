@@ -2,10 +2,13 @@
 from dolfin import (
     FunctionSpace, Function, split, TestFunctions, FiniteElement,
     Expression, Constant, DirichletBC, FacetNormal, project, inner,
-    grad, interpolate, solve, dx, ds, assemble
-)
+    grad, interpolate, solve, dx, ds, assemble,
+    TrialFunctions)
 
+from phd_2.experiments.utilities import print_2d_boundaries, print_2d
 from phd_2.optimization.default_values import DefaultValues
+
+_MAX_ITERATIONS = 10 ** 8
 
 
 class SolveBoundary(DefaultValues):
@@ -32,9 +35,9 @@ class SolveBoundary(DefaultValues):
 
 
 class SolveOptimization(SolveBoundary):
-    _lambda = 0.1 ** 6
-    conjugate = Function(super().state_space)
-    p1, p2 = split(conjugate)
+    _lambda = 0.1 ** 3
+    p1, p2 = TrialFunctions(DefaultValues.state_space)
+    conjugate = Function(DefaultValues.state_space)
     epsilon = 0.1 ** 3
 
     def __init__(self, **kwargs):
@@ -57,19 +60,35 @@ class SolveOptimization(SolveBoundary):
 
     def recalculate_phi_n(self):
         p1, p2 = self.conjugate.split()
-        self.phi_n = interpolate(
-            Expression('u + lmbd*(p_2 - eps*u)', element=self.finite_element,
-                       u=self.phi_n, lmbd=self._lambda, p_2=self.p2,
-                       eps=self.epsilon),
+        print_2d(p2, name='p2')
+        print_2d(p1, name='p1')
+        new_phi_n = interpolate(
+            Expression('u - eps*lm*p_2', degree=2, u=self.phi_n, lm=self._lambda, p_2=p2, eps=1),
             self.simple_space
         )
-        return
+        self.phi_n = new_phi_n
+        return new_phi_n
 
-    def quality(self):
+    def quality(self, add_to_story=True):
         quality = assemble(
             0.5 * (self.state[0] - self.theta_b) ** 2 * ds(self.omega)
             + self.epsilon * 0.5 * self.phi_n ** 2 * ds(self.omega)
         )
-        self.quality_history.append(quality)
+        if add_to_story:
+            self.quality_history.append(quality)
         return quality
-#
+
+    def _gradient_step(self):
+        self.solve_boundary()
+        self.quality()
+        self.solve_conjugate()
+        phi_n_current = self.phi_n
+        self.recalculate_phi_n()
+        phi_n_diff = Expression('o - n', o=phi_n_current, n=self.phi_n, degree=2)
+        print_2d_boundaries(phi_n_diff)
+
+    def find_optimal_control(self, iterations=_MAX_ITERATIONS):
+        for i in range(iterations):
+            print(f'Iteration {i}')
+            self._gradient_step()
+        return self.phi_n

@@ -2,10 +2,11 @@ from os import mkdir
 
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
+from dolfin import *
 from matplotlib import pyplot as plt, cm, gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from numpy import array, linspace, meshgrid, random, cross, sqrt, newaxis
-from dolfin import *
+
 import asciichartpy
 
 font = {'family': 'sans-serif',
@@ -33,11 +34,11 @@ def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=
     right = list(map(lambda x: v(Point(1, x)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
     bottom = list(map(lambda x: v(Point(x, 0)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
 
-    print("Values on left = ", *left)
-    print("Values on top = ", *top)
-    print("Values on right = ", *right)
-    print("Values on bottom = ", *bottom)
-    print_simple_graphic(left[:-1] + top[:-1] + right[:-1] + bottom)
+    # print("Values on left = ", *left)
+    # print("Values on top = ", *top)
+    # print("Values on right = ", *right)
+    # print("Values on bottom = ", *bottom)
+    print_simple_graphic(left[:-1] + top[:-1] + right[:-1] + bottom, name=name)
     if not terminal_only:
         if not name:
             raise Exception
@@ -104,6 +105,15 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap='bina
                  spacing='uniform',
                  orientation='vertical').ax.set_yticklabels(['< 0', '1.5', '> 3'])
     plt.savefig('{}/{}_full.eps'.format(folder, name, bbox_inches='tight'))
+
+
+def print_2d(v, name='function', folder='results'):
+    mesh = UnitSquareMesh(100, 100)
+    V = FunctionSpace(mesh, 'P', 1)
+    plt.figure()
+    c = plot(interpolate(v, V), title="function", mode='color')
+    plt.colorbar(c)
+    plt.savefig(f'{folder}/{name}.png')
 
 
 def print_3d_boundaries_single(v, name='solution', folder='results'):
@@ -184,7 +194,9 @@ def print_3d_boundaries_separate(v, name='solution', folder='results'):
     return
 
 
-def draw_simple_graphic(data, target_file, logarithmic=False, folder='results', x_label='', y_label='', ):
+def draw_simple_graphic(
+        data, target_file, logarithmic=False, folder='results', x_label='', y_label='',
+):
     x = [i for i in range(0, data.__len__())]
     plt.figure()
     plt.semilogx(x, data) if logarithmic else plt.plot(x, data)
@@ -204,8 +216,11 @@ def draw_simple_graphic(data, target_file, logarithmic=False, folder='results', 
     return
 
 
-def print_simple_graphic(data):
+def print_simple_graphic(data, name=None):
+    if name:
+        print(name.center(30, ' '))
     print(asciichartpy.plot(data, dict(height=10)))
+    print()
 
 
 def checkers():
