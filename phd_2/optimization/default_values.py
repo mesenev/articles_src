@@ -1,7 +1,8 @@
 from dolfin import (
     FunctionSpace,
     Function, split, TestFunctions, FiniteElement,
-    Expression, DirichletBC, FacetNormal, project, VectorFunctionSpace)
+    Expression, DirichletBC, FacetNormal, project, VectorFunctionSpace, Constant
+)
 from dolfin.cpp.generation import UnitSquareMesh
 from dolfin.cpp.mesh import SubDomain, BoundaryMesh
 from ufl import grad, dot
@@ -9,13 +10,13 @@ from ufl import grad, dot
 theta_n_default = Expression(
     "exp(-(pow(x[0] - 0.5, 2) + pow(x[1] - 0.5, 2)) / 0.02)", degree=2
 )
-phi_n_default = Expression("x[0] * sin(x[1])", degree=2)
+phi_n_default = Constant(0.0)  # Expression("x[0] * sin(x[1])", degree=2)
 theta_b = Expression("x[1] * sin(x[0]) + 0.1", degree=2)
 
 
 # Define Dirichlet boundary
 class Boundary(SubDomain):
-    # noinspection PyMethodOverriding
+    # noinspection PyMethodOverridin
     def inside(self, x, on_boundary):
         return on_boundary
 
@@ -45,7 +46,7 @@ class DefaultValues:
         self.phi_n = phi_n
         self.theta_b = theta_b  # Warning! Might be ambiguous
         self._r = project(
-            Expression('a * theta_n + beta * theta_b',
+            Expression('theta_n + theta_b',
                        element=self.finite_element,
                        a=self.a, theta_n=self.theta_n,
                        beta=self.beta, theta_b=self.theta_b

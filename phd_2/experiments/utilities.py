@@ -116,6 +116,34 @@ def print_2d(v, name='function', folder='results'):
     plt.savefig(f'{folder}/{name}.png')
 
 
+def print_two_with_colorbar(v1, v2, name, folder='results'):
+    import numpy as np
+
+    x = np.arange(0.0, 1.0, 0.01)
+    y = np.arange(0.0, 1.0, 0.01)
+    X, Y = np.meshgrid(x, y)
+    A = X * Y
+    B = X * Y
+    i1, j1 = 0, 0
+    for i in x[::-1]:
+        j1 = 0
+        for j in y:
+            A[i1, j1] = v1(Point(j, i))
+            B[i1, j1] = v2(Point(j, i))
+            j1 += 1
+        i1 += 1
+
+    fig, axes = plt.subplots(nrows=1, ncols=2)
+    for ax, f in zip(axes.flat, [A, B]):
+        im = ax.imshow(f)
+
+    fig.subplots_adjust(right=0.8)
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    fig.colorbar(im, cax=cbar_ax)
+
+    plt.savefig(f'{folder}/{name}.png')
+
+
 def print_3d_boundaries_single(v, name='solution', folder='results'):
     top = lambda x, y: v(Point(x, y, 1))
     bottom = lambda x, y: v(Point(x, y, 0))
@@ -217,8 +245,9 @@ def draw_simple_graphic(
 
 
 def print_simple_graphic(data, name=None):
+    print()
     if name:
-        print(name.center(30, ' '))
+        print(name.center(60, ' '))
     print(asciichartpy.plot(data, dict(height=10)))
     print()
 

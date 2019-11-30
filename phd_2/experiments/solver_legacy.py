@@ -5,8 +5,7 @@ from dolfin import (
     Function, split, TestFunctions, inner, grad, solve, FiniteElement, dx, ds,
     TrialFunctions, Expression, assemble, interpolate, Constant,
     NonlinearVariationalProblem, derivative)
-from dolfin.cpp.fem import NonlinearVariationalSolver
-from dolfin.cpp.generation import UnitCubeMesh, UnitSquareMesh
+from dolfin.cpp.generation import UnitSquareMesh
 
 
 class SolveDirect:
@@ -68,7 +67,8 @@ class SolveReverse(SolveDirect):
     def recalculate_phi_n_derivative(self):
         self.phi_n_derivative = interpolate(
             Expression('u + lmbd*(p_2 - eps*u)', u=self.phi_n_derivative,
-                       lmbd=self.lambda_, p_2=self.p_2, eps=self.epsilon, degree=3), self.simple_space
+                       lmbd=self.lambda_, p_2=self.p_2,
+                       eps=self.epsilon, degree=3), self.simple_space
         )
         return
 
