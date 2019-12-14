@@ -46,7 +46,7 @@ def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=
     return
 
 
-def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap='binary'):
+def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.coolwarm):
     '''
     https://stackoverflow.com/questions/36046338/contourf-on-the-faces-of-a-matplotlib-cube
     :param v: function to draw
@@ -58,7 +58,8 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap='bina
     fig = plt.figure()
     top = lambda x, y: v(Point(x, y, 1))
     vertical_left = lambda x, y: v(Point(x, 0, y))
-    vertical_right = lambda x, y: v(Point(1, x, y))
+    vertical_right = lambda x, y: v(Point(1, y, x))
+
     x_m, y_m = meshgrid(linspace(0, 1, num=100), linspace(0, 1, num=100))
     left_vals = array(list(map(vertical_left, x_m.reshape(100 ** 2), y_m.reshape(100 ** 2)))).reshape(100, 100)
     right_vals = array(list(map(vertical_right, x_m.reshape(100 ** 2), y_m.reshape(100 ** 2)))).reshape(100, 100)
@@ -70,41 +71,35 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap='bina
     Z = random.rand(100, 100) * 5.0 - 10.0
     cset = [[], [], []]
     # this is the example that worked for you:
-    levels = linspace(0, 3, 100)
+    levels = linspace(min(v.vector()), max(v.vector()), 50)
+    # levels = linspace(0, 1, 10)
     cset[0] = ax.contourf(X, Y, top_vals, zdir='z', offset=1, levels=levels, cmap=cmap)
     # now, for the x-constant face, assign the contour to the x-plot-variable:
-    cset[1] = ax.contourf(top_vals, y_m, x_m, zdir='x', offset=1, levels=levels, cmap=cmap)
+    cset[1] = ax.contourf(right_vals, y_m, x_m, zdir='x', offset=1, levels=levels, cmap=cmap)
     # likewise, for the y-constant face, assign the contour to the y-plot-variable:
-    cset[2] = ax.contourf(x_m, top_vals, y_m, zdir='y', offset=0, levels=levels, cmap=cmap)
+    cset[2] = ax.contourf(x_m, left_vals, y_m, zdir='y', offset=0, levels=levels, cmap=cmap)
     # setting 3D-axis-limits:
     ax.set_xlim3d(0, 1)
     ax.set_ylim3d(0, 1)
     ax.set_zlim3d(0, 1)
     fig.subplots_adjust(right=0.8)
     color_bar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    bounds = [0, 1.5, 3]
     fig.colorbar(cset[0], cax=color_bar_ax,
-                 boundaries=[-10] + bounds + [10],
                  extend='both',
                  extendfrac='auto',
-                 ticks=bounds,
                  spacing='uniform',
-                 orientation='vertical').ax.set_yticklabels(['< 0', '1.5', '> 3'])
+                 orientation='vertical')
     fig.colorbar(cset[1], cax=color_bar_ax,
-                 boundaries=[-10] + bounds + [10],
                  extend='both',
                  extendfrac='auto',
-                 ticks=bounds,
                  spacing='uniform',
-                 orientation='vertical').ax.set_yticklabels(['< 0', '1.5', '> 3'])
+                 orientation='vertical')
     fig.colorbar(cset[2], cax=color_bar_ax,
-                 boundaries=[-10] + bounds + [10],
                  extend='both',
                  extendfrac='auto',
-                 ticks=bounds,
                  spacing='uniform',
-                 orientation='vertical').ax.set_yticklabels(['< 0', '1.5', '> 3'])
-    plt.savefig('{}/{}_full.eps'.format(folder, name, bbox_inches='tight'))
+                 orientation='vertical')
+    plt.savefig('{}/{}_full.png'.format(folder, name, bbox_inches='tight'))
 
 
 def print_2d(v, name='function', folder='results'):
@@ -257,17 +252,17 @@ def checkers():
     print('3d boundary check')
     mesh = UnitCubeMesh(10, 10, 10)
     V = FunctionSpace(mesh, 'P', 1)
-    u = interpolate(Expression('x[0]+x[1]+x[2]', degree=3), V)
-    print_3d_boundaries_on_cube(u, 'test_3d_cube', folder='checker', cmap=cm.coolwarm)
+    u = interpolate(Expression('x[0]/2+x[1]/3+x[2]', degree=3), V)
+    print_3d_boundaries_on_cube(u, 'test_3d_cube', folder='checker', cmap='binary')
     # simple graphic check
-    print('Simple graphic check')
-    draw_simple_graphic([1, 2, 3, 4, 5, 6, 7, 8, 9], 'test_simple_graphic', folder='checker')
+    # print('Simple graphic check')
+    # draw_simple_graphic([1, 2, 3, 4, 5, 6, 7, 8, 9], 'test_simple_graphic', folder='checker')
 
-    print('2d boundaries check')
-    mesh = UnitSquareMesh(10, 10)
-    V = FunctionSpace(mesh, 'P', 1)
-    u = interpolate(Expression('x[0]+x[1]', degree=2), V)
-    print_2d_boundaries(u, 'test_2d_boundary', folder='checker')
+    # print('2d boundaries check')
+    # mesh = UnitSquareMesh(10, 10)
+    # V = FunctionSpace(mesh, 'P', 1)
+    # u = interpolate(Expression('x[0]+x[1]', degree=2), V)
+    # print_2d_boundaries(u, 'test_2d_boundary', folder='checker')
 
     return
 

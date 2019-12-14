@@ -5,12 +5,12 @@ from dolfin import (
     grad, interpolate, solve, dx, ds, assemble,
     TrialFunctions)
 
-from phd_2.optimization.default_values import DefaultValues
+from phd_2.optimization.default_values import DefaultValues3D
 
 _MAX_ITERATIONS = 10 ** 8
 
 
-class SolveBoundary(DefaultValues):
+class SolveBoundary(DefaultValues3D):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -28,17 +28,30 @@ class SolveBoundary(DefaultValues):
             + self.a * (self.theta - self._r) * self.v * ds \
             + self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
             + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx \
-            - self.alpha * inner(self.phi_n, self.h) * ds
+            - self.alpha * inner(self.phi - self.phi_n, self.h) * ds
         solve(boundary_problem == 0, self.state)
+        # theta_equation = \
+        #     self.a * inner(grad(self.theta), grad(self.v)) * dx \
+        #     + self.a * self.theta * self.v * ds(self.omega) + \
+        #     + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx
+        # theta_src = self._r * self.v * ds(self.omega)
+        # phi_equation = \
+        #     self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
+        #     + self.alpha * self.phi * self.h * ds(self.omega) \
+        #     + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx
+        # phi_src = self.phi_n * self.h * ds(self.omega)
+        #
+        # solve(theta_equation + phi_equation - theta_src - phi_src == 0, self.state)
+        # return self.state
         return self.state
 
 
 class SolveOptimization(SolveBoundary):
     _lambda = 0.1 ** 2
-    p1, p2 = TrialFunctions(DefaultValues.state_space)
-    conjugate = Function(DefaultValues.state_space)
-    tau, nu = TestFunctions(DefaultValues.state_space)
-    epsilon = 0.1 ** 3
+    p1, p2 = TrialFunctions(DefaultValues3D.state_space)
+    conjugate = Function(DefaultValues3D.state_space)
+    tau, nu = TestFunctions(DefaultValues3D.state_space)
+    epsilon = 0.1 ** 5
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -62,8 +75,11 @@ class SolveOptimization(SolveBoundary):
     def recalculate_phi_n(self):
         """ Interpolation for preventing Expression nesting """
         new_phi_n = interpolate(
-            Expression('u - lm * (eps * u - p_2)', degree=2, u=self.phi_n,
-                       lm=self._lambda, p_2=self.conjugate.split()[1], eps=self.epsilon),
+            Expression(
+                'u - lm * (eps * u - p_2)', element=self.simple_space.ufl_element(),
+                u=self.phi_n, lm=self._lambda,
+                p_2=self.conjugate.split()[1], eps=self.epsilon
+            ),
             self.simple_space
         )
         self.phi_n = new_phi_n

@@ -10,8 +10,13 @@
     \def\Im{\mathop{\mathrm{Im}}\nolimits}
     \summary Mesenev~P.\,R., Chebotarev~A.\,Yu. \author
     Boundary inverse problem for conductive-radiative equations of heat transfer\title
-    The boundary inverse problem of finding the reflecting properties of the boundary region for stationary radiation-conductive heat transfer equations in the three-dimensional region is considered. The existence of a quasi-solution of the inverse problem is proved and an optimality system is obtained. An algorithm for solving a problem is presented, the effectiveness of which is illustrated by numerical examples.
-    \keywords{Radiative heat transfer equations, quasi-solution of the inverse problem, gradient descent method.}
+    The boundary inverse problem of finding the reflecting properties of the boundary
+    region for stationary radiation-conductive heat transfer equations in the
+    three-dimensional region is considered. The existence of a quasi-solution of the
+    inverse problem is proved and an optimality system is obtained. An algorithm for solving
+    a problem is presented, the effectiveness of which is illustrated by numerical examples.
+    \keywords{Radiative heat transfer equations, quasi-solution of the inverse problem,
+    gradient descent method.}
 
     \UDC{517.95}
     \AMS{35K55, 35Q79}
@@ -20,17 +25,25 @@
 
     \title{Граничная обратная задача для уравнений сложного теплообмена}
 
-    \author{П.\,Р.~Месенев}{Дальневосточный федеральный университет, 690950, г.~Владивосток, ул.~Суханова,~8;}{mesenev.pr@gmail.com}
-    \author{А.\,Ю.~Чеботарев}{Институт прикладной математики ДВО РАН, 690041, Владивосток, ул. Радио, 7}{cheb@iam.dvo.ru}
+    \author{П.\,Р.~Месенев}{Дальневосточный федеральный университет, 690950,
+    г.~Владивосток, ул.~Суханова,~8;}{mesenev.pr@gmail.com}
+    \author{А.\,Ю.~Чеботарев}{Институт прикладной математики ДВО РАН, 690041,
+    Владивосток, ул. Радио, 7}{cheb@iam.dvo.ru}
 
     \makeface
 
-    \abstract Рассмотрена граничная обратная задача нахождения отражающих свойств участка границы для стационарных уравнений радиационно-кондуктивного теплообмена в трёхмерной области. Доказано существование квазирешения обратной задачи и получена система оптимальности. Приведён алгоритм решения задачи, эффективность которого проиллюстрирована численными примерами.
+    \abstract Рассмотрена граничная обратная задача нахождения отражающих
+    свойств участка границы для стационарных уравнений радиационно-кондуктивного
+    теплообмена в трёхмерной области. Доказано существование квазирешения обратной
+    задачи и получена система оптимальности. Приведён алгоритм решения задачи,
+    эффективность которого проиллюстрирована численными примерами.
 
-    \keywords{уравнения радиационного теплообмена, квазирешение обратной задачи, метод градиентного спуска.}
+    \keywords{уравнения радиационного теплообмена,
+    квазирешение обратной задачи, метод градиентного спуска.}
 
     \section{Введение}
-    Исследование математических моделей радиационного теплопереноса \cite{modest_rht}, учитывающих одновременно вклад эффектов теплопроводности и излучения даёт теоретическую основу для инженерных решений в различных областях, таких как производство стекла \cite{OControl_3}, лазерная интерстициальная термотерапия \cite{tse_lasor}, и др. Главной особенностью данных процессов является существенное влияние излучения на теплообмен при высоких температурах. Значительное число работ посвящено исследованию задач управления для нестационарных моделей сложного теплообмена \cite{pinnau_identification, pinnau_optimal_control, pinnau_glass}, в которых для описания температурного поля используется нестационарное уравнение теплопроводности, а для моделирования излучения — стационарное диффузионное приближение уравнения переноса излучения. В работах \cite{covt_last, grenkin_13} задача оптимального управления сводится к bang-bang принципу \cite{grenkin_15}, или аналогичному. Близкие к рассмотренной в данной статье, задача управления коэффициентом отражения для полностью стационарной модели исследовалась в \cite{cheb_origin}, для нестационарной модели -- в \cite{grenkin_optimalnoe_upravleine}. Отметим также работы \cite{a6,a7}, в которых рассмотрены свойства квазирешений обратных задач для уравнений тепломассопереноса.
+    Исследование математических моделей радиационного теплопереноса \cite{modest_rht},
+    учитывающих одновременно вклад эффектов теплопроводности и излучения даёт теоретическую основу для инженерных решений в различных областях, таких как производство стекла \cite{OControl_3}, лазерная интерстициальная термотерапия \cite{tse_lasor}, и др. Главной особенностью данных процессов является существенное влияние излучения на теплообмен при высоких температурах. Значительное число работ посвящено исследованию задач управления для нестационарных моделей сложного теплообмена \cite{pinnau_identification, pinnau_optimal_control, pinnau_glass}, в которых для описания температурного поля используется нестационарное уравнение теплопроводности, а для моделирования излучения — стационарное диффузионное приближение уравнения переноса излучения. В работах \cite{covt_last, grenkin_13} задача оптимального управления сводится к bang-bang принципу \cite{grenkin_15}, или аналогичному. Близкие к рассмотренной в данной статье, задача управления коэффициентом отражения для полностью стационарной модели исследовалась в \cite{cheb_origin}, для нестационарной модели -- в \cite{grenkin_optimalnoe_upravleine}. Отметим также работы \cite{a6,a7}, в которых рассмотрены свойства квазирешений обратных задач для уравнений тепломассопереноса.
 
     Настоящая работа посвящена нахождению коэффициента отражения участка границы для стационарной модели, по дополнительной информации о температурном поле. Доказано существование квазирешения задачи. Предложен алгоритм градиентного спуска для решения экстремальной задачи и представлены результаты численных экспериментов.
 
@@ -47,14 +60,15 @@
 
     Здесь $\theta$ -- нормализованная температура, $\varphi$ -- нормализованная интенсивность излучения, усреднённая по всем направлениям, $\kappa_a$ -- коэффициент поглощения. Константы $a, b, \alpha, \gamma, \beta$ описываются следующим образом:
     \[
-    a = \frac{k}{\rho c_v}, \; b = \frac{4 \sigma n^2 T^3_{\text{max}}}{\rho c_v}, \; \alpha = \frac{1}{3\kappa -A \kappa_s}
+        a = \frac{k}{\rho c_v}, \; b = \frac{4 \sigma n^2 T^3_{\text{max}}}{\rho c_v}, \;
+        \alpha = \frac{1}{3\kappa -A \kappa_s}
     \]
     где $k$ -- теплопроводность, $c_v$ -- удельная теплоёмкость, $\rho$ -- плотность, $\sigma$ -- постоянная Стефана\,--\,Больцмана, $n$ -- индекс рефракции, $T_{\text{max}}$ -- максимальная температура, $\kappa := \kappa_s + \kappa_a$ -- коэффициент полного взаимодействия, $\kappa_s$ -- коэффициент рассеяния. Коэффициент $A \in [-1,1]$ описывает анизотропию рассеивания; случай $A=0$ отвечает изотропному рассеиванию.
 
     Уравнения \eqref{initial} дополняются граничными условиями на $\Gamma := \partial \Omega =\overline{\Gamma}_0 \cup \overline{\Gamma}_1 \cup \overline{\Gamma}_2$, где части границы $\Gamma_0, \Gamma_1, \Gamma_2$ не имеют пересечений.
 
     \begin{equation}
-        \label{initial_boundary}
+        \label{initial-boundary}
         \begin{aligned}
             \Gamma &: \; a \partial_n \theta + \beta (\theta - \theta _b) = 0, \\
             \Gamma_0 \cup \Gamma_2 &: \; \alpha \partial_n \varphi + \gamma(\varphi - \theta_b ^4 ) = 0, \\
@@ -102,7 +116,7 @@
     (g,v) = \int_{\Gamma_0 \cup \Gamma_2} \gamma \theta_b^4 v d\Gamma,$$
     $$(F(\varphi, u), v) = \int_{\Gamma_1} u (\varphi - \theta^4_b)v d\Gamma.$$
 
-    Пару $\{\theta, \varphi \} \in Y$ будем называть слабым решением задачи \eqref{initial}, \eqref{initial_boundary}, если
+    Пару $\{\theta, \varphi \} \in Y$ будем называть слабым решением задачи \eqref{initial}, \eqref{initial-boundary}, если
     \begin{equation}
         \label{weak_operational}
         A_1 \theta + b \kappa_a (| \theta | \theta^3 - \varphi ) = f, A_2 \varphi + \kappa_a (\varphi - |\theta|\theta^3) + F(\varphi, u) = g.
@@ -120,11 +134,11 @@
     \section{Анализ экстремальной задачи}
     \label{sec:optimality}
 
-    Для доказательства разрешимости задачи~\eqref{minimization_operational} нам необходимо также установить некоторые свойства решения задачи \eqref{initial}, \eqref{initial_boundary}.
+    Для доказательства разрешимости задачи~\eqref{minimization_operational} нам необходимо также установить некоторые свойства решения задачи \eqref{initial}, \eqref{initial-boundary}.
 
     \begin{lem}[\cite{lemma_proof}]
         \label{SolvabilityLemma}
-        Пусть выполняется условие (i). Тогда для каждого $ u \in U_{ad} $ существует единственное слабое решение $\{\theta, \varphi \}$ для задачи \eqref{initial},\eqref{initial_boundary} и справедливы оценки:
+        Пусть выполняется условие (i). Тогда для каждого $ u \in U_{ad} $ существует единственное слабое решение $\{\theta, \varphi \}$ для задачи \eqref{initial},\eqref{initial-boundary} и справедливы оценки:
         \begin{equation}
             \label{lemma_1}
             M_1 \le \theta \le M_2, \; M_1^4 \le \varphi \le M_2^4,
@@ -219,7 +233,7 @@
     \end{proof}
 
     \section{Численные эксперименты}
-    Пусть функционал $J(\theta)$ удовлетворяет условиям, указанным в \autoref{sec:optimality}. Для удобства введём переобозначение $\hat{J}(u):=J(\theta(u)), \hat{J}:L^2(\Gamma_1) \to \mathbb{R}$. Здесь $\theta(u)$ -- температурное поле задачи  \eqref{initial}--\eqref{initial_boundary} отвечающее управлению $u \in L^2(\Gamma_1)$.
+    Пусть функционал $J(\theta)$ удовлетворяет условиям, указанным в \autoref{sec:optimality}. Для удобства введём переобозначение $\hat{J}(u):=J(\theta(u)), \hat{J}:L^2(\Gamma_1) \to \mathbb{R}$. Здесь $\theta(u)$ -- температурное поле задачи  \eqref{initial}--\eqref{initial-boundary} отвечающее управлению $u \in L^2(\Gamma_1)$.
     Согласно формуле \eqref{therorem_2_eq3} градиент функционала $\hat{J}(u)$ \cite{grenkin_13} имеет вид
     $$\hat{J}'(u)= (\varphi(u) -\theta_b^4)p_2,$$
     где $\varphi(u)$ есть интенсивность излучения, $p_2$ -- соответствующая переменная сопряжённой системы.
@@ -274,7 +288,7 @@
         u(x)=0.49x+0.01. \;
     \end{equation}
 
-    Вычислим решение прямой задачи \eqref{initial}--\eqref{initial_boundary} для этих случаев. Полученное температурное поле на участке наблюдения $\Gamma_2$ выберем в качестве $\theta_0$. Далее, применяя предложенный алгоритм находим квазирешение обратной задачи \eqref{initial}--\eqref{theta_gamma}. Эффективность алгоритма, а также значение $u_0$ в первом и втором случаях иллюстрируются рис. \ref{control}. На рис. \ref{cost} показана динамика функционала качества по итерациям.
+    Вычислим решение прямой задачи \eqref{initial}--\eqref{initial-boundary} для этих случаев. Полученное температурное поле на участке наблюдения $\Gamma_2$ выберем в качестве $\theta_0$. Далее, применяя предложенный алгоритм находим квазирешение обратной задачи \eqref{initial}--\eqref{theta_gamma}. Эффективность алгоритма, а также значение $u_0$ в первом и втором случаях иллюстрируются рис. \ref{control}. На рис. \ref{cost} показана динамика функционала качества по итерациям.
 
     {\bf Замечание.} В предложенных примерах потребовалось $2*10^6$ итераций для нахождения квазирешения $u$. В то же время температурное поле на участке наблюдения $\Gamma_2$ становится близким к $\theta_0$ уже на $10^2$ итерации. Также наблюдается существенное падение скорости уменьшения функционала качества с каждой итерацией после того, как среднее значение найденной функции контроля становится близко к тестовой функции.
     \begin{figure}[H]

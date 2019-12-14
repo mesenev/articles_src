@@ -58,7 +58,7 @@ Normalized steady-state model of heat transfer in  $\Omega$, has the following f
 \end{equation}
 
 \begin{equation}
-    \label{initial_boundary}
+    \label{initial-boundary}
     \begin{aligned}
         \Gamma: \; a \partial_n \theta + \beta (\theta - \theta _b) = 0, \\
         \Gamma_0 \ \cup \Gamma_2: \; \alpha \partial_n \varphi + \gamma(\varphi - \theta_b ^4 ) = 0, \\
@@ -126,7 +126,7 @@ $$ (F_1(p_2,\hat{u}),\zeta) = \int_\Gamma \hat{u} p_2 \zeta d \Gamma,\; \forall 
     \frametitle{Solution of the optimal control problem}
     \begin{itemize}
         \item Define an initial approximation for control function $u = u_0$
-        \item Solve the primal problem \eqref{initial}--\eqref{initial_boundary}
+        \item Solve the primal problem \eqref{initial}--\eqref{initial-boundary}
         \item Solve the conjugate problems \eqref{therorem_2_eq1}--\eqref{therorem_2_eq2}
         \item By gradient descent method recalcuate control function $u$:
         $$u_{k+1} = P_{ad}\left[ u_k - \lambda (\varphi_k - \theta_b^4)p_{2k} \right].$$
@@ -135,7 +135,7 @@ $$ (F_1(p_2,\hat{u}),\zeta) = \int_\Gamma \hat{u} p_2 \zeta d \Gamma,\; \forall 
 
 \begin{frame}
 \frametitle{Solution of the primal problem}
-Find the solution $\{\theta, \varphi\}$ of \eqref{initial}--\eqref{initial_boundary} with the specified parameters.
+Find the solution $\{\theta, \varphi\}$ of \eqref{initial}--\eqref{initial-boundary} with the specified parameters.
 
 The domain $\Omega = \{(x,y):x^2+y^2 \le 1\}$.
 \begin{figure}[H]
@@ -250,7 +250,7 @@ The domain $\Omega = \{(x,y):x^2+y^2 \le 1\}$.
     \frametitle{Solution of the control problem in a semicircle}
 
 
-    In this case, the considered region will be a semicircle, with a radius $1$. Function $\theta_0$ Will be chosen as the solution of the boundary problem \eqref{initial}--\eqref{initial_boundary} with $u = 0.5$
+    In this case, the considered region will be a semicircle, with a radius $1$. Function $\theta_0$ Will be chosen as the solution of the boundary problem \eqref{initial}--\eqref{initial-boundary} with $u = 0.5$
     Further on the part of the boundary lying on the abscissa axis, we change the control to $u = 0.1$.
 
     The region will be represented in the form:
