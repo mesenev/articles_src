@@ -5,6 +5,8 @@ import matplotlib.patches as mpatches
 from dolfin import *
 from matplotlib import pyplot as plt, cm, gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+# noinspection PyUnresolvedReferences
+from mpl_toolkits.mplot3d import Axes3D
 from numpy import array, linspace, meshgrid, random, cross, sqrt, newaxis
 
 import asciichartpy

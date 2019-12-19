@@ -22,27 +22,28 @@ class SolveBoundary(DefaultValues3D):
 
     # TODO: WRITE TESTS FOR BOUNDARY PROBLEM
     def solve_boundary(self):
-        boundary_problem = \
-            self.a * inner(grad(self.theta), grad(self.v)) * dx \
-            + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx \
-            + self.a * (self.theta - self._r) * self.v * ds \
-            + self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
-            + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx \
-            - self.alpha * inner(self.phi - self.phi_n, self.h) * ds
-        solve(boundary_problem == 0, self.state)
-        # theta_equation = \
+        # boundary_problem = \
         #     self.a * inner(grad(self.theta), grad(self.v)) * dx \
-        #     + self.a * self.theta * self.v * ds(self.omega) + \
-        #     + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx
-        # theta_src = self._r * self.v * ds(self.omega)
-        # phi_equation = \
-        #     self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
-        #     + self.alpha * self.phi * self.h * ds(self.omega) \
-        #     + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx
-        # phi_src = self.phi_n * self.h * ds(self.omega)
+        #     + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx \
+        #     + self.a * self.theta * self.v * ds \
+        #     - self.a * self._r * self.v * ds \
+        #     + self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
+        #     + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx \
+        #     + self.alpha * self.phi * self.h * ds \
+        #     - self.alpha * self.phi_n * self.h * ds
+        # solve(boundary_problem == 0, self.state)
+        theta_equation = \
+            self.a * inner(grad(self.theta), grad(self.v)) * dx \
+            + self.a * self.theta * self.v * ds + \
+            + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx
+        theta_src = self._r * self.v * ds
+        phi_equation = \
+            self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
+            + self.alpha * self.phi * self.h * ds \
+            + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx
+        phi_src = self.phi_n * self.h * ds
         #
-        # solve(theta_equation + phi_equation - theta_src - phi_src == 0, self.state)
-        # return self.state
+        solve(theta_equation + phi_equation - theta_src - phi_src == 0, self.state)
         return self.state
 
 

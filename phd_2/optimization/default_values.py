@@ -81,7 +81,7 @@ class DefaultValues3D:
         self.phi_n = phi_n
         self.theta_b = theta_b_3d  # Warning! Might be ambiguous
         self._r = project(
-            Expression('theta_n + theta_b',
+            Expression('a * (theta_n + theta_b)',
                        degree=3,
                        a=self.a, theta_n=self.theta_n,
                        beta=self.beta, theta_b=self.theta_b
