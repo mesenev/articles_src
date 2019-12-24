@@ -34,12 +34,12 @@ class SolveBoundary(DefaultValues3D):
         # solve(boundary_problem == 0, self.state)
         theta_equation = \
             self.a * inner(grad(self.theta), grad(self.v)) * dx \
-            + self.a * self.theta * self.v * ds + \
+            + self.theta * self.v * ds + \
             + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx
         theta_src = self._r * self.v * ds
         phi_equation = \
             self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
-            + self.alpha * self.phi * self.h * ds \
+            + self.phi * self.h * ds \
             + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx
         phi_src = self.phi_n * self.h * ds
         #
@@ -61,16 +61,26 @@ class SolveOptimization(SolveBoundary):
     def solve_conjugate(self):
         theta, phi = self.state.split()
         v, h = self.tau, self.nu
-        conjugate_problem = \
+        conjugate_theta = \
             self.a * inner(grad(self.p1), grad(v)) * dx \
+            + self.p1 * v * ds + \
             + 4 * self.b * self.ka * inner(self.p1, theta ** 3 * v) * dx \
-            + self.a * self.beta * inner(self.p1, v) * ds \
-            - 4 * self.ka * inner(self.p2, theta ** 3 * v) * dx \
-            + self.alpha * inner(grad(self.p2), grad(h)) * dx \
-            + self.ka * inner(self.p2, h) * dx \
-            - self.b * self.ka * inner(self.p1, h) * dx
+            - 4 * self.ka * inner(self.p2, theta ** 3 * v) * dx
+        conjugate_phi = \
+            self.alpha * inner(grad(self.p2), grad(h)) * dx \
+            + self.p2 * h * ds \
+            - self.b * self.ka * inner(self.p1, h) * dx \
+            + self.ka * inner(self.p2, h) * dx
+        # conjugate_problem = \
+        #     self.a * inner(grad(self.p1), grad(v)) * dx \
+        #     + 4 * self.b * self.ka * inner(self.p1, theta ** 3 * v) * dx \
+        #     + self.a * self.beta * inner(self.p1, v) * ds \
+        #     - 4 * self.ka * inner(self.p2, theta ** 3 * v) * dx \
+        #     + self.alpha * inner(grad(self.p2), grad(h)) * dx \
+        #     + self.ka * inner(self.p2, h) * dx \
+        #     - self.b * self.ka * inner(self.p1, h) * dx
         j_theta = - (theta - self.theta_b) * v * ds
-        solve(conjugate_problem == j_theta, self.conjugate)
+        solve(conjugate_theta + conjugate_phi == j_theta, self.conjugate)
         return self.conjugate
 
     def recalculate_phi_n(self):
@@ -89,11 +99,19 @@ class SolveOptimization(SolveBoundary):
     def quality(self, add_to_story=True):
         quality = assemble(
             0.5 * (self.state[0] - self.theta_b) ** 2 * ds(self.omega)
-            + self.epsilon * 0.5 * self.phi_n ** 2 * ds(self.omega)
+            # + self.epsilon * 0.5 * self.phi_n ** 2 * ds(self.omega)
         )
         if add_to_story:
             self.quality_history.append(quality)
         return quality
+
+    def target_diff(self):
+        return interpolate(
+            Expression(
+                'pow(theta - tb, 2)', degree=3,
+                theta=self.state.split()[0], tb=self.theta_b
+            ), self.simple_space
+        )
 
     def _gradient_step(self):
         self.solve_boundary()
@@ -108,5 +126,5 @@ class SolveOptimization(SolveBoundary):
         for i in range(iterations):
             print(f'Iteration {i}', end='\t')
             self._gradient_step()
-            print(f'quality: {self.quality_history[-1]}')
+            print(f'quality: {self.quality_history[-1]}\t target: {self.target_diff()}')
         return self.phi_n

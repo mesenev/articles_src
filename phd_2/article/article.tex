@@ -17,8 +17,28 @@
 \newtheorem{prop}{\indent Утверждение}
 \bibliographystyle{unsrt}
 \graphicspath{{../optimization/results/}}
+\usepackage[framemethod=default]{mdframed}
+
+\global\mdfdefinestyle{exampledefault}{%
+linecolor=lightgray,linewidth=1pt,%
+leftmargin=1cm,rightmargin=1cm,
+}
+
+\newenvironment{mymdframed}[1]{
+\mdfsetup{%
+frametitle={\colorbox{white}{\,#1\,}},
+frametitleaboveskip=-\ht\strutbox,
+frametitlealignment=\raggedright
+}%
+\begin{mdframed}[style=exampledefault]
+\end{mdframed}
+}
+
+
+
 
 \begin{document}
+    Build by \today
     \section{Введение}\label{sec:intro}
     Стационарная нормализированная диффузионная модель, описывающая радиационный и кондуктивный
     обмен в ограниченной области $\Omega \subset \mathbb{R}^3$ имеет следующий вид~\cite{modest-rht}
@@ -73,15 +93,15 @@
     оптимального управления.
     За функцию управления возьмём функцию $u$ такую, что
     \begin{equation}
-        \label{phi-neumann}
-        \partial_n \varphi |_\Gamma = u.
+        \label{phi-boundary}
+        \alpha (\partial_n \varphi + \varphi) = u \;\; \text{на } \Gamma.
     \end{equation}
     Из граничных условий ~\eqref{theta-neumann},~\eqref{theta-dirichlet} получим
     \begin{equation}
-        \label{theta-neumann-r}
+        \label{theta-boundary}
         \partial_n \theta  + \theta - r = 0, \;\; r := q_b + \theta_b.
     \end{equation}
-    Задача оптимального управления заключается в минимизации функционала качествa
+    Задача оптимального управления заключается в минимизации функционала качества
     \begin{equation}
         \label{quality}
         J(\theta, u) = \frac{1}{2} ||\theta - \theta_b||^2_\Gamma + ||u||^2_\Gamma,
@@ -109,16 +129,16 @@
     %    Отметим также работы [12, 13], в которых рассмотрены свойства квазирешений
     %    обратных задач для уравнений тепломассапереноса.
 
-    \section{Формализация задачи нахождения квазирешения}\label{sec:formalization}
+    \section{Постановка задачи управления}\label{sec:formalization}
     будем предполагать, что исходные данные удовлетворяют следующему условию:
 
     (i) WIP\@.
 
-    Пусть $H = L^2(\Omega), V = W^1_2(\Omega), Y = V \times V $.
+    Пусть $H = L^2(\Omega), V = H^1(\Omega), U = L^2(\Gamma)$, $V \subset H = H' \subset V'$
     Пространство $H$ отождествляем с сопряжённым пространством $H'$ так,
     что $V \subset H = H' \subset V'$.
     Определим $(f,v)$ как значение функционала $f \in V'$ на элементе $v \in V$,
-    совпадающее со скалярным произведением в $H$, если $f\in H, \|f\|^2 = (f,f)$.
+    совпадающее со скалярным произведением в $H$, если $f\in H, \|f\|_\Gamma^2 = \int_\Gamma w^2$.
     Пространство $U = L^2(\Gamma)$ является пространством управлений;
 
 
@@ -126,41 +146,138 @@
     Определим операторы:
 
     \begin{gather*}
-        A_{1,2}\colon V \to V', \;\; F \colon V \times U \to V', \; f \in V', \; g \in V'.\\
-        (A_1\theta,v) = a( \nabla \theta, \nabla v ) + \int_\Gamma a \theta v d\Gamma, \;
-        (A_2 \varphi, v) = \alpha (\nabla \varphi,\nabla v), \\
-        (f,v) = \int_\Gamma r v d\Gamma, \;\; (g,v) = \int_\Gamma \alpha u v d\Gamma,\\
+        A \colon V \to V', \; B \colon U \to V', \; f \in V', \; g \in V'.\\
+        (A y,z) = (\nabla y, \nabla v) + \int_\Gamma y v; \;
+        (B w, v) = \int_\Gamma w z; \; f := Br
     \end{gather*}
 
-    Пару $\{\theta, \varphi \} \in Y$ будем называть слабым решением
-    задачи~\eqref{initial},~\eqref{phi-neumann},~\eqref{theta-neumann-r} если
+    задача оптимального управления в операторном виде записывается в следующем виде.
+    Найти тройку $\{u \theta, \varphi \} \in U \times V \times V$:
     \begin{equation}
-        \label{weak-operational}
-        A_1 \theta + b \kappa_a (| \theta | \theta^3 - \varphi ) = f,
-        A_2 \varphi + \kappa_a (\varphi - |\theta|\theta^3)  = g.
+        \label{weak-theta}
+        a A \theta + b \kappa_a (| \theta | \theta^3 - \varphi ) = f,
+    \end{equation}
+    \begin{equation}
+        \label{weak-phi}
+        \alpha A \varphi + \kappa_a (\varphi - |\theta|\theta^3)  = Bu.
     \end{equation}
 
     Задача нахождения оптимального управления состоит в минимизации функционала $J(\theta, u)$,
     определённом на паре $\theta, u$, где $\theta$ -- компонент
-    решения системы~\eqref{weak-operational}.
+    решения системы~\eqref{weak-theta},\eqref{weak-phi}.
     Таким образом
     \begin{equation}
         \label{minimization-operational}
-        J(\theta, u) \to \text{inf}, \; \{\theta, \varphi\}
-        \text{ решение~\eqref{weak-operational}, соответствующее функции } u \in U.
+        J_\varepsilon(\theta, u) = \frac{1}{2}\|\theta -\theta_b\|^2_\Gamma
+        + \frac{\varepsilon}{2}\|u\|^2_\Gamma \rightarrow \text{inf},
     \end{equation}
 
-    Пара $\{\hat{\theta}, \hat{\varphi} \}$ соответствующая минимуму $J$,
-    отвечающая функции $\hat{u}$ называется оптимальным состоянием.
+    Непустота множества допустимых троек следует из следующей леммы
+    \begin{lem}
+        \label{lemma-1}
+        Пусть $r, u \in U$.
+        Тогда сущесвует единственное решение~\eqref{weak-theta},\eqref{weak-phi}
+        и справедливы оценки
+        \begin{equation}
+            \label{lemma-boundaries}
+            \begin{aligned}
+                a\|\theta\|_V \leq \|r\|_\Gamma + \frac{\kappa_a}{\alpha}\|r+bu\|_\Gamma, \\
+                \alpha b \|\varphi\|_V \leq \|r\|_\Gamma +\left(\frac{\kappa_a}{\alpha} + 1\right).
+            \end{aligned}
+        \end{equation}
+    \end{lem}
+    \begin{proof}
+        Умножим~\eqref{weak-phi} на $b > 0$ и сложим с~\eqref{weak-theta}
+        \begin{gather*}
+            A \left( a \theta + \alpha b \varphi \right) = B(r + bu),
+            a\theta + \alpha b \varphi = a^{-1}B(r + bu),
+            \varphi = \frac{1}{\alpha b}(A^{-1}B(r +bu) - a\theta).
+        \end{gather*}
+        Поэтому $\theta \in V$ является решением следующего уравнения:
+        \begin{equation}
+            \label{lemma-1-1}
+            a A \theta + \frac{\kappa_a}{\alpha} \theta + b\kappa_a |\theta|\theta^3 = g.
+        \end{equation}
+        Здесь $g = Br + \frac{\kappa_a}{\alpha}A^{-1}B(r+bu) \in V'$.
+        Однозначная разрешимость уравнения~\eqref{lemma-1-1} с монотонной нелинейностью
+        известна~\cite{??}.
 
-    \section{Анализ решения экстремальной задачи}\label{sec:analysis}
+        Умножим скалярно~\eqref{lemma-1-1} на $\theta \in V$ и отбросим неотрицательные
+        слагаемые в левой части
+        $a \|\theta\|^2_V \leq (g, \theta) \leq \|g\|_V; \|\theta\|_V$,
+        т.е. $a\|\theta\|V \leq \|g\|_v$.
+
+        \begin{mymdframed}{Замечание}
+            \begin{enumerate}
+                \item Если $\|z\|^2 \leq \kappa_o\|z\|^2_v$
+                $\forall z \in V => \|z\|_{V'} \leq \kappa_o \|z\|_V$
+                \item $\forall h \in U \; \|Bh\|_{V'} \leq \|h\|_\Gamma$
+                \item \|A^{-1}g\|_V \leq \|g\|_{V'} \; \forall g \in V!
+            \end{enumerate}
+        \end{mymdframed}
+
+        С учетом замечаний получаем
+        $\|g\|_{V'} \leq \|r\|_\Gamma + \frac{\kappa}{\alpha}\kappa_o \|r + bu\|_\Gamma$
+        $\|\varphi\|_V \leq \frac{1}{\alpha b} \|r + bu\|_\Gamma + \frac{a}{\alpha b} \|\theta\|_V$
+        откуда следуют оценки~\eqref{lemma-boundaries}.
+    \end{proof}
+    \section{Разрешимость задачи управления и система оптимальности}\label{sec:solvability-control}
     \begin{thm}
         \label{cp-existing}
-        Пусть выполняются условия (i).
-        Тогда существует решение задачи $CP$.
+        Пусть $\theta_b, q_b \in L^2(\Gamma)$.
+        Тогда существует решение
+        задачи~\eqref{weak-theta},\eqref{weak-phi},\eqref{minimization-operational}.
     \end{thm}
     \begin{proof}
-        wip.
+        Пусть $j_\varepsilon = \inf J_\varepsilon$ на множестве допустимых управлений $u \in U$,
+        удовлетворяющих~\eqref{weak-theta},\eqref{weak-phi}.
+
+        Существует $u_m \in U, \theta_m \in V, J_\varepsilon(\theta_m, u_m)|_{m \rightarrow \infty}
+        \rightarrow j_\varepsilon $
+
+        \begin{gather}
+            \label{theorem-1-operational}
+            a A \theta_m +b \kappa_a(|\theta|\theta^3 - \varphi_m) = Br
+            \alpha A \varphi_m + \kappa_a (\varphi_m - |\theta|\theta^3) = B u_m.
+        \end{gather}
+
+
+        Из~\ref{lemma-1} следует, что
+        \begin{gather*}
+            \|\theta_m\|_V \leq C,
+            \|\varphi\|_V \leq C,
+            \|u_m\| \leq C.
+        \end{gather*}
+        что, в свою очередь, даёт нам $\|\theta_m\|_{L^6(\Omega)} \leq C.$
+        Здесь через $C$ обозначена постоянная, не зависящая от $m$.
+
+        Тогда существует тройка
+        \begin{gather*}
+            \label{theorem-1-convergence}
+            \{ \hat{u}, \hat{\theta}, \hat{\varphi} \} \in U \times V \times V,
+            u_m \rightarrow \hat{u} \text{слабо в} U,
+            \theta_m, \varphi_m \rightarrow \hat{\theta}, \hat{\varphi} \text{слабо в} V, \text{сильно в } L^4(\Omega)
+        \end{gather*}
+
+        Заметим, что $\forall v \in V$
+        \begin{equation}
+            \label{theorem-1-est}
+            |( |\theta|\theta^3 - |\hat{\theta}|\hat{\theta}^3, v) \leq
+            2 \int_\Omega |\theta_m - \hat{\theta}| (|\theta_m|^3 + |\hat{\theta}|^3)|v| \leq
+            2 \| \theta_m - \hat{\theta}\|_{L^4(\Omega)} \|v\|_{L^4(\Omega)}
+            ( \| \theta_m \|^3_{L_6(\Omega)} + \| \hat{\theta} \|^3)
+        \end{equation}
+
+        условие~\eqref{theorem-1-convergence} и оценка~\eqref{theorem-1-est} позволяют прейти
+        к пределу в~\eqref{theorem-1-operational}:
+        \[
+            a A \hat{\theta} + b \kappa_a (|\theta|\theta^3 - \hat{\varphi} = Br), \;
+            \alpha A \hat{\varphi} + \kappa_a (\hat{\varphi} -|\theta|\theta^3) = B \hat{u}.
+        \]
+        и при этом $j_\varepsilon \leq J(\hat{\theta}, \hat{u}) \leq \lim J(\theta_m, u_m) =
+        j_\varepsilon$.
+        Это значит, что тройка $\{ \hat{u}, \hat{\theta}, \hat{\varphi} \}$ -
+        решение задачи~\eqref{weak-theta},\eqref{weak-phi},\eqref{minimization-operational}.
     \end{proof}
 
     Вывод условий оптимальности основан на принципе множителей

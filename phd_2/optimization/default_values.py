@@ -11,7 +11,7 @@ theta_n_default_3d = Expression("(x[0] + x[1] + x[2])/7 + 0.1", degree=3)
 phi_n_default_2d = Constant(0.2)  # Expression("x[0] * sin(x[1])", degree=2)
 phi_n_default_3d = Expression("x[0] / 6 * sin(x[1]) + 0.1", degree=2)
 theta_b_2d = Expression("x[1] * sin(x[0]) + 0.1", degree=2)
-theta_b_3d = Constant(0.2)  # Expression("x[0] * sin(x[1] + x[2])/4 + 0.1", degree=3)
+theta_b_3d = Expression("x[0] * sin(x[1] + x[2])/4 + 0.1", degree=3)
 
 
 # Define Dirichlet boundary
