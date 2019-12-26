@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb,amsthm,amsfonts,amscd}
 \usepackage{float}
+\usepackage{xcolor}
 \usepackage{subfig}
 \usepackage{bm}
 \usepackage{algorithm}
@@ -201,7 +202,7 @@ frametitlealignment=\raggedright
         \end{equation}
         Здесь $g = Br + \frac{\kappa_a}{\alpha}A^{-1}B(r+bu) \in V'$.
         Однозначная разрешимость уравнения~\eqref{lemma-1-1} с монотонной нелинейностью
-        известна~\cite{??}.
+        известна~(???).
 
         Умножим скалярно~\eqref{lemma-1-1} на $\theta \in V$ и отбросим неотрицательные
         слагаемые в левой части
@@ -213,7 +214,7 @@ frametitlealignment=\raggedright
                 \item Если $\|z\|^2 \leq \kappa_o\|z\|^2_v$
                 $\forall z \in V => \|z\|_{V'} \leq \kappa_o \|z\|_V$
                 \item $\forall h \in U \; \|Bh\|_{V'} \leq \|h\|_\Gamma$
-                \item \|A^{-1}g\|_V \leq \|g\|_{V'} \; \forall g \in V!
+                \item $\|A^{-1}g\|_V \leq \|g\|_{V'} \; \forall g \in V!$
             \end{enumerate}
         \end{mymdframed}
 
@@ -379,7 +380,7 @@ frametitlealignment=\raggedright
             \label{thm-2-1}
             aA\hat{\theta} + b \kappa_a(|\hat{\theta}|^3 \hat{\theta} -\varphi) = Br, \\
             \alpha A \hat{\varphi} + \kappa_a(\hat{\varphi} - |\hat{\theta}|\hat{\theta}^3) = Bu, \\
-            aAp_1 +4|\hat{\theta}^|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}),
+            aAp_1 +4|\hat{\theta}|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}),
             \alpha A p_2 + \kappa_a (p_2 - b p_1) = 0,
             \varepsilon \hat{u} = p_2.
         \end{equation}
@@ -442,12 +443,12 @@ frametitlealignment=\raggedright
         \subfloat[Первый эксперимент]
         {
         \label{fig1:exp1}
-        \includegraphics[width=.51\linewidth]{../optimization/results/init_control.png}
+        \includegraphics[width=.49\linewidth]{../optimization/results/init_control.png}
         }
         \subfloat[Второй эксперимент]
         {
         \label{fig1:exp2}
-        \includegraphics[width=.51\linewidth]{../optimization/results/control.png}
+        \includegraphics[width=.49\linewidth]{../optimization/results/control.png}
         }
         \caption{Тестовая функция $u$, начальная $u_0$, найденная функция $u_{end}.$}
         \label{control}
