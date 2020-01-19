@@ -72,8 +72,12 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.co
     X, Y = meshgrid(X, Y)
     Z = random.rand(100, 100) * 5.0 - 10.0
     cset = [[], [], []]
-    # this is the example that worked for you:
-    levels = linspace(min(v.vector()), max(v.vector()), 50)
+    flat = [item for sublist in left_vals + right_vals + top_vals for item in sublist]
+    levels = linspace(0, 1, 50)
+    # min(flat),
+    # max(flat),
+    # 50
+    # )
     # levels = linspace(0, 1, 10)
     cset[0] = ax.contourf(X, Y, top_vals, zdir='z', offset=1, levels=levels, cmap=cmap)
     # now, for the x-constant face, assign the contour to the x-plot-variable:
@@ -101,7 +105,7 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.co
                  extendfrac='auto',
                  spacing='uniform',
                  orientation='vertical')
-    plt.savefig('{}/{}_full.png'.format(folder, name, bbox_inches='tight'))
+    plt.savefig('{}/{}.png'.format(folder, name, bbox_inches='tight'))
 
 
 def print_2d(v, name='function', folder='results'):

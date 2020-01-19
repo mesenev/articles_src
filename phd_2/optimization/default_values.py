@@ -7,9 +7,9 @@ from dolfin import (
 )
 
 theta_n_default_2d = Expression("exp(-(pow(x[0] - 0.5, 2) + pow(x[1] - 0.5, 2)) / 0.02)", degree=2)
-theta_n_default_3d = Expression("(x[0] + x[1] + x[2])/7 + 0.1", degree=3)
+theta_n_default_3d = Expression("(x[0] + x[1] + x[2])/4 + 0.1", degree=3)
 phi_n_default_2d = Constant(0.2)  # Expression("x[0] * sin(x[1])", degree=2)
-phi_n_default_3d = Expression("x[0] / 6 * sin(x[1]) + 0.1", degree=2)
+phi_n_default_3d = Constant(0.9)  # Expression("x[0] / 3 * sin(x[1]) + 0.1 + x[2] / 2", degree=3)
 theta_b_2d = Expression("x[1] * sin(x[0]) + 0.1", degree=2)
 theta_b_3d = Expression("x[0] * sin(x[1] + x[2])/4 + 0.1", degree=3)
 
@@ -28,6 +28,7 @@ class DefaultValues2D:
 
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
+    boundary_simple_space = FunctionSpace(omega_b, 'Lagrange', 2)
     boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
 
     v, h = TestFunctions(state_space)
@@ -65,6 +66,7 @@ class DefaultValues3D:
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
     boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
+    boundary_simple_space = FunctionSpace(omega_b, 'Lagrange', 1)
 
     v, h = TestFunctions(state_space)
     state = Function(state_space)
@@ -80,15 +82,20 @@ class DefaultValues3D:
         self.theta_n = theta_n
         self.phi_n = phi_n
         self.theta_b = theta_b_3d  # Warning! Might be ambiguous
-        self._r = project(
-            Expression('a * (theta_n + theta_b)',
-                       degree=3,
-                       a=self.a, theta_n=self.theta_n,
-                       beta=self.beta, theta_b=self.theta_b
-                       ),
-            self.simple_space)
+        self._r = None
+        self.recalculate_r()
         for key, val in kwargs:
             setattr(self, key, val)
+
+    def recalculate_r(self):
+        self._r = project(
+            Expression(
+                'a * (theta_n + theta_b)',
+                degree=3,
+                a=self.a, theta_n=self.theta_n,
+                beta=self.beta, theta_b=self.theta_b
+            ),
+            self.simple_space)
 
 
 _n_2d = FacetNormal(DefaultValues2D.omega)

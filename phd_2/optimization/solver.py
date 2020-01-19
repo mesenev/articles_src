@@ -42,7 +42,7 @@ class SolveBoundary(DefaultValues3D):
             + self.phi * self.h * ds \
             + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx
         phi_src = self.phi_n * self.h * ds
-        #
+
         solve(theta_equation + phi_equation - theta_src - phi_src == 0, self.state)
         return self.state
 
@@ -52,7 +52,7 @@ class SolveOptimization(SolveBoundary):
     p1, p2 = TrialFunctions(DefaultValues3D.state_space)
     conjugate = Function(DefaultValues3D.state_space)
     tau, nu = TestFunctions(DefaultValues3D.state_space)
-    epsilon = 0.1 ** 5
+    epsilon = 0.1 ** 9
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -98,7 +98,7 @@ class SolveOptimization(SolveBoundary):
 
     def quality(self, add_to_story=True):
         quality = assemble(
-            0.5 * (self.state[0] - self.theta_b) ** 2 * ds(self.omega)
+            0.5 * (self.state.split()[0] - self.theta_b) ** 2 * dx
             # + self.epsilon * 0.5 * self.phi_n ** 2 * ds(self.omega)
         )
         if add_to_story:
@@ -124,7 +124,8 @@ class SolveOptimization(SolveBoundary):
             self._lambda = _lambda
 
         for i in range(iterations):
-            print(f'Iteration {i}', end='\t')
             self._gradient_step()
-            print(f'quality: {self.quality_history[-1]}\t target: {self.target_diff()}')
+            print(f'Iteration {i},\tquality: {self.quality_history[-1]}')
+            if i in [100, 500, 1000]:
+                self._lambda *= 0.1
         return self.phi_n
