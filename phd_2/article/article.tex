@@ -21,22 +21,7 @@
 \graphicspath{{../optimization/results/}}
 \usepackage[framemethod=default]{mdframed}
 
-\global\mdfdefinestyle{exampledefault}{%
-linecolor=lightgray,linewidth=1pt,%
-leftmargin=1cm,rightmargin=1cm,
-}
-
-\newenvironment{mymdframed}[1]{
-\mdfsetup{%
-frametitle={\colorbox{white}{\,#1\,}},
-frametitleaboveskip=-\ht\strutbox,
-frametitlealignment=\raggedright
-}%
-\begin{mdframed}[style=exampledefault]
-\end{mdframed}
-}
-
-
+\newtheorem*{remark}{Замечание}
 
 
 \begin{document}
@@ -54,7 +39,7 @@ frametitlealignment=\raggedright
     Здесь $\theta$ – нормализованная температура,
     $\varphi$ – нормализованная интенсивность излучения, усредненная по всем направлениям.
     Положительные физические параметры $a, b, \kappa_a $ и $\alpha$,
-    описывающие свойства среды, описываются следующим образом:
+    отвечающие свойствам среды, описываются следующим образом:
     \[
         a = \frac{k}{\rho c_v}, \; b = \frac{4 \sigma n^2 T^3_{\text{max}}}{\rho c_v}, \;
         \alpha = \frac{1}{3\kappa -A \kappa_s}
@@ -106,7 +91,7 @@ frametitlealignment=\raggedright
     Задача оптимального управления заключается в минимизации функционала качества
     \begin{equation}
         \label{quality}
-        J(\theta, u) = \frac{1}{2} ||\theta - \theta_b||^2_\Gamma + ||u||^2_\Gamma,
+        J_\varepsilon(\theta, u) = \frac{1}{2} ||\theta - \theta_b||^2_\Gamma + \frac{\varepsilon}{2}||u||^2_\Gamma,
     \end{equation}
     Обозначим~\eqref{initial},~\eqref{phi-neumann},~\eqref{theta-neumann-r},~\eqref{quality}
     как задачу оптимального управления $CP$.
@@ -132,10 +117,6 @@ frametitlealignment=\raggedright
     %    обратных задач для уравнений тепломассапереноса.
 
     \section{Постановка задачи управления}\label{sec:formalization}
-    будем предполагать, что исходные данные удовлетворяют следующему условию:
-
-    (i) WIP\@.
-
     Пусть $H = L^2(\Omega), V = H^1(\Omega), U = L^2(\Gamma)$, $V \subset H = H' \subset V'$
     Пространство $H$ отождествляем с сопряжённым пространством $H'$ так,
     что $V \subset H = H' \subset V'$.
@@ -154,7 +135,7 @@ frametitlealignment=\raggedright
     \end{gather*}
 
     задача оптимального управления в операторном виде записывается в следующем виде.
-    Найти тройку $\{u \theta, \varphi \} \in U \times V \times V$:
+    Найти тройку $\{u, \theta, \varphi \} \in U \times V \times V$:
     \begin{equation}
         \label{weak-theta}
         a A \theta + b \kappa_a (| \theta | \theta^3 - \varphi ) = f,
@@ -171,15 +152,14 @@ frametitlealignment=\raggedright
     \begin{equation}
         \label{minimization}
         J_\varepsilon(\theta, u) = \frac{1}{2}\|\theta -\theta_b\|^2_\Gamma
-        + \frac{\varepsilon}{2}\|u\|^2_\Gamma \rightarrow \text{inf},
+        + \frac{\varepsilon}{2}\|u\|^2_\Gamma \rightarrow \text{inf}.
     \end{equation}
 
     Непустота множества допустимых троек следует из следующей леммы
     \begin{lem}
         \label{lemma-1}
         Пусть $r, u \in U$.
-        Тогда сущесвует единственное решение~\eqref{weak-theta},\eqref{weak-phi}
-        и справедливы оценки
+        Тогда сущесвует единственное решение~\eqref{weak-theta},\eqref{weak-phi} и справедливы оценки
         \begin{equation}
             \label{lemma-boundaries}
             \begin{aligned}
@@ -209,24 +189,24 @@ frametitlealignment=\raggedright
         $a \|\theta\|^2_V \leq (g, \theta) \leq \|g\|_V; \|\theta\|_V$,
         т.е. $a\|\theta\|V \leq \|g\|_v$.
 
-        \begin{mymdframed}{Замечание}
+        \begin{remark}
             \begin{enumerate}
                 \item Если $\|z\|^2 \leq \kappa_o\|z\|^2_v$
                 $\forall z \in V => \|z\|_{V'} \leq \kappa_o \|z\|_V$
                 \item $\forall h \in U \; \|Bh\|_{V'} \leq \|h\|_\Gamma$
                 \item $\|A^{-1}g\|_V \leq \|g\|_{V'} \; \forall g \in V!$
             \end{enumerate}
-        \end{mymdframed}
+        \end{remark}
 
         С учетом замечаний получаем
-        $\|g\|_{V'} \leq \|r\|_\Gamma + \frac{\kappa}{\alpha}\kappa_o \|r + bu\|_\Gamma$
-        $\|\varphi\|_V \leq \frac{1}{\alpha b} \|r + bu\|_\Gamma + \frac{a}{\alpha b} \|\theta\|_V$
+        \begin{gather*}
+            \|g\|_{V'} \leq \|r\|_\Gamma + \frac{\kappa}{\alpha}\kappa_o \|r + bu\|_\Gamma, \\
+            \|\varphi\|_V \leq \frac{1}{\alpha b} \|r + bu\|_\Gamma + \frac{a}{\alpha b} \|\theta\|_V
+        \end{gather*}
         откуда следуют оценки~\eqref{lemma-boundaries}.
     \end{proof}
 
-
     \section{Разрешимость задачи управления и система оптимальности}\label{sec:solvability-control}
-
     \begin{thm}
         \label{cp-existing}
         Пусть $\theta_b, q_b \in L^2(\Gamma)$.
@@ -242,38 +222,38 @@ frametitlealignment=\raggedright
 
         \begin{gather}
             \label{theorem-1-operational}
-            a A \theta_m +b \kappa_a(|\theta|\theta^3 - \varphi_m) = Br
+            a A \theta_m +b \kappa_a(|\theta|\theta^3 - \varphi_m) = Br, \\
             \alpha A \varphi_m + \kappa_a (\varphi_m - |\theta|\theta^3) = B u_m.
         \end{gather}
 
 
-        Из~\ref{lemma-1} следует, что
+        Из Леммы~\ref{lemma-1} следует, что
         \begin{gather*}
             \|\theta_m\|_V \leq C,
             \|\varphi\|_V \leq C,
             \|u_m\| \leq C.
         \end{gather*}
-        что, в свою очередь, даёт нам $\|\theta_m\|_{L^6(\Omega)} \leq C.$
+        Что, в свою очередь, даёт нам $\|\theta_m\|_{L^6(\Omega)} \leq C.$
         Здесь через $C$ обозначена постоянная, не зависящая от $m$.
 
         Тогда существует тройка
         \begin{gather*}
             \label{theorem-1-convergence}
             \{ \hat{u}, \hat{\theta}, \hat{\varphi} \} \in U \times V \times V,
-            u_m \rightarrow \hat{u} \text{слабо в} U,
-            \theta_m, \varphi_m \rightarrow \hat{\theta}, \hat{\varphi} \text{слабо в} V, \text{сильно в } L^4(\Omega)
+            u_m \rightarrow \hat{u} \text{слабо в } U, \\
+            \theta_m, \varphi_m \rightarrow \hat{\theta}, \hat{\varphi} \text{слабо в } V, \text{сильно в } L^4(\Omega)
         \end{gather*}
 
         Заметим, что $\forall v \in V$
         \begin{equation}
             \label{theorem-1-est}
             |( |\theta|\theta^3 - |\hat{\theta}|\hat{\theta}^3, v) \leq
-            2 \int_\Omega |\theta_m - \hat{\theta}| (|\theta_m|^3 + |\hat{\theta}|^3)|v| \leq
-            2 \| \theta_m - \hat{\theta}\|_{L^4(\Omega)} \|v\|_{L^4(\Omega)}
+            2 \int_\Omega |\theta_m - \hat{\theta}| (|\theta_m|^3 + |\hat{\theta}|^3)|v| \\
+            \leq 2 \| \theta_m - \hat{\theta}\|_{L^4(\Omega)} \|v\|_{L^4(\Omega)}
             ( \| \theta_m \|^3_{L_6(\Omega)} + \| \hat{\theta} \|^3)
         \end{equation}
 
-        условие~\eqref{theorem-1-convergence} и оценка~\eqref{theorem-1-est} позволяют прейти
+        условие~\eqref{theorem-1-convergence} и оценка~\eqref{theorem-1-est} позволяют перейти
         к пределу в~\eqref{theorem-1-operational}:
         \[
             a A \hat{\theta} + b \kappa_a (|\theta|\theta^3 - \hat{\varphi} = Br), \;
@@ -281,52 +261,53 @@ frametitlealignment=\raggedright
         \]
         и при этом $j_\varepsilon \leq J(\hat{\theta}, \hat{u}) \leq \lim J(\theta_m, u_m) =
         j_\varepsilon$.
-        Это значит, что тройка $\{ \hat{u}, \hat{\theta}, \hat{\varphi} \}$ -
+        Это значит, что тройка $\{ \hat{u}, \hat{\theta}, \hat{\varphi} \}$ есть
         решение задачи~\eqref{weak-theta},\eqref{weak-phi},\eqref{minimization}.
     \end{proof}
 
     Для вывода системы оптимальности для задачи~\eqref{weak-theta}-\eqref{minimization}
     воспользуемся теоремой 1.5~\cite{???}
 
-    Заметим, что оператор ограничений
-    $F(\theta, \varphi, u) : V \times V \times U \rightarrow V' \times V'$
-    имеет вид
+    Оператор ограничений $F(\theta, \varphi, u) : V \times V \times U \rightarrow V' \times V'$ имеет вид
     \[
         F(y, u) = { aA\theta + b \kappa_a (|\theta|\theta^3 - \varphi) - f,
         \alpha A \varphi + \kappa_a (\varphi -|\theta| \theta^3) - bu}.
     \]
 
     \begin{lem}
-        Для любой пары $y \in V \times V, u \in U$ справедливо $\bm{Im}F_y'(y, u) = V' \times V'$.
+        Для любой пары $y \in V \times V, u \in U$ справедливо
+        \[
+            \bm{Im}F_y'(y, u) = V' \times V'.
+        \]
     \end{lem}
     \begin{proof}
         Достаточно показать разрешимость задачи
         \begin{equation}
             \label{lem-2-1}
-            aA \xi + b \kappa_a (4|\theta|^3 \xi - \eta) = f_1, \\
+            aA \xi + b \kappa_a (4|\theta|^3 \xi - \eta) = f_1, ;\ \\
             \alpha A \eta + \kappa_a (\eta - 4 |\theta|^3 \xi) = f_2.
         \end{equation}
         Задачу~\eqref{lem-2-1} запишем в виде операторного уравнения в пространстве
         $V \times V = W$ со скалярным произведением $(w, v)_W = (w_1, v_1)_V + (w_2, v_2)_V$
         \begin{equation}
             \label{lem-2-2}
-            z + Tz = g, \; \text{где} z = \{ \xi, \eta \} \in V \times V.
+            z + Tz = g, \; \text{где } z = \{ \xi, \eta \} \in V \times V.
         \end{equation}
         Здесь
-        \[
+        \begin{gather*}
             (Tz, v)_W = \frac{b\kappa_a}{\alpha}(4|\theta|^3 \xi - \eta, v_1)
             + \frac{\kappa_a}{\alpha}(\eta - 4|\theta|^3\xi, v_2), \\
             \forall v = \{v_1, v_2\} \in W, \; (g,v)_W = (f_1,v_1) + (f_2, v_2)
-        \]
+        \end{gather*}
 
         Покажем далее компакность оператора $T$.
-        \[
+        \begin{gather*}
             (Tz,v)_W \leq 4 \left( \frac{b \kappa_a}{a}
             + \frac{\kappa}{\alpha} \right) \|\theta\|^3_{L^6} \|\xi\|_{L^4}
             (\|v_1\|_{L^4} + \|v_2\|_{L^4})  \\
             + \left( \frac{b \kappa_a}{a} + \frac{\kappa_a}{\alpha} \right) \|\eta\|_{L^2}
             (\| v_1 \|_{L^2} + \|v_2\|_{L^2}).
-        \]
+        \end{gather*}
         Учитывая непрерывность вложения $V \subset L^4(\Omega) \subset L^2(\Omega)$ получаем
         \[
             (Tz, v)_W \leq C \| v \|_W (\| \xi \|_{L^4(\Omega)} + \| \eta \|_{L^2(\Omega)}).
@@ -342,11 +323,11 @@ frametitlealignment=\raggedright
         Умножим второе уравнение~\eqref{lem-2-1} на $b$ и сложим с первым.
         Тогда
         \[
-            A(a \xi + \alpha \eta ) = 0, a \xi + \alpha \eta = 0.
+            A(a \xi + \alpha \eta ) = 0, \; a \xi + \alpha \eta = 0.
         \]
         Таким образом первое уравнение имеет вид
         \[
-            aA\xi + b\kappa_a(4|\theta|^3 + \frac{a}{\alpha}) \xi = 0.
+            aA\xi + b\kappa_a\left(4|\theta|^3 + \frac{a}{\alpha}\right) \xi = 0.
         \]
         Умножим скалярно на $\xi$ получим $(A\xi,\xi) = 0, \xi = 0, \eta = 0$.
         Лемма доказана.
@@ -355,45 +336,45 @@ frametitlealignment=\raggedright
     Лагранжиан задачи~\eqref{weak-theta}-\eqref{minimization} имеет вид
     \begin{equation}
         \label{lagrangian}
-        L(\theta, \varphi, u, p_1, p_2) = J_\varepsilon(\theta, u)
-        + (aA\theta + b\kappa_a(|\theta|\theta^3 - \varphi) - f, p_1)
-        + (\alpha A \varphi + \kappa_a(\varphi - |\theta|\theta^3) - Bu, p_2)
+        \begin{aligned}
+            L(\theta, \varphi, u, p_1, p_2) = J_\varepsilon(\theta, u)
+            & + (aA\theta + b\kappa_a(|\theta|\theta^3 - \varphi) - f, p_1) \\
+            & + (\alpha A \varphi + \kappa_a(\varphi - |\theta|\theta^3) - Bu, p_2)
+        \end{aligned}
     \end{equation}
     Условия оптимальности [????] имеют вид
-    пусть $\{ \hat{u}, \hat{\theta}, \hat{\varphi} \}$ - решение
+    ...
+
+    Пусть $\{ \hat{u}, \hat{\theta}, \hat{\varphi} \}$ - решение
     задачи~\eqref{weak-theta}-\eqref{minimization}.
     Тогда $\forall v \in V, z \in U$:
-    \begin{equation}
+    \begin{gather}
         \label{optimality}
-        (\hat{\theta} -\theta_b, v)_{L^2(\Gamma)} + (aAv + 4 b\kappa_a |\theta|^3, p_1)
-        - \kappa_a ( 4 |\hat{\theta}|^3v, p2) = 0, \\
-        - b \kappa_a (v, p_1) = (\alpha A v + \kappa_a v, p_2) = 0,
-        \varepsilon (\hat{u},z)_{L^2(\Gamma)} - (Bz, p_2) = 0.
-    \end{equation}
+            (\hat{\theta} -\theta_b, v)_{L^2(\Gamma)} + (aAv + 4 b\kappa_a |\theta|^3, p_1)
+            - \kappa_a ( 4 |\hat{\theta}|^3v, p2) = 0, \\
+            - b \kappa_a (v, p_1) = (\alpha A v + \kappa_a v, p_2) = 0, \\
+            \varepsilon (\hat{u},z)_{L^2(\Gamma)} - (Bz, p_2) = 0.
+    \end{gather}
     Из условий~\eqref{optimality} получаем следующий результат
     \begin{thm}
         Пусть $\{\hat{u}, \hat{\theta}, \hat{\varphi}\}$ - решение
         задачи~\eqref{weak-theta}-\eqref{minimization}.
         Тогда существует пара $\{p_1, p_2 \} \in W$
         такая, что
-        \begin{equation}
+        \begin{gather}
             \label{thm-2-1}
             aA\hat{\theta} + b \kappa_a(|\hat{\theta}|^3 \hat{\theta} -\varphi) = Br, \\
             \alpha A \hat{\varphi} + \kappa_a(\hat{\varphi} - |\hat{\theta}|\hat{\theta}^3) = Bu, \\
-            aAp_1 +4|\hat{\theta}|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}),
-            \alpha A p_2 + \kappa_a (p_2 - b p_1) = 0,
+            aAp_1 +4|\hat{\theta}|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}), \\
+            \alpha A p_2 + \kappa_a (p_2 - b p_1) = 0, \\
             \varepsilon \hat{u} = p_2.
-        \end{equation}
+        \end{gather}
     \end{thm}
 
 
     \section{Численные эксперименты}\label{sec:experiments}
-
-    Пусть функционал $J(\theta)$ удовлетворяет условиям, указанным в \autoref{}.
-    Здесь $\theta(u)$ -- температурное поле задачи~$CP$ отвечающее управлению $u \in L^2(\Gamma)$.
-    Согласно формуле~\eqref{thm-2-1} градиент функционала $\hat{J}(u)$
-    имеет вид
-    \[ hat{J}'(u)= \varepsilon u - p_2, \]
+    Согласно формуле~\eqref{thm-2-1} градиент функционала $\hat{J}(u)$ имеет вид
+    \[ \hat{J}'(u)= \varepsilon u - p_2, \]
     где $p_2$ -- соответствующая переменная сопряжённой системы.
 
     Предлагаемый алгоритм решения выглядит следующим образом:
@@ -416,8 +397,7 @@ frametitlealignment=\raggedright
     Приведём далее примеры расчётов.
     Положим область $\Omega = \{(x, y, z), 0 \leq x, y, z \leq 1\}$, $l = 1$ см.
     Будем далее считать, что $a = 0.006[\text{см}^2/\text{c}]$, $b=0.025[\text{см}/\text{с}]$,
-    $\beta = 0.00005[\text{см}/\text{с}]$, $\kappa=1[\text{см}^{-1}]$, $\kappa_s = 0$, $A = 0$,
-    $\gamma = 0.3$.
+    $\kappa=1[\text{см}^{-1}]$, $\kappa_s = 0$, $A = 0$, $\gamma = 0.3$.
     Указанные параметры соответствуют стеклу~\cite{grenkin_13}.
     Температуру на границе $\Omega$ положим равной $\theta_b = ???$.
 
