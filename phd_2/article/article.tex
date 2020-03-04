@@ -9,6 +9,7 @@
 \usepackage{xcolor}
 \usepackage{subfig}
 \usepackage{bm}
+\usepackage{epstopdf}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage{hyperref}
@@ -86,7 +87,7 @@
     Из граничных условий ~\eqref{theta-neumann},~\eqref{theta-dirichlet} получим
     \begin{equation}
         \label{theta-boundary}
-        \partial_n \theta  + \theta - r = 0, \;\; r := q_b + \theta_b.
+        a (\partial_n \theta  + \theta)  = r \; \text{на } \Gamma, \; r := a \left(q_b + \theta_b\right).
     \end{equation}
     Задача оптимального управления заключается в минимизации функционала качества
     \begin{equation}
@@ -399,13 +400,12 @@
     Будем далее считать, что $a = 0.006[\text{см}^2/\text{c}]$, $b=0.025[\text{см}/\text{с}]$,
     $\kappa=1[\text{см}^{-1}]$, $\kappa_s = 0$, $A = 0$, $\gamma = 0.3$.
     Указанные параметры соответствуют стеклу~\cite{grenkin_13}.
-    Температуру на границе $\Omega$ положим равной $\theta_b = ???$.
 
     При указанных параметрах для первого эксперимента выберем следующее начальное значение
     функции $u$ (рис.~\ref{control}\subref{fig1:exp1}):
     \begin{equation}
         \label{test_function_1}
-        u(x)= sin(x) * y
+        u(x)= 0.9,
     \end{equation}
     и для второго эксперимента (рис.~\ref{control}\subref{fig1:exp2}):
     \begin{equation}
@@ -418,37 +418,37 @@
     в первом и втором случаях иллюстрируются рис.~\ref{control}.
     На рис.~\ref{cost} показана динамика функционала качества по итерациям.
 
-    \begin{figure}[H]
-        \centering
-        \subfloat[Первый эксперимент]
-        {
-        \label{fig1:exp1}
-        \includegraphics[width=.49\linewidth]{../optimization/results/init_control.png}
-        }
-        \subfloat[Второй эксперимент]
-        {
-        \label{fig1:exp2}
-        \includegraphics[width=.49\linewidth]{../optimization/results/control.png}
-        }
-        \caption{Тестовая функция $u$, начальная $u_0$, найденная функция $u_{end}.$}
-        \label{control}
-    \end{figure}
-
-    \begin{figure}[H]
-        \centering
-        \subfloat[Первый эксперимент]
-        {
-        \label{fig2:exp1}
-        \includegraphics[width=.51\linewidth]{../optimization/results/theta.png}
-        }
-        \subfloat[Второй эксперимент]
-        {
-        \label{fig2:exp2}
-        \includegraphics[width=.51\linewidth]{../optimization/results/phi.png}
-        }
-        \caption{Динамика функции $\hat{J}(u)$ по итерациям.}
-        \label{cost}
-    \end{figure}
+    %    \begin{figure}[H]
+    %        \centering
+    %        \subfloat[Первый эксперимент]
+    %        {
+    %        \label{fig1:exp1}
+    %        \includegraphics[width=.49\linewidth]{targetcontrol}
+    %        }
+    %        \subfloat[Второй эксперимент]
+    %        {
+    %        \label{fig1:exp2}
+    %        \includegraphics[width=.49\linewidth]{end_control_full}
+    %        }
+    %        \caption{Тестовая функция $u$, найденная функция $u_{end}.$}
+    %        \label{control}
+    %    \end{figure}
+    %
+    %    \begin{figure}[H]
+    %        \centering
+    %        \subfloat[Динамика функции $\hat{J}(u)$ по итерациям]
+    %        {
+    %        \label{fig2:exp1}
+    %        \includegraphics[width=.51\linewidth]{../../results/quality.png}
+    %        }
+    %        \subfloat[Функция $(u - u_{end})^2$]
+    %        {
+    %        \label{fig2:exp2}
+    %        \includegraphics[width=.51\linewidth]{../../results/diff_end_control.png}
+    %        }
+    %        \caption{}
+    %        \label{cost}
+    %    \end{figure}
 
 
     \bibliography{bibliography}

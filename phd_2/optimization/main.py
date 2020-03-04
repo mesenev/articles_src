@@ -1,8 +1,5 @@
-from dolfin import *
-from dolfin.cpp.log import set_log_active
-
-from .solver import SolveOptimization
-from ..experiments.utilities import *
+from phd_2.experiments.utilities import *
+from solver import SolveOptimization
 
 
 def main():
@@ -39,7 +36,7 @@ def main():
     # print_two_with_colorbar(*problem.state.split(), name='init_state')
 
     print('Launching iterations')
-    control = problem.find_optimal_control(iterations=10 ** 4, _lambda=1000)
+    control = problem.find_optimal_control(iterations=10 ** 1, _lambda=100)
     print_3d_boundaries_single(problem.phi_n, name='end_control')
     # print_two_with_colorbar(*problem.state.split(), name='state')
     # print_2d_boundaries(control, name='control', terminal_only=False)
@@ -52,6 +49,7 @@ def main():
         project((target_phi_n - phi_n) ** 2, problem.boundary_simple_space),
         name='diff_end_control'
     )
+    print('ggwp all done!')
     return 0
 
 

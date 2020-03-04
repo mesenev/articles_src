@@ -34,12 +34,12 @@ class SolveBoundary(DefaultValues3D):
         # solve(boundary_problem == 0, self.state)
         theta_equation = \
             self.a * inner(grad(self.theta), grad(self.v)) * dx \
-            + self.theta * self.v * ds + \
+            + self.a * self.theta * self.v * ds + \
             + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx
         theta_src = self._r * self.v * ds
         phi_equation = \
             self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
-            + self.phi * self.h * ds \
+            + self.alpha * self.phi * self.h * ds \
             + self.ka * inner(self.phi - self.theta ** 4, self.h) * dx
         phi_src = self.phi_n * self.h * ds
 
@@ -63,12 +63,12 @@ class SolveOptimization(SolveBoundary):
         v, h = self.tau, self.nu
         conjugate_theta = \
             self.a * inner(grad(self.p1), grad(v)) * dx \
-            + self.p1 * v * ds + \
+            + self.a * self.p1 * v * ds + \
             + 4 * self.b * self.ka * inner(self.p1, theta ** 3 * v) * dx \
             - 4 * self.ka * inner(self.p2, theta ** 3 * v) * dx
         conjugate_phi = \
             self.alpha * inner(grad(self.p2), grad(h)) * dx \
-            + self.p2 * h * ds \
+            + self.alpha * self.p2 * h * ds \
             - self.b * self.ka * inner(self.p1, h) * dx \
             + self.ka * inner(self.p2, h) * dx
         # conjugate_problem = \
@@ -126,6 +126,6 @@ class SolveOptimization(SolveBoundary):
         for i in range(iterations):
             self._gradient_step()
             print(f'Iteration {i},\tquality: {self.quality_history[-1]}')
-            if i in [100, 500, 1000]:
+            if i in [100, 1000]:
                 self._lambda *= 0.1
         return self.phi_n
