@@ -48,14 +48,14 @@ def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=
     return
 
 
-def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.coolwarm):
-    '''
+def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.coolwarm, colorbar_scalable=True):
+    """
     https://stackoverflow.com/questions/36046338/contourf-on-the-faces-of-a-matplotlib-cube
     :param v: function to draw
     :param name: target filename
     :param folder: folder name for target
     :return: nothing. Just saves the picture
-    '''
+    """
     plt.close('all')
     fig = plt.figure()
     top = lambda x, y: v(Point(x, y, 1))
@@ -72,13 +72,12 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.co
     X, Y = meshgrid(X, Y)
     Z = random.rand(100, 100) * 5.0 - 10.0
     cset = [[], [], []]
-    flat = [item for sublist in left_vals + right_vals + top_vals for item in sublist]
-    levels = linspace(0, 1, 50)
-    # min(flat),
-    # max(flat),
-    # 50
-    # )
-    # levels = linspace(0, 1, 10)
+    mn = min(left_vals.min(), top_vals.min(), right_vals.min())
+    mx = max(left_vals.max(), top_vals.max(), right_vals.max())
+    if colorbar_scalable:
+        levels = linspace(mn, mx, 50)
+    else:
+        levels = linspace(0, 1, 50)
     cset[0] = ax.contourf(X, Y, top_vals, zdir='z', offset=1, levels=levels, cmap=cmap)
     # now, for the x-constant face, assign the contour to the x-plot-variable:
     cset[1] = ax.contourf(right_vals, y_m, x_m, zdir='x', offset=1, levels=levels, cmap=cmap)
@@ -90,21 +89,23 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.co
     ax.set_zlim3d(0, 1)
     fig.subplots_adjust(right=0.8)
     color_bar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    ticks = [mn] + [mn + (mx - mn) / 7 * i for i in range(1, 7)] + [mx]
     fig.colorbar(cset[0], cax=color_bar_ax,
+                 ticks=ticks,
                  extend='both',
                  extendfrac='auto',
                  spacing='uniform',
                  orientation='vertical')
-    fig.colorbar(cset[1], cax=color_bar_ax,
-                 extend='both',
-                 extendfrac='auto',
-                 spacing='uniform',
-                 orientation='vertical')
-    fig.colorbar(cset[2], cax=color_bar_ax,
-                 extend='both',
-                 extendfrac='auto',
-                 spacing='uniform',
-                 orientation='vertical')
+    # fig.colorbar(cset[1], cax=color_bar_ax,
+    #              extend='both',
+    #              extendfrac='auto',
+    #              spacing='uniform',
+    #              orientation='vertical')
+    # fig.colorbar(cset[2], cax=color_bar_ax,
+    #              extend='both',
+    #              extendfrac='auto',
+    #              spacing='uniform',
+    #              orientation='vertical')
     plt.savefig('{}/{}.png'.format(folder, name, bbox_inches='tight'))
 
 
