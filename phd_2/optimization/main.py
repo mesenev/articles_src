@@ -1,11 +1,20 @@
 import os
 import shutil
 
-from default_values import ThetaN
 from phd_2.experiments.utilities import *
+from phd_2.optimization.default_values import ThetaN
 from phd_2.optimization.solver import SolveOptimization
 
 set_log_active(False)
+
+
+def clear_dir(folder):
+    try:
+        shutil.rmtree(folder)
+    except OSError:
+        print("Deletion of the directory %s failed" % folder)
+    finally:
+        os.mkdir(folder)
 
 
 def make_pics(problem: SolveOptimization, name_modifier: str, folder: str):
@@ -20,12 +29,7 @@ def make_pics(problem: SolveOptimization, name_modifier: str, folder: str):
 
 
 def experiment_1(folder='exp1'):
-    try:
-        shutil.rmtree(folder)
-    except OSError:
-        print("Deletion of the directory %s failed" % 'results')
-    finally:
-        os.mkdir(folder)
+    clear_dir(folder)
 
     problem = SolveOptimization()
     r_default = Expression("x[0]", degree=3)
@@ -45,7 +49,6 @@ def experiment_1(folder='exp1'):
         project((target_phi_n - problem.phi_n) ** 2, problem.boundary_simple_space),
         name='diff_init_control', folder=folder
     )
-    # print_two_with_colorbar(*problem.state.split(), name='init_state')
 
     print('Launching iterations')
     problem.find_optimal_control(iterations=5 * 10 ** 3, _lambda=100)
@@ -57,16 +60,10 @@ def experiment_1(folder='exp1'):
     )
     draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
     print('ggwp all done!')
-    return 0
 
 
 def experiment_2(folder='exp2'):
-    try:
-        shutil.rmtree(folder)
-    except OSError:
-        print("Deletion of the directory %s failed" % folder)
-    finally:
-        os.mkdir(folder)
+    clear_dir(folder)
     theta_b = Expression('x[2]*0.1+0.3', degree=3)
     theta_n = ThetaN()
     problem = SolveOptimization(theta_b=theta_b, theta_n=theta_n)
@@ -84,7 +81,11 @@ def experiment_2(folder='exp2'):
     draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
 
     print('ggwp all done!')
-    return 0
+
+
+def experiment_3(folder='exp3'):
+    clear_dir(folder)
+
 
 
 if __name__ == "__main__":

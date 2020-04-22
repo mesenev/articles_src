@@ -12,9 +12,6 @@ _MAX_ITERATIONS = 10 ** 8
 
 class SolveBoundary(DefaultValues3D):
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def print_min_max_state(self):
         for i in self.state:
             f = interpolate(i, self.simple_space).vector()
