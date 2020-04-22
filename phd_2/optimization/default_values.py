@@ -13,7 +13,7 @@ class ThetaN(UserExpression):
     def eval(self, value, x):
         value[0] = 0
         if x[2] + DOLFIN_EPS > 1:
-            value[0] = 0.1
+            value[0] = 0.11
         if x[2] - DOLFIN_EPS < 0:
             value[0] = -0.15
 
@@ -56,7 +56,7 @@ class DefaultValues3D:
         self.theta_b = theta_b_3d  # Warning! Might be ambiguous
         self._r = None
         self.recalculate_r()
-        for key, val in kwargs:
+        for key, val in kwargs.items():
             setattr(self, key, val)
 
     def recalculate_r(self):

@@ -81,7 +81,8 @@
     такой, что
     \begin{equation}
         \label{cost}
-        J_\lambda(\theta, u) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^2d\Gamma + \frac{\lambda}{2}\int\limits_\Gamma u^2d\Gamma \rightarrow\inf
+        J_\lambda(\theta, u) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^2d\Gamma
+        + \frac{\lambda}{2}\int\limits_\Gamma u^2d\Gamma \rightarrow\inf
     \end{equation}
     на решениях краевой задачи (\ref{eq1}),(\ref{bc1}).
     Функция $\theta_b(x),\, x\in\Gamma$  и параметр регуляризации $\lambda>0$ заданы.
@@ -510,7 +511,7 @@
     $J(\theta_k, u_k) - J(\theta_{k+1}, u_{k+1}) < 10^{-15}$.
     Эксперименты показывают хорошее восстановление функции $u$ при $N > 10^{3}$.
 
-    Приведём примеры расчётов для стеклянного куба с ребром 1~см,
+    Приведём примеры расчётов для куба с ребром 1~см,
     $\Omega = {(x, y, z), 0 \leq x,y,z \leq l}, l = 1 \text{см}$.
     Будем также далее считать, что $a = 0.006[\text{см}^2/\text{c}]$,
     $b=0.025[\text{см}/\text{с}]$, $\beta = 0.00005[\text{см}/\text{с}]$,
@@ -521,52 +522,90 @@
     $u = u^* = y$.
 
     $\theta_b$ положим равным $\theta |_\Gamma$ из решения прямой задачи (1)-(2).
-    Положим начальное значение $u_0 = 0.1$.
+    Для первого и второго теста положим начальное значение $u_0 = 0.1$.
     Далее, применяя предложенный алгоритм находим приближенное решение обратной задачи (1)–(4).
     Тестовое и найденное значение $u$ представлено на рис. 1
-    Эффективность алгоритма, а также значение $u_0$ в первом и втором случаях иллюстрируются рис. 1.
+    Эффективность алгоритма, а также значение $u_0$ в первом и втором случаях представлены на рис. 1.
 
     \begin{figure}[H]
         \centering
-        \subfloat[Тестовое значение]
+        \subfloat[Разница тестового и найденного управления]
         {
         \label{fig1:exp1}
-        \includegraphics[width=.51\linewidth]{img/test_control_1.eps}
+        \includegraphics[width=.51\linewidth]{img/diff_control_test_final.eps}
         }
-        \subfloat[Найденное значение]
+        \subfloat[Динамика функционала качества]
         {
         \label{fig1:exp2}
-        \includegraphics[width=.51\linewidth]{img/final_control_1.eps}
+        \includegraphics[width=.51\linewidth]{img/quality_1.eps}
         }
-        \caption{Тестовая функция $u$, начальная $u_0$, найденная функция $u_{end}.$}
-        \label{img_control}
+        \caption{Первый эксперимент}
+        \label{img_control_1}
     \end{figure}
 
-    На рисунке 2 показана динамика функционала качества по итерациям.
+    Для второго эксперимента определим функции $\theta_b$, $q_b$ из~\eqref{bc2} следующим образом
+    \[
+        \theta_b = 0.1z + 0.3, \;
+        q_b = \begin{cases}
+                  -0.15, & \text{если } z = 0, \\
+                  0, & \text{если } 0 < z < 1, \\
+                  0.11, & \text{если } z = 1.
+        \end{cases}
+    \]
+
+    В данном случае мы не знаем оптимальное решение $u$ задачи (1)-(2).
 
     \begin{figure}[H]
         \centering
-        \subfloat[Первый эксперимент]
+        \subfloat[Найденное значение]
         {
         \label{fig2:exp1}
-        \includegraphics[width=.51\linewidth]{img/quality_1.png}
+        \includegraphics[width=.51\linewidth]{img/final_control_2.eps}
         }
-        \subfloat[Второй эксперимент]
+        \subfloat[Динамика функционала качества]
         {
         \label{fig2:exp2}
-        \includegraphics[width=.51\linewidth]{img/quality_1.png}
+        \includegraphics[width=.51\linewidth]{img/quality_2.png}
         }
-        \caption{Динамика функции $\hat{J}(\theta, u)$ по итерациям.}
-        \label{img_cost}
+        \caption{Тестовая функция $u$, начальная $u_0$, найденная функция $u_{end}.$}
+        \label{img_control_2}
+    \end{figure}
+    Отметим довольно незначительное изменение функционала качества (в десять раз).
+    Это объясняется тем, что выбранное управление не всегда оказывает существенное влияние на температурное поле.
+    В то же самое время, компонента излучения $\varphi$ изменяется по итерациям весьма существенно.
 
-        Для второго теста определим $\partial_n \theta$ и $\theta_b$ из (4) следующим образом
-        $\partial_n \theta = ..., \; \theta_b = ...$
-        В данном случае мы не знаем решение $u$.
-
-
+    \begin{figure}[H]
+        \centering
+        \subfloat[Начальное значение $\theta$]
+        {
+        \label{fig3:exp1}
+        \includegraphics[width=.51\linewidth]{img/init_theta.png}
+        }
+        \subfloat[Конечное значение $\theta$]
+        {
+        \label{fig3:exp2}
+        \includegraphics[width=.51\linewidth]{img/end_theta.png}
+        }
+        \caption{Компонента температуры, соотвествующая управлению $u_0$ и $u_{100}$}
+        \label{theta_dynamics}
     \end{figure}
 
-
+    \begin{figure}[H]
+        \centering
+        \subfloat[Начальное значение $\varphi$]
+        {
+        \label{fig4:exp1}
+        \includegraphics[width=.51\linewidth]{img/init_phi.png}
+        }
+        \subfloat[Конечное значение $\varphi$]
+        {
+        \label{fig4:exp2}
+        \includegraphics[width=.51\linewidth]{img/end_phi.png}
+        }
+        \caption{Компонента излучения, соотвествующее управлению $u_0$ и $u_{100}$}
+        \label{phi_dynamics}
+    \end{figure}
+    Не болейте.
 
     \begin{thebibliography}{999}
 

@@ -1,43 +1,92 @@
 import os
 import shutil
 
+from default_values import ThetaN
 from phd_2.experiments.utilities import *
 from phd_2.optimization.solver import SolveOptimization
 
+set_log_active(False)
 
-def main():
-    set_log_active(False)
-    # checkers()
+
+def make_pics(problem: SolveOptimization, name_modifier: str, folder: str):
+    print_3d_boundaries_on_cube(problem.phi_n, name=f'{name_modifier}_control', folder=folder)
+    print_3d_boundaries_single(problem.phi_n, name=f'{name_modifier}_control', folder=folder)
+    print_3d_boundaries_on_cube(problem.state.split()[0], name=f'{name_modifier}_theta', folder=folder)
+    print_3d_boundaries_single(problem.state.split()[0], name=f'{name_modifier}_theta', folder=folder)
+    print_3d_boundaries_on_cube(problem.state.split()[1], name=f'{name_modifier}_phi', folder=folder)
+    print_3d_boundaries_single(problem.state.split()[1], name=f'{name_modifier}_phi', folder=folder)
+    print_3d_boundaries_on_cube(problem.target_diff(), name=f'diff_{name_modifier}_theta', folder=folder)
+    return 0
+
+
+def experiment_1(folder='exp1'):
     try:
-        shutil.rmtree('results')
+        shutil.rmtree(folder)
     except OSError:
         print("Deletion of the directory %s failed" % 'results')
     finally:
-        os.mkdir('results')
+        os.mkdir(folder)
 
     problem = SolveOptimization()
+    r_default = Expression("x[0]", degree=3)
+    problem._r = r_default
+    problem.phi_n = Expression('x[0]', degree=3)
+    problem.solve_boundary()
+    make_pics(problem, 'target', folder)
+    target_phi_n = Expression('t', degree=3, t=interpolate(problem.phi_n, problem.simple_space))
+
     print('Setting up optimization problem')
+    problem.theta_b = Expression('t', degree=3, t=interpolate(problem.state.split()[0], problem.simple_space))
+    problem.phi_n = Constant(0.1)
     answer = problem.solve_boundary().split()
     print('Boundary init problem is set. Working on setting optimization problem.')
-    print_3d_boundaries_single(problem.phi_n, name='init_control')
-    print_3d_boundaries_on_cube(answer[0], name='init_theta')
-    print_3d_boundaries_single(answer[0], name='init_theta')
-    print_3d_boundaries_on_cube(answer[1], name='init_phi')
-    print_3d_boundaries_on_cube(problem.target_diff(), name='diff_init_theta')
-    print_2d_boundaries(answer[0], name='theta', terminal_only=False)
+    make_pics(problem, 'init', folder)
+    print_3d_boundaries_on_cube(
+        project((target_phi_n - problem.phi_n) ** 2, problem.boundary_simple_space),
+        name='diff_init_control', folder=folder
+    )
+    # print_two_with_colorbar(*problem.state.split(), name='init_state')
 
     print('Launching iterations')
-    problem.find_optimal_control(iterations=10 ** 1, _lambda=1000)
+    problem.find_optimal_control(iterations=5 * 10 ** 3, _lambda=100)
+    make_pics(problem, 'end', folder)
+    phi_n = Expression('t', degree=3, t=interpolate(problem.phi_n, problem.simple_space))
+    print_3d_boundaries_on_cube(
+        project((target_phi_n - phi_n) ** 2, problem.boundary_simple_space),
+        name='diff_end_control', folder=folder
+    )
+    draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
+    print('ggwp all done!')
+    return 0
 
-    print_3d_boundaries_single(problem.phi_n, name='end_control')
-    draw_simple_graphic(problem.quality_history, 'quality')
-    print_3d_boundaries_on_cube(problem.target_diff(), name='diff_end_theta')
-    print_3d_boundaries_on_cube(problem.state.split()[0], name='end_theta')
-    print_3d_boundaries_single(problem.state.split()[0], name='end_theta')
-    print_3d_boundaries_on_cube(problem.state.split()[1], name='end_phi')
+
+def experiment_2(folder='exp2'):
+    try:
+        shutil.rmtree(folder)
+    except OSError:
+        print("Deletion of the directory %s failed" % folder)
+    finally:
+        os.mkdir(folder)
+    theta_b = Expression('x[2]*0.1+0.3', degree=3)
+    theta_n = ThetaN()
+    problem = SolveOptimization(theta_b=theta_b, theta_n=theta_n)
+
+    print('Setting up optimization problem')
+    problem.solve_boundary()
+    print('Boundary init problem is set. Working on setting optimization problem.')
+    make_pics(problem=problem, name_modifier='init', folder=folder)
+
+    print('Launching iterations')
+
+    problem.find_optimal_control(iterations=10 ** 2, _lambda=100)
+
+    make_pics(problem=problem, name_modifier='end', folder=folder)
+    draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
+
     print('ggwp all done!')
     return 0
 
 
 if __name__ == "__main__":
-    main()
+    experiment_1()
+    # experiment_2()

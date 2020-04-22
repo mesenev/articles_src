@@ -112,8 +112,6 @@ class SolveOptimization(SolveBoundary):
 
         for i in range(iterations):
             self._gradient_step()
-            diff = 0
-            if len(self.quality_history) > 1:
-                diff = self.quality_history[-2] - self.quality_history[-1]
+            diff = self.quality_history[-2] - self.quality_history[-1] if len(self.quality_history) > 1 else 0
             print(f'Iteration {i},\tquality: {self.quality_history[-1]},\t{diff}')
         return self.phi_n
