@@ -2,15 +2,13 @@
 from dolfin import dx, ds
 from dolfin import *
 
-from phd_2.optimization.default_values import DefaultValues3D
+from default_values import DefaultValues3D
+from solver import SolveBoundary
 
 
 class DirectSolve(DefaultValues3D):
-    finite_element = DefaultValues3D.finite_element
-    state_space = FunctionSpace(
-        DefaultValues3D.omega,
-        finite_element * finite_element * finite_element * finite_element
-    )
+    finite_element = SolveBoundary.finite_element
+    state_space = FunctionSpace(SolveBoundary.omega, MixedElement([finite_element]*4))
     z1, z2, x1, x2 = TestFunctions(state_space)
     state = Function(state_space)
     theta, phi, p1, p2 = split(state)
@@ -29,7 +27,7 @@ class DirectSolve(DefaultValues3D):
             + self.alpha * self.phi * h * ds \
             + self.ka * inner(self.phi - self.theta ** 4, h) * dx
 
-        phi_src = self.phi_n * h * ds
+        phi_src = self.p2 * h * ds
 
         v, h = self.x1, self.x2
         conjugate_theta = \
@@ -49,6 +47,5 @@ class DirectSolve(DefaultValues3D):
         solve(
             theta_equation + phi_equation - theta_src - phi_src + conjugate_theta + conjugate_phi - j_theta == 0,
             self.state,
-            form_compiler_parameters={"optimize": True, 'quadrature_degree': 3}
         )
         return self.state

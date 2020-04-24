@@ -1,11 +1,15 @@
 import os
 import shutil
 
+from direct_solve import DirectSolve
 from phd_2.experiments.utilities import *
 from phd_2.optimization.default_values import ThetaN
-from phd_2.optimization.solver import SolveOptimization
+from phd_2.optimization.solver import SolveOptimization, SolveBoundary
 
 set_log_active(False)
+
+parameters["form_compiler"]["optimize"] = True
+parameters["form_compiler"]["cpp_optimize"] = True
 
 
 def clear_dir(folder):
@@ -17,7 +21,7 @@ def clear_dir(folder):
         os.mkdir(folder)
 
 
-def make_pics(problem: SolveOptimization, name_modifier: str, folder: str):
+def make_pics(problem: SolveBoundary, name_modifier: str, folder: str):
     print_3d_boundaries_on_cube(problem.phi_n, name=f'{name_modifier}_control', folder=folder)
     print_3d_boundaries_single(problem.phi_n, name=f'{name_modifier}_control', folder=folder)
     print_3d_boundaries_on_cube(problem.state.split()[0], name=f'{name_modifier}_theta', folder=folder)
@@ -32,9 +36,9 @@ def experiment_1(folder='exp1'):
     clear_dir(folder)
 
     problem = SolveOptimization()
-    r_default = Expression("x[0]", degree=3)
+    r_default = Expression("x[1]", degree=3)
     problem._r = r_default
-    problem.phi_n = Expression('x[0]', degree=3)
+    problem.phi_n = Expression('0.1 + x[0]*0.5', degree=3)
     problem.solve_boundary()
     make_pics(problem, 'target', folder)
     target_phi_n = Expression('t', degree=3, t=interpolate(problem.phi_n, problem.simple_space))
@@ -51,7 +55,7 @@ def experiment_1(folder='exp1'):
     )
 
     print('Launching iterations')
-    problem.find_optimal_control(iterations=5 * 10 ** 3, _lambda=100)
+    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=1000)
     make_pics(problem, 'end', folder)
     phi_n = Expression('t', degree=3, t=interpolate(problem.phi_n, problem.simple_space))
     print_3d_boundaries_on_cube(
@@ -75,7 +79,7 @@ def experiment_2(folder='exp2'):
 
     print('Launching iterations')
 
-    problem.find_optimal_control(iterations=10 ** 2, _lambda=100)
+    problem.find_optimal_control(iterations=5 * 10 ** 2, _lambda=100)
 
     make_pics(problem=problem, name_modifier='end', folder=folder)
     draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
@@ -84,10 +88,39 @@ def experiment_2(folder='exp2'):
 
 
 def experiment_3(folder='exp3'):
+    """
+    Currently not working
+    :param folder: folder name for output pics
+    :return: 0
+    """
     clear_dir(folder)
 
+    test = SolveBoundary()
+    r_default = Expression("0.2 * (x[0] + x[1] + x[2]) + 0.1", degree=3)
+    test._r = r_default
+    test.phi_n = Expression('0.5 * (x[0] + x[1])', degree=3)
+    test.solve_boundary()
+    target_phi_n = Expression('t', degree=3, t=interpolate(test.phi_n, test.simple_space))
+    make_pics(test, 'target', folder)
+
+    problem = DirectSolve()
+    problem._r = r_default
+    problem.theta_b = Expression('t', degree=3, t=interpolate(test.state.split()[0], test.simple_space))
+    problem.solve_direct()
+
+    make_pics(problem=problem, name_modifier='end', folder=folder)
+
+    phi_n = Expression('t', degree=3, t=interpolate(problem.state.split()[3], problem.simple_space))
+    print_3d_boundaries_on_cube(phi_n, name='end_control', folder=folder)
+    print_3d_boundaries_on_cube(
+        project((target_phi_n - phi_n) ** 2, problem.boundary_simple_space),
+        name='diff_end_control', folder=folder
+    )
+    print('ggwp all done!')
+    return 0
 
 
 if __name__ == "__main__":
     experiment_1()
     # experiment_2()
+    # experiment_3()

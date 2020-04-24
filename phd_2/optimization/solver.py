@@ -35,6 +35,14 @@ class SolveBoundary(DefaultValues3D):
         )
         return self.state
 
+    def target_diff(self):
+        return interpolate(
+            Expression(
+                'pow(theta - tb, 2)', degree=3,
+                theta=self.state.split()[0], tb=self.theta_b
+            ), self.simple_space
+        )
+
 
 class SolveOptimization(SolveBoundary):
     _lambda = 0.1 ** 2
@@ -89,13 +97,6 @@ class SolveOptimization(SolveBoundary):
             self.quality_history.append(quality)
         return quality
 
-    def target_diff(self):
-        return interpolate(
-            Expression(
-                'pow(theta - tb, 2)', degree=3,
-                theta=self.state.split()[0], tb=self.theta_b
-            ), self.simple_space
-        )
 
     def _gradient_step(self):
         self.solve_boundary()
@@ -111,4 +112,6 @@ class SolveOptimization(SolveBoundary):
             self._gradient_step()
             diff = self.quality_history[-2] - self.quality_history[-1] if len(self.quality_history) > 1 else 0
             print(f'Iteration {i},\tquality: {self.quality_history[-1]},\t{diff}')
+            if diff < 0:
+                break
         return self.phi_n

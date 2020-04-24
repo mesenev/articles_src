@@ -2,13 +2,14 @@
 \usepackage[russian]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts,amssymb}
+\usepackage{mathtools}
 \usepackage{graphicx}
 \usepackage{subfig}
-\usepackage{float}
 \textwidth 16.5cm \textheight 23cm \topmargin -1.5cm
-%\oddsidemargin -0.5cm
-%\usepackage{algorithm}% http://ctan.org/pkg/algorithms
-%\captionsetup[algorithm]{labelformat=empty}
+
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\captionsetup[algorithm]{labelformat=empty}
+\usepackage[noend]{algpseudocode}
 
 \newtheorem{theorem}{Теорема}
 \newtheorem{lemma}{Лемма}
@@ -30,9 +31,9 @@
     {\bf \copyright\  2019 г.\ \  П.Р. Месенев, А.Ю. Чеботарев $^{*}$}
         \\
         {\it (690041 Владивосток,ул.Радио,7,ИПМ ДВО РАН)\\
-        e-mail:  $^{*}$cheb@iam.dvo.ru}\\
+            e-mail:  $^{*}$cheb@iam.dvo.ru}\\
         {\small  Поступила в редакцию 04.02.2020 г.\\
-        Принята к публикации 2020 г.}
+            Принята к публикации 2020 г.}
     \end{center}
 
     \sloppy
@@ -218,7 +219,7 @@
 
     \textbf{Лемма 1.}
     {\it
-    Пусть выполняются условия} (i),(ii), $u\in U$. {\it Тогда
+        Пусть выполняются условия} (i),(ii), $u\in U$. {\it Тогда
     существует единственное слабое решение задачи (\ref{eq1}),(\ref{bc1}) и при этом}
     \begin{equation}
         \label{E1}
@@ -243,8 +244,8 @@
     \end{equation}
     Здесь \[ g = Br + \frac{\kappa_a}{\alpha}A^{-1}B(r+bu) \in V'. \]
     Однозначная разрешимость уравнения~\eqref{lemma-1-1} с монотонной нелинейностью
-    хорошо известна (см. например \cite{Kufner}). Следовательно задача (\ref{w1})
-    однозначно разрешима.
+    хорошо известна (см. например~\cite{Kufner}).
+    Следовательно задача (\ref{w1}) однозначно разрешима.
 
     Для получения оценок (\ref{E1}) умножим скалярно~\eqref{lemma-1-1} на $\theta \in V$ и отбросим неотрицательные
     слагаемые в левой части. Тогда
@@ -261,7 +262,7 @@
 
     \textbf{Теорема 1.}
     {\it
-    Пусть выполняются условия} (i),(ii).
+        Пусть выполняются условия} (i),(ii).
     {\it Тогда существует решение задачи $(CP).$
     }
 
@@ -288,8 +289,8 @@
         \label{L}
         u_m \rightarrow \hat{u} \text{  слабо в } U, \;\;
         \theta_m, \varphi_m \rightarrow \hat{\theta}, \hat{\varphi} \text{
-        слабо в } V, \text{
-        сильно в } L^4(\Omega).
+            слабо в } V, \text{
+            сильно в } L^4(\Omega).
     \end{equation}
     Заметим также, что $\forall v \in V$
     \begin{equation}
@@ -332,7 +333,7 @@
 
     \textbf{Лемма 2.}
     {\it
-    Пусть выполняются условия} (i),(ii).
+        Пусть выполняются условия} (i),(ii).
     {\it Для любой пары $\hat{y} \in V \times V, \hat{u} \in U$ справедливо равенство}
     \[
         \texttt{Im}F_y'(y, u) = V' \times V'.
@@ -380,7 +381,7 @@
     {\it Пусть выполняются условия} (i),(ii).
     {\it Если $\{\hat{\theta}, \hat{\varphi}, \hat{u}\}$ -- решение
     задачи $(CP)$, то существует единственная пара $\{p_1, p_2 \} \in V\times V$
-    такая, что}
+        такая, что}
     \begin{gather*}
         aA\hat{\theta} + b \kappa_a([\hat{\theta}]^4 -\hat{\varphi}) = Br, \;\;
         \alpha A \hat{\varphi} + \kappa_a(\hat{\varphi} - [\hat{\theta}]^4) = B\hat{u},\\
@@ -418,11 +419,11 @@
 
     \textbf{Теорема 3.}
     {\it
-    Пусть выполняются условия} (i),(ii) {\it и существует решение задачи \eqref{eq11},\eqref{bc11}.}
+        Пусть выполняются условия} (i),(ii) {\it и существует решение задачи \eqref{eq11},\eqref{bc11}.}
     {\it  Если $\{\theta_\lambda,\varphi_\lambda,u_\lambda\}$ -- решение
     задачи $(CP)$ для $\lambda>0$, то существует последовательность
-    $\lambda\to +0$
-    такая, что}
+        $\lambda\to +0$
+        такая, что}
     \[
         \theta_\lambda\rightarrow\theta_*, \;\; \varphi_\lambda\rightarrow\varphi_*
         \text{ слабо в }V,\text{ сильно в }H,
@@ -457,10 +458,10 @@
         \label{LL}
         u_\lambda \rightarrow u_* \text{  слабо в } U, \;\;
         \theta_\lambda, \varphi_\lambda \rightarrow \theta_*,\varphi_* \text{
-        слабо в } V, \text{
-        сильно в } L^4(\Omega).
+            слабо в } V, \text{
+            сильно в } L^4(\Omega).
     \end{equation}
-    Результаты \eqref{LL} позволяют перейти к пределу при $\lambda\to+0$
+    Результаты~\eqref{LL} позволяют перейти к пределу при $\lambda\to+0$
     в уравнениях для $\theta_\lambda,\varphi_\lambda,u_\lambda$ и тогда
     \begin{equation}
         \label{CC}
@@ -484,107 +485,117 @@
     \begin{center}
         \textbf{6. ЧИСЛЕННЫЕ ЭКСПЕРИМЕНТЫ}
     \end{center}
-    Пусть функционал $J_\lambda (\theta, u)$ соответсвует оговорённому ранее.
+    Пусть функционал $J_\lambda (\theta, u)$ соответсвует условиям, представленным в гл.
+    2.
     Согласно формуле~\eqref{OC2} градиент функционала качества равен
     \[
         J'_\lambda (u) = \lambda u - p_2.
     \]
+    Здесь $u$ -- функция из граничного условия~\eqref{bc1}, $p_2$ -- соответствующая переменная сопряжённой
+    системы~\eqref{L}--\eqref{L1}.
 
     Предлагаемый алгоритм решения задачи (CP) выглядит следующим образом:
-    %    \begin{algorithm}[H]
-    %        \caption{Алгоритм градиентного спуска}
-    %        \begin{algorithmic}[1]
-    %            \State Выбираем значение градиентного шага $\varepsilon$,
-    %            \State Выбираем количество итераций $N$,
-    %            \State Выбираем произвольное $u_0 \in U$,
-    %            \For{$k \gets 0,1,2,\dots,N$}:
-    %            \State Для полученного $u_k$ расчитываем состояние $y_k = \{\theta_k, \varphi_k\}$ из~\eqref{eq1}.
-    %            \State Расчитываем значение функционала качества $J(\theta_k, u_k)$ из~\eqref{cost}.
-    %            \State Расчитываем сопряжённое состояние $p_k=\{p_{1k},p_{2k}\}$ из уравнений~\eqref{OC1}, где $ \hat{\theta} := \theta_k, \hat{u}=u_k$.
-    %            \State Пересчитываем управление $u_{k+1} = u_k - \varepsilon (\lambda u_k - p_2)$
-    %            \EndFor
-    %        \end{algorithmic}
-    %    \end{algorithm}
+    \begin{algorithm}[H]
+        \caption{Алгоритм градиентного спуска}
+        \begin{algorithmic}[1]
+            \State Выбираем значение градиентного шага $\varepsilon$,
+            \State Выбираем количество итераций $N$,
+            \State Выбираем произвольное $u_0 \in U$,
+            \For{$k \gets 0,1,2,\dots,N$}:
+            \State Для полученного $u_k$ расчитываем состояние $y_k = \{\theta_k, \varphi_k\}$ из~\eqref{eq1}.
+            \State Расчитываем значение функционала качества $J(\theta_k, u_k)$ из~\eqref{cost}.
+            \State Расчитываем состояние $p_k=\{p_{1k},p_{2k}\}$ из уравнений~\eqref{OC1},
+            где $ \hat{\theta} := \theta_k, \hat{u}=u_k$.
+            \State Пересчитываем управление $u_{k+1} = u_k - \varepsilon (\lambda u_k - p_2)$
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
     Значение параметра $\varepsilon$ выбирается эмпирически таким образом, чтобы значение
     $\varepsilon (\lambda u_k - p_2)$ являлась существенной поправкой для $u_{k+1}$.
-    Количество итераий $N$ выбирается достаточным для выполнения условия
-    $J(\theta_k, u_k) - J(\theta_{k+1}, u_{k+1}) < 10^{-15}$.
+    Количество итераций $N$ выбирается достаточным для выполнения условия
+    $J(\theta_k, u_k) - J(\theta_{k+1}, u_{k+1}) < 10^{-12}$.
     Эксперименты показывают хорошее восстановление функции $u$ при $N > 10^{3}$.
 
     Приведём примеры расчётов для куба с ребром 1~см,
-    $\Omega = {(x, y, z), 0 \leq x,y,z \leq l}, l = 1 \text{см}$.
+    $\Omega = {(x, y, z), 0 \leq x,y,z \leq l}, l = 1 \text{ см}$.
     Будем также далее считать, что $a = 0.006[\text{см}^2/\text{c}]$,
     $b=0.025[\text{см}/\text{с}]$, $\beta = 0.00005[\text{см}/\text{с}]$,
     $\kappa=1[\text{см}^{-1}]$, $\kappa_s = 0$, $A = 0$, $\gamma = 0.3$.
-    Указанные параметры соответствуют стеклу~\cite{grenkin_13}.
+    Указанные параметры соответствуют стеклу~\cite{Grenkin5}.
 
-    Для первого теста определим параметры $r$ и $u$ как:
-    $u = u^* = y$.
-
-    $\theta_b$ положим равным $\theta |_\Gamma$ из решения прямой задачи (1)-(2).
-    Для первого и второго теста положим начальное значение $u_0 = 0.1$.
-    Далее, применяя предложенный алгоритм находим приближенное решение обратной задачи (1)–(4).
-    Тестовое и найденное значение $u$ представлено на рис. 1
-    Эффективность алгоритма, а также значение $u_0$ в первом и втором случаях представлены на рис. 1.
+    Далее мы приведём два тестовых случая.
+    Для первого теста определим параметры $r$ и $u$ из~\eqref{bc1} как:
+    \begin{gather*}
+        r = 0.8 cos(x) + 0.1,\\
+        \hat u = y.
+    \end{gather*}
+    Из решения прямой задачи~\eqref{eq1}--\eqref{bc1} при заданных параметрах $r$ и $u$ расчитываем
+    состоение $\theta$ и $\varphi$.
+    Далее функцию $\theta_b$ из~\eqref{bc2} положим равным значению функции $\theta$ на $\Gamma$.
+    Установим начальное значение $u_0 = 0.1$.
+    Далее, применяя предложенный алгоритм находим приближенное решение задачи CP.
+    Квадрат разницы тестового и найденного решения, а также динамика функционала качества представлена на рисунке 1.
 
     \begin{figure}[H]
         \centering
-        \subfloat[Разница тестового и найденного управления]
+        \subfloat[ $(\hat u - u_{end}) ^ 2$]
         {
         \label{fig1:exp1}
-        \includegraphics[width=.51\linewidth]{img/diff_control_test_final.eps}
+        \includegraphics[width=.51\linewidth]{img/1_diff_end_control.png}
         }
         \subfloat[Динамика функционала качества]
         {
         \label{fig1:exp2}
-        \includegraphics[width=.51\linewidth]{img/quality_1.eps}
+        \includegraphics[width=.51\linewidth]{img/1_quality.png}
         }
         \caption{Первый эксперимент}
         \label{img_control_1}
     \end{figure}
 
-    Для второго эксперимента определим функции $\theta_b$, $q_b$ из~\eqref{bc2} следующим образом
+    Для второго эксперимента вместо тестовой функции управления $u$
+    определим функции $\theta_b$, $q_b$ из~\eqref{bc2} следующим образом
     \[
         \theta_b = 0.1z + 0.3, \;
-        q_b = \begin{cases}
-                  -0.15, & \text{если } z = 0, \\
-                  0, & \text{если } 0 < z < 1, \\
-                  0.11, & \text{если } z = 1.
+        q_b =
+        \begin{cases}
+            0.11, & \text{если } z = 1,\\
+            0, & \text{если } 0 < z < 1,\\
+            -0.15, & \text{если } z = 0.
         \end{cases}
     \]
 
-    В данном случае мы не знаем оптимальное решение $u$ задачи (1)-(2).
+    Отметим, что для данного теста мы не знаем оптимальное решение $u$.
 
     \begin{figure}[H]
         \centering
         \subfloat[Найденное значение]
         {
         \label{fig2:exp1}
-        \includegraphics[width=.51\linewidth]{img/final_control_2.eps}
+        \includegraphics[width=.51\linewidth]{img/2_end_control.png}
         }
         \subfloat[Динамика функционала качества]
         {
         \label{fig2:exp2}
-        \includegraphics[width=.51\linewidth]{img/quality_2.png}
+        \includegraphics[width=.51\linewidth]{img/2_quality.png}
         }
         \caption{Тестовая функция $u$, начальная $u_0$, найденная функция $u_{end}.$}
         \label{img_control_2}
     \end{figure}
-    Отметим довольно незначительное изменение функционала качества (в десять раз).
+    Отметим довольно незначительное изменение функционала качества.
     Это объясняется тем, что выбранное управление не всегда оказывает существенное влияние на температурное поле.
-    В то же самое время, компонента излучения $\varphi$ изменяется по итерациям весьма существенно.
+    В то же самое время, компонента излучения $\varphi$ изменяется весьма существенно.
 
     \begin{figure}[H]
         \centering
-        \subfloat[Начальное значение $\theta$]
+        \subfloat[$\theta$ на нулевой итерации]
         {
         \label{fig3:exp1}
-        \includegraphics[width=.51\linewidth]{img/init_theta.png}
+        \includegraphics[width=.51\linewidth]{img/2_init_theta.png}
         }
-        \subfloat[Конечное значение $\theta$]
+        \subfloat[$\theta$ на последней итерации]
         {
         \label{fig3:exp2}
-        \includegraphics[width=.51\linewidth]{img/end_theta.png}
+        \includegraphics[width=.51\linewidth]{img/2_end_theta.png}
         }
         \caption{Компонента температуры, соотвествующая управлению $u_0$ и $u_{100}$}
         \label{theta_dynamics}
@@ -595,22 +606,22 @@
         \subfloat[Начальное значение $\varphi$]
         {
         \label{fig4:exp1}
-        \includegraphics[width=.51\linewidth]{img/init_phi.png}
+        \includegraphics[width=.51\linewidth]{img/2_init_phi.png}
         }
         \subfloat[Конечное значение $\varphi$]
         {
         \label{fig4:exp2}
-        \includegraphics[width=.51\linewidth]{img/end_phi.png}
+        \includegraphics[width=.51\linewidth]{img/2_end_phi.png}
         }
         \caption{Компонента излучения, соотвествующее управлению $u_0$ и $u_{100}$}
         \label{phi_dynamics}
     \end{figure}
-    Не болейте.
+
 
     \begin{thebibliography}{999}
 
         \bibitem{Modest}
-        Modest~M.F. Radiative Heat Transfer. Academic Press. 2003. 822 p.
+        Modest~M.F.~Radiative Heat Transfer. Academic Press. 2003. 822 p.
 
         \bibitem{Kovt}
         Kovtanyuk A.E., Chebotarev A.Yu., Botkin N.D. Unique solvability of a steady-state complex heat
