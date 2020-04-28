@@ -55,7 +55,7 @@ def experiment_1(folder='exp1'):
     )
 
     print('Launching iterations')
-    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=1000)
+    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=5000)
     make_pics(problem, 'end', folder)
     phi_n = Expression('t', degree=3, t=interpolate(problem.phi_n, problem.simple_space))
     print_3d_boundaries_on_cube(
@@ -79,7 +79,7 @@ def experiment_2(folder='exp2'):
 
     print('Launching iterations')
 
-    problem.find_optimal_control(iterations=5 * 10 ** 2, _lambda=100)
+    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=100)
 
     make_pics(problem=problem, name_modifier='end', folder=folder)
     draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
@@ -122,5 +122,5 @@ def experiment_3(folder='exp3'):
 
 if __name__ == "__main__":
     experiment_1()
-    # experiment_2()
+    experiment_2()
     # experiment_3()

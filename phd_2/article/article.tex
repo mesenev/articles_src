@@ -514,11 +514,11 @@
     $J(\theta_k, u_k) - J(\theta_{k+1}, u_{k+1}) < \delta$, где $\delta>0$ задает точность расчетов.
 
     Примеры, рассмотренные ниже, иллюстрируют эффективность предложенного алгоритма даже при
-    малых значениях параметра регуляризации $\lambda.$
-    При значении $\delta=10^{-12}$ эксперименты демонстрируют сходимость алгоритма при $N > 10^{3}$.
+    малых значениях параметра регуляризации $\lambda < 10^{-12}.$
 
     \textbf{Для численного решения прямой задачи с заданным управлением и сопряженной системы
     использовался солвер FEniCS~\cite{fenics, dolfin}.}
+%    Исходные коды расчётов для настоящей статьи представлены по адресу \url{https://github.com/mesenev/articles_src}
 
 
     Приведем примеры расчетов для куба с ребром $l=1~\text{см}$,
@@ -545,12 +545,12 @@
         \subfloat[ $(\hat u - u_{end})^2$]
         {
             \label{fig1:exp1}
-            \includegraphics[width=.51\linewidth]{img/1_diff_end_control.png}
+            \includegraphics[width=.49\linewidth]{img/exp1/diff_end_control}
         }
         \subfloat[Изменение функционала в зависимости от числа итераций]
         {
             \label{fig1:exp2}
-            \includegraphics[width=.51\linewidth]{img/1_quality.png}
+            \includegraphics[width=.49\linewidth]{img/exp1/quality}
         }
         \caption{Пример 1.}
         \label{img_control_1}
@@ -576,12 +576,12 @@
         \subfloat[Найденное значение]
         {
             \label{fig2:exp1}
-            \includegraphics[width=.51\linewidth]{img/2_end_control.png}
+            \includegraphics[width=.49\linewidth]{img/exp2/end_control}
         }
         \subfloat[Динамика функционала качества]
         {
             \label{fig2:exp2}
-            \includegraphics[width=.51\linewidth]{img/2_quality.png}
+            \includegraphics[width=.49\linewidth]{img/exp2/quality}
         }
         \caption{Тестовая функция $u$, начальная $u_0$, найденная функция $u_{end}.$}
         \label{img_control_2}
@@ -592,17 +592,17 @@
 
     \begin{figure}[H]
         \centering
-        \subfloat[$\theta$ на нулевой итерации]
+        \subfloat[Начальное значение $\theta$]
         {
             \label{fig3:exp1}
-            \includegraphics[width=.51\linewidth]{img/2_init_theta.png}
+            \includegraphics[width=.49\linewidth]{img/exp2/init_theta}
         }
-        \subfloat[$\theta$ на последней итерации]
+        \subfloat[Конечное значение $\theta$]
         {
             \label{fig3:exp2}
-            \includegraphics[width=.51\linewidth]{img/2_end_theta.png}
+            \includegraphics[width=.49\linewidth]{img/exp2/end_theta}
         }
-        \caption{Компонента температуры, соотвествующая управлению $u_0$ и $u_{100}$}
+        \caption{Компонента температуры, соотвествующая управлению $u_0$ и $u_{end}$}
         \label{theta_dynamics}
     \end{figure}
 
@@ -611,14 +611,14 @@
         \subfloat[Начальное значение $\varphi$]
         {
             \label{fig4:exp1}
-            \includegraphics[width=.51\linewidth]{img/2_init_phi.png}
+            \includegraphics[width=.49\linewidth]{img/exp2/init_phi}
         }
         \subfloat[Конечное значение $\varphi$]
         {
             \label{fig4:exp2}
-            \includegraphics[width=.51\linewidth]{img/2_end_phi.png}
+            \includegraphics[width=.49\linewidth]{img/exp2/end_phi}
         }
-        \caption{Компонента излучения, соотвествующее управлению $u_0$ и $u_{100}$}
+        \caption{Компонента излучения, соотвествующее управлению $u_0$ и $u_{end}$}
         \label{phi_dynamics}
     \end{figure}
 

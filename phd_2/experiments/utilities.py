@@ -18,6 +18,8 @@ font = {'family': 'sans-serif',
         'size': 10,
         }
 
+default_colormap = cm.Greys
+
 points_2d = [Point(0, 0.5), Point(0.5, 1), Point(1, 0.5), Point(0.5, 0)]
 
 
@@ -48,12 +50,14 @@ def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=
     return
 
 
-def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.coolwarm, colorbar_scalable=True):
+def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=default_colormap, colorbar_scalable=True):
     """
     https://stackoverflow.com/questions/36046338/contourf-on-the-faces-of-a-matplotlib-cube
     :param v: function to draw
+    :param cmap: cmap
     :param name: target filename
     :param folder: folder name for target
+    :param colorbar_scalable: should colorbar scale to actual values or equals to [0,1]
     :return: nothing. Just saves the picture
     """
     plt.close('all')
@@ -75,9 +79,9 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.co
     mn = min(left_vals.min(), top_vals.min(), right_vals.min())
     mx = max(left_vals.max(), top_vals.max(), right_vals.max())
     if colorbar_scalable and mn != mx:
-        levels = linspace(mn, mx, 50)
+        levels = linspace(mn, mx, 17)
     else:
-        levels = linspace(0, 1, 50)
+        levels = linspace(0, 1, 17)
     cset[0] = ax.contourf(X, Y, top_vals, zdir='z', offset=1, levels=levels, cmap=cmap)
     # now, for the x-constant face, assign the contour to the x-plot-variable:
     cset[1] = ax.contourf(right_vals, y_m, x_m, zdir='x', offset=1, levels=levels, cmap=cmap)
@@ -89,7 +93,7 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.co
     ax.set_zlim3d(0, 1)
     fig.subplots_adjust(right=0.8)
     color_bar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    ticks = [mn] + [mn + (mx - mn) / 7 * i for i in range(1, 7)] + [mx]
+    ticks = [mn] + [mn + (mx - mn) / 4 * i for i in range(1, 4)] + [mx]
     fig.colorbar(cset[0], cax=color_bar_ax,
                  ticks=ticks,
                  extend='both',
@@ -106,7 +110,7 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=cm.co
     #              extendfrac='auto',
     #              spacing='uniform',
     #              orientation='vertical')
-    plt.savefig('{}/{}.png'.format(folder, name, bbox_inches='tight'))
+    plt.savefig(f'{folder}/{name}.eps', bbox_inches='tight')
 
 
 def print_2d(v, name='function', folder='results'):
@@ -172,9 +176,9 @@ def print_3d_boundaries_single(v, name='solution', folder='results'):
     bottom_vals = array(list(map(bottom, x_m.reshape(100 ** 2), y_m.reshape(100 ** 2)))).reshape(100, 100)
     mn = min(vertical_vals.min(), top_vals.min(), bottom_vals.min())
     mx = max(vertical_vals.max(), top_vals.max(), bottom_vals.max())
-    im1 = ax1.pcolor(vertical_vals, cmap=cm.RdBu, vmin=mn, vmax=mx)
-    im2 = ax2.pcolor(top_vals, cmap=cm.RdBu, vmin=mn, vmax=mx)
-    im3 = ax3.pcolor(bottom_vals, cmap=cm.RdBu, vmin=mn, vmax=mx)
+    im1 = ax1.pcolor(vertical_vals, cmap=default_colormap, vmin=mn, vmax=mx)
+    im2 = ax2.pcolor(top_vals, cmap=default_colormap, vmin=mn, vmax=mx)
+    im3 = ax3.pcolor(bottom_vals, cmap=default_colormap, vmin=mn, vmax=mx)
     ax1.axis('off')
     ax1.set_title('Вертикальные грани', font)
     ax2.axis('off')
@@ -212,7 +216,7 @@ def print_3d_boundaries_separate(v, name='solution', folder='results'):
         fig = plt.figure()
         ax = fig.add_subplot(111, aspect='equal')
 
-        SC = ax.pcolor(X, Y, top_vals, cmap=cm.RdBu, vmin=top_vals.min(), vmax=top_vals.max())
+        SC = ax.pcolor(X, Y, top_vals, cmap=default_colormap, vmin=top_vals.min(), vmax=top_vals.max())
 
         the_divider = make_axes_locatable(ax)
         color_axis = the_divider.append_axes("right", size="5%", pad=0.1)
@@ -229,19 +233,18 @@ def draw_simple_graphic(
 ):
     x = [i for i in range(0, data.__len__())]
     plt.figure()
-    plt.semilogx(x, data) if logarithmic else plt.plot(x, data)
+    plt.semilogx(x, data, color='black') if logarithmic else plt.plot(x, data, color='black')
     # scale = (max(data) - min(data)) / 8
     # plt.semilogx([-0.01, x.__len__(), min(y) - scale, max(y) + scale])
     # plt.text((x.__len__()+10)*1/3, (max(y) + scale)*4/5, , fontsize=14)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    blue_line = mlines.Line2D([], [], color='blue', label=r"")
-    extra1 = mpatches.Patch(color='none', label='Начальное значение: {}'.format(data[0]))
-    extra2 = mpatches.Patch(color='none', label="Конечное значение: {}".format(data[-1]))
-    plt.legend([extra1, extra2], [blue_line.get_label(),
-                                  extra1.get_label(), extra2.get_label()], prop={'size': 10})
+    blue_line = mlines.Line2D([], [], color='black', label=r"")
+    extra1 = mpatches.Patch(color='none', label=f'Начальное значение: {data[0]}')
+    extra2 = mpatches.Patch(color='none', label=f'Конечное значение: {data[-1]}')
+    plt.legend([extra1, extra2], [extra1.get_label(), extra2.get_label()], prop={'size': 10})
     plt.grid(True)
-    plt.savefig("{}/{}.png".format(folder, target_file))
+    plt.savefig(f'{folder}/{target_file}.eps')
     plt.close()
     return
 
@@ -260,7 +263,7 @@ def checkers():
     mesh = UnitCubeMesh(10, 10, 10)
     V = FunctionSpace(mesh, 'P', 1)
     u = interpolate(Expression('x[0]/2+x[1]/3+x[2]', degree=3), V)
-    print_3d_boundaries_on_cube(u, 'test_3d_cube', folder='checker', cmap='binary')
+    print_3d_boundaries_on_cube(u, 'test_3d_cube', folder='checker')
     # simple graphic check
     # print('Simple graphic check')
     # draw_simple_graphic([1, 2, 3, 4, 5, 6, 7, 8, 9], 'test_simple_graphic', folder='checker')
@@ -272,6 +275,9 @@ def checkers():
     # print_2d_boundaries(u, 'test_2d_boundary', folder='checker')
 
     return
+
+
+# checkers()
 
 
 class Normal(UserExpression):

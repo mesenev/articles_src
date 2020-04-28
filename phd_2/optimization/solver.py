@@ -49,7 +49,7 @@ class SolveOptimization(SolveBoundary):
     p1, p2 = TrialFunctions(DefaultValues3D.state_space)
     conjugate = Function(DefaultValues3D.state_space)
     tau, nu = TestFunctions(DefaultValues3D.state_space)
-    epsilon = 0.1 ** 12
+    epsilon = 0.1 ** 10
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -112,5 +112,5 @@ class SolveOptimization(SolveBoundary):
             diff = self.quality_history[-2] - self.quality_history[-1] if len(self.quality_history) > 1 else 0
             print(f'Iteration {i},\tquality: {self.quality_history[-1]},\t{diff}')
             if diff < 0:
-                break
+                print('warning')
         return self.phi_n
