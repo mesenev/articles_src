@@ -538,11 +538,12 @@
     Далее рассчитываем состояние $\theta$ и $\varphi$ как решение задачи~\eqref{eq1}--\eqref{bc1} и в качестве
     $\theta_b$ выбираем граничные значение функции $\theta$ на $\Gamma$.
     Применяя предложенный алгоритм с начальным приближением $u_0 = 0.1$ находим приближенное решение задачи CP\@.
-    Квадрат разницы тестового и найденного решения, а также динамика функционала качества представлена на рисунке 1.
+    Квадрат разницы тестового и найденного решения,
+    а также динамика функционала качества представлена на рисунке~\ref{img_test_1}.
 
     \begin{figure}[H]
         \centering
-        \subfloat[ $(\hat u - u_{end})^2$]
+        \subfloat[ $(\hat u - u_{100})^2$]
         {
             \label{fig1:exp1}
             \includegraphics[width=.49\linewidth]{img/exp1/diff_end_control}
@@ -553,7 +554,7 @@
             \includegraphics[width=.49\linewidth]{img/exp1/quality}
         }
         \caption{Пример 1.}
-        \label{img_control_1}
+        \label{img_test_1}
     \end{figure}
 
     \textbf{Пример 2.}
@@ -570,58 +571,40 @@
     \]
 
     В данном примере оптимальное управление $u$ в качестве тестового не задается.
+    На рисунке~\ref{img_test_2} представлен результат работы алгоритма
 
     \begin{figure}[H]
         \centering
-        \subfloat[Найденное значение]
+        \subfloat[Найденное оптимальное управление]
         {
             \label{fig2:exp1}
             \includegraphics[width=.49\linewidth]{img/exp2/end_control}
         }
-        \subfloat[Динамика функционала качества]
+        \subfloat[Изменение функционала в зависимости от числа итераций]
         {
             \label{fig2:exp2}
             \includegraphics[width=.49\linewidth]{img/exp2/quality}
         }
-        \caption{Тестовая функция $u$, начальная $u_0$, найденная функция $u_{end}.$}
-        \label{img_control_2}
+        \caption{Пример 2.1}
+        \label{img_test_2}
     \end{figure}
-    Отметим довольно незначительное изменение функционала качества.
-    Это объясняется тем, что выбранное управление не всегда оказывает существенное влияние на температурное поле.
-    В то же время, излучение $\varphi$ изменяется весьма существенно.
 
+    Компоненты состояния, соотвествующие найденному управлению представлены на рисунке~\ref{img_end_state}.
     \begin{figure}[H]
         \centering
-        \subfloat[Начальное значение $\theta$]
-        {
-            \label{fig3:exp1}
-            \includegraphics[width=.49\linewidth]{img/exp2/init_theta}
-        }
-        \subfloat[Конечное значение $\theta$]
+        \subfloat[Температурa $\theta$]
         {
             \label{fig3:exp2}
             \includegraphics[width=.49\linewidth]{img/exp2/end_theta}
         }
-        \caption{Компонента температуры, соотвествующая управлению $u_0$ и $u_{end}$}
-        \label{theta_dynamics}
-    \end{figure}
-
-    \begin{figure}[H]
-        \centering
-        \subfloat[Начальное значение $\varphi$]
-        {
-            \label{fig4:exp1}
-            \includegraphics[width=.49\linewidth]{img/exp2/init_phi}
-        }
-        \subfloat[Конечное значение $\varphi$]
+        \subfloat[Излучение $\varphi$]
         {
             \label{fig4:exp2}
             \includegraphics[width=.49\linewidth]{img/exp2/end_phi}
         }
-        \caption{Компонента излучения, соотвествующее управлению $u_0$ и $u_{end}$}
-        \label{phi_dynamics}
+        \caption{Пример 2.2}
+        \label{img_end_state}
     \end{figure}
-
 
     %! Suppress = LineBreak
     \begin{thebibliography}{999}
@@ -764,7 +747,7 @@
         Problems, North-Holland, Amsterdam, 1979.
 
         \bibitem{fenics} M. S. Alnaes, J. Blechta, J. Hake, A. Johansson,
-        B. Kehlet, A. Logg, C. Richardson, J. Ring, M. E. Rognes,  G. N. Wells
+        B. Kehlet, A. Logg, C. Richardson, J. Ring, M. E. Rognes, G. N. Wells
         The FEniCS Project Version 1.5
         Archive of Numerical Software, vol. 3, 2015,
 
