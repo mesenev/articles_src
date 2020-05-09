@@ -33,7 +33,7 @@ from dolfin import (
 )
 from dolfin.cpp.generation import UnitSquareMesh
 
-from phd_2.experiments.utilities import print_2d_boundaries, Normal
+from scratches.utilities import print_2d_boundaries, Normal
 
 a = 0.006
 alpha = 0.333

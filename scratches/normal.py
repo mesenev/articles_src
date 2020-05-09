@@ -1,11 +1,8 @@
-import numpy as np
-from dolfin import *
-import matplotlib.pyplot as plt
 from dolfin import *
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 
-from phd_2.experiments.utilities import print_2d_boundaries, get_facet_normal, points_2d, Normal
+from scratches.utilities import print_2d_boundaries, points_2d, Normal
 
 mesh = UnitSquareMesh(10, 10)
 bmesh = BoundaryMesh(mesh, 'exterior')
