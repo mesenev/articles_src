@@ -1,10 +1,12 @@
 import os
 import shutil
 
+from scratches.utilities import *
+
 from direct_solve import DirectSolve
-from phd_2.experiments.utilities import *
 from phd_2.optimization.default_values import ThetaN
 from phd_2.optimization.solver import SolveOptimization, SolveBoundary
+from utilities import *
 
 set_log_active(False)
 
