@@ -1,0 +1,35 @@
+Модель теплопереноса в $\Omega$ с границей $\Gamma = \partial \Omega$:
+\begin{equation}
+    \label{model}
+    - a \Delta\theta + b\kappa_a(|\theta|\theta^3- \varphi)=0,   \quad
+    - \alpha \Delta \varphi + \kappa_a(\varphi-|\theta|\theta^3)=0,\; x\in\Omega.
+\end{equation}
+Для постановки задачи разобьём границу на две области:
+$\Gamma := \partial \Omega =\overline{\Gamma}_0 \cup \overline{\Gamma}_1$,
+где части границы $\Gamma_0, \Gamma_1$ не имеют пересечений.
+Определим следующие функции
+\begin{equation}
+    \label{boundary}
+    \begin{aligned}
+        \Gamma &: \alpha(\partial_n\varphi+\varphi) = u, \\
+        \Gamma_0 &: \partial_n\Gamma = q_b, \\
+        \Gamma_1 &: a(\partial_n\theta+\theta) = r.
+    \end{aligned}
+\end{equation}
+
+Обратная задача состоит в нахождении функций $r \in  \Gamma_1, \{\theta, \varphi\} \in \Omega $
+удовлетворяющих условиям~\eqref{model}--\eqref{boundary}, а также дополнительному условию
+на участке границы $\Gamma_0$:
+\begin{equation}
+    \label{boundary-extra}
+    \Gamma = \theta_b \text{ на } \Gamma_0.
+\end{equation}
+Сформулированная обратная задача~\eqref{model}--\eqref{boundary-extra} сводится к экстремальной задаче,
+состоящей в минимизации функционала
+\begin{equation}
+    \label{cost}
+    J(\theta) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^{2} d\Gamma_0 \rightarrow \inf
+\end{equation}
+на решениях краевой задачи~\eqref{model}--\eqref{boundary}.
+
+Основные результаты работы состоят в получении красивых картинок для научного руководителя ¯\\_(ツ)_/¯.
