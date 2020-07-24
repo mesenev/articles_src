@@ -5,31 +5,52 @@
     - \alpha \Delta \varphi + \kappa_a(\varphi-|\theta|\theta^3)=0,\; x\in\Omega.
 \end{equation}
 Для постановки задачи разобьём границу на две области:
-$\Gamma := \partial \Omega =\overline{\Gamma}_0 \cup \overline{\Gamma}_1$,
-где части границы $\Gamma_0, \Gamma_1$ не имеют пересечений.
+$\Gamma := \partial \Omega =\overline{\Gamma}_1 \cup \overline{\Gamma}_2$,
+где части границы не имеют пересечений.
 Определим следующие функции
 \begin{equation}
     \label{boundary}
     \begin{aligned}
-        \Gamma &: \alpha(\partial_n\varphi+\varphi) = u, \\
-        \Gamma_0 &: \partial_n\Gamma = q_b, \\
-        \Gamma_1 &: a(\partial_n\theta+\theta) = r.
+        \Gamma_1 :\; &\partial_n \theta = q_b,\; \theta = \theta_b, \\
+        &\alpha\partial_n\varphi + \gamma (\varphi - \theta_b ^4 ) = 0, \\
+        \Gamma_2 :\; & \partial_n \theta = q_b.
     \end{aligned}
 \end{equation}
-
-Обратная задача состоит в нахождении функций $r \in  \Gamma_1, \{\theta, \varphi\} \in \Omega $
+Для постановки задачи введём следующее обозначение:
+\[
+    r:= \alpha \partial_n \varphi \text{ на }\Gamma_2
+\]
+Обратная задача состоит в отыскании тройки функций $r \in  \Gamma_1, \{\theta, \varphi\} \in \Omega $
 удовлетворяющих условиям~\eqref{model}--\eqref{boundary}, а также дополнительному условию
-на участке границы $\Gamma_0$:
+на участке границы $\Gamma_2$:
 \begin{equation}
     \label{boundary-extra}
-    \Gamma = \theta_b \text{ на } \Gamma_0.
+    \theta = \theta_b \text{ на } \Gamma_2.
 \end{equation}
 Сформулированная обратная задача~\eqref{model}--\eqref{boundary-extra} сводится к экстремальной задаче,
 состоящей в минимизации функционала
 \begin{equation}
     \label{cost}
-    J(\theta) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^{2} d\Gamma_0 \rightarrow \inf
+    J(\theta) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^{2} d\Gamma \rightarrow \inf
 \end{equation}
 на решениях краевой задачи~\eqref{model}--\eqref{boundary}.
 
-Основные результаты работы состоят в получении красивых картинок для научного руководителя ¯\\_(ツ)_/¯.
+
+Другим подходом может быть сведение исходной задачи к поиску некоторой
+переменной $\psi = a\theta + \alpha b \varphi$:
+\begin{equation}
+    \label{eq:equation}
+    -a \Delta \theta + g (\theta) = \frac{\kappa}{\alpha}\psi, \\
+    \Delta \psi = 0.
+\end{equation}
+С граничными условиями для $\theta$ из \eqref{boundary}, дополненными следующими условиями для
+$\psi$:
+\begin{equation}
+    \label{eq:boundary-2}
+    \begin{aligned}
+        \Gamma_1 &: \; \alpha \partial_n \psi + \gamma \psi = \alpha b \gamma \theta_b^4 + \alpha a \theta_b + \gamma a q_b = r, \\
+        \Gamma_2 &: \; \partial_n \psi = u.
+    \end{aligned}
+\end{equation}
+Здесь $g(\theta) = b \kappa|\theta|\theta^3 + \frac{a\kappa}{\alpha}\theta$.
+Функция $u$, в свою очередь неизвеста и играет роль управления.

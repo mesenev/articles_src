@@ -1,28 +1,15 @@
-\documentclass[12pt]{article}
-\usepackage[russian]{babel}
+\documentclass[12pt,a4paper]{report}%fleqn,leqno
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{extsizes}
+\usepackage[unicode, colorlinks=false, urlcolor=blue, pdfborder={0 0 0 [0 0]},bookmarks=false]{hyperref}
+\usepackage{mathtext}%русские буквы в формулах
 \usepackage{amsmath}
-\usepackage{amsfonts,amssymb}
-\usepackage{amsbib}
+\usepackage{amsfonts}
+\usepackage{mathtools}
 \usepackage{graphicx}
-\usepackage{subfig}
-\usepackage{float}
-
-\newtheorem{theorem}{Теорема}
-\newtheorem{lemma}{Лемма}
-\newtheorem{corollary}{Следствие}
-\newtheorem{definition}{Определение}
-\newtheorem{remark}{Замечание}
-\newtheorem{problem}{Задача}
-
-\renewcommand{\div}{\mathop{\mathrm{div}}\nolimits}
+\usepackage[T2A]{fontenc}
 
 \begin{document}
-
-    \section{Постановка задачи}\label{sec:постановка-задачи}
-    \input{1_problem}
-
-
-    \section{ЧИСЛЕННЫЕ ЭКСПЕРИМЕНТЫ}\label{sec:численные-эксперименты}
-    \input{2_experiments}
-
+    \include{1_problem}
 \end{document}

@@ -1,3 +1,4 @@
+import shutil
 from os import mkdir
 
 import matplotlib.lines as mlines
@@ -9,7 +10,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits.mplot3d import Axes3D
 from numpy import array, linspace, meshgrid, random, cross, sqrt, newaxis
 
-import asciichartpy
+from utilities import asciichartpy
 
 font = {'family': 'sans-serif',
         'name': 'Sans',
@@ -17,6 +18,16 @@ font = {'family': 'sans-serif',
         'weight': 'ultralight',
         'size': 10,
         }
+
+
+def clear_dir(folder):
+    try:
+        shutil.rmtree(folder)
+    except OSError:
+        print("Deletion of the directory %s failed" % folder)
+    finally:
+        mkdir(folder)
+
 
 default_colormap = cm.Greys
 
