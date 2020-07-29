@@ -25,8 +25,8 @@ def experiment_1(folder='exp1'):
 
     problem = Problem()
     answer = problem.solve_boundary()
-    print_3d_boundaries_on_cube(answer.split()[0], name=f'theta', folder=folder)
-    print_3d_boundaries_on_cube(answer.split()[1], name=f'psi', folder=folder)
+    print_3d_boundaries_on_cube(answer[0], name=f'theta', folder=folder)
+    print_3d_boundaries_on_cube(answer[1], name=f'psi', folder=folder)
 
 
 if __name__ == "__main__":
