@@ -1,11 +1,10 @@
 import os
 import shutil
 
-from scratches.utilities import *
-
 from direct_solve import DirectSolve
 from phd_2.optimization.default_values import ThetaN
 from phd_2.optimization.solver import SolveOptimization, SolveBoundary
+from utilities import *
 from utilities import *
 
 set_log_active(False)
@@ -122,7 +121,29 @@ def experiment_3(folder='exp3'):
     return 0
 
 
+def experiment_4(folder='exp3'):
+    clear_dir(folder)
+
+    from solver2d import SolveOptimization as Problem
+
+    problem = Problem(
+        theta_n=Constant(0.1),
+        phi_n=Constant(0.25),
+        theta_b=Expression('pow((x[0]-0.5),2) - 0.5*x[1] + 0.75', degree=2)
+    )
+
+    print('Setting up optimization problem')
+    problem.solve_boundary()
+    print('Boundary init problem is set. Working on setting optimization problem.')
+
+    print('Launching iterations')
+
+    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=10)
+    print_2d(problem.state.split()[0], folder=folder)
+
+
 if __name__ == "__main__":
-    experiment_1()
-    experiment_2()
+    # experiment_1()
+    # experiment_2()
     # experiment_3()
+    experiment_4()

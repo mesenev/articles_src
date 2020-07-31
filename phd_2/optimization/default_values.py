@@ -3,14 +3,18 @@ from abc import ABC
 
 from dolfin import (
     FunctionSpace, Function, split, TestFunctions, FiniteElement,
-    Expression, DirichletBC, FacetNormal, project, VectorFunctionSpace, Constant,
-    UnitCubeMesh, grad, dot, SubDomain, BoundaryMesh, UserExpression
+    Expression, FacetNormal, project, VectorFunctionSpace, Constant,
+    UnitCubeMesh, grad, dot, BoundaryMesh, UserExpression
 )
 from dolfin.cpp.common import DOLFIN_EPS
 
 
 class ThetaN(UserExpression):
-    def eval(self, value, x):
+    def __floordiv__(self, other):
+        pass
+
+    @staticmethod
+    def eval(value, x):
         value[0] = 0
         if x[2] + DOLFIN_EPS > 1:
             value[0] = 0.11
@@ -23,11 +27,6 @@ phi_n_default_3d = Constant(0.1)  # Expression("x[0] / 3 * sin(x[1]) + 0.1 + x[2
 theta_b_3d = Expression('x[2]*0.1+0.3', degree=3)
 
 
-# Define Dirichlet boundary
-class Boundary(SubDomain):
-    # noinspection PyMethodOverriding
-    def inside(self, x, on_boundary):
-        return on_boundary
 
 
 class DefaultValues3D:
@@ -43,7 +42,6 @@ class DefaultValues3D:
     v, h = TestFunctions(state_space)
     state = Function(state_space)
     theta, phi = split(state)
-    theta_bc = DirichletBC(state_space.sub(0), theta_b_3d, Boundary())
 
     def __init__(self, theta_n=theta_n_default_3d, phi_n=phi_n_default_3d, **kwargs):
         self.a = 0.6
