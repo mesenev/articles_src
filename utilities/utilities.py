@@ -1,4 +1,5 @@
 import shutil
+from abc import ABC
 from os import mkdir
 
 import matplotlib.lines as mlines
@@ -8,7 +9,7 @@ from matplotlib import pyplot as plt, cm, gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 # noinspection PyUnresolvedReferences
 from mpl_toolkits.mplot3d import Axes3D
-from numpy import array, linspace, meshgrid, random, cross, sqrt, newaxis
+from numpy import array, linspace, meshgrid, random, cross, sqrt, newaxis, vectorize
 
 from utilities import asciichartpy
 
@@ -125,11 +126,23 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
 
 
 def print_2d(v, name='function', folder='results'):
-    mesh = UnitSquareMesh(100, 100)
-    V = FunctionSpace(mesh, 'P', 1)
-    plt.figure()
-    c = plot(interpolate(v, V), title="function", mode='color')
-    plt.colorbar(c)
+    delta = 0.001
+    import numpy as np
+    x = np.arange(0, 1.0, delta)
+    y = np.arange(0, 1.0, delta)
+    X, Y = np.meshgrid(x, y)
+    Z = vectorize(lambda _, __: v(Point(_, __)))(X, Y)
+    frame1 = plt.gca()
+    frame1.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    frame1.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    # levels = sorted(v(Point(0, _/10)) for _ in range(1, 11))
+    levels = [0.4, 0.55, 0.65, 0.7, 0.74, 0.79, 0.84, 0.9]
+    a = plt.contour(Z, levels=levels, colors='k', linewidths=0.4)
+    fmt = {}
+    for l in levels:
+        fmt[l] = str(l)[:4]
+
+    plt.clabel(a, fontsize=9, inline=True, fmt=fmt, )
     plt.savefig(f'{folder}/{name}.png')
 
 
@@ -291,7 +304,7 @@ def checkers():
 # checkers()
 
 
-class Normal(UserExpression):
+class Normal(UserExpression, ABC):
     def __init__(self, mesh, **kwargs):
         self.mesh = mesh
         super().__init__(**kwargs)

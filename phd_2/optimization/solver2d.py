@@ -18,13 +18,13 @@ class DirichletBoundary(SubDomain):
 
 
 class DefaultValues2D:
-    omega = UnitSquareMesh(16, 16)
+    omega = UnitSquareMesh(100, 100)
     omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 1)
 
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
-    boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
+    vector_space = VectorFunctionSpace(omega, 'Lagrange', 2)
     boundary_simple_space = FunctionSpace(omega_b, 'Lagrange', 1)
 
     v, h = TestFunctions(state_space)
@@ -154,9 +154,12 @@ class SolveOptimization(SolveBoundary):
             self._lambda = _lambda
 
         for i in range(iterations):
+            self._lambda += 0.5
+
             self._gradient_step()
             diff = self.quality_history[-2] - self.quality_history[-1] if len(self.quality_history) > 1 else 0
             print(f'Iteration {i},\tquality: {self.quality_history[-1]},\t{diff}')
             if diff < 0:
                 print('warning')
+                self._lambda -= 10
         return self.phi_n

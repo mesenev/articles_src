@@ -1,10 +1,8 @@
 import os
-import shutil
 
 from direct_solve import DirectSolve
 from phd_2.optimization.default_values import ThetaN
 from phd_2.optimization.solver import SolveOptimization, SolveBoundary
-from utilities import *
 from utilities import *
 
 set_log_active(False)
@@ -121,25 +119,28 @@ def experiment_3(folder='exp3'):
     return 0
 
 
-def experiment_4(folder='exp3'):
+def experiment_4(folder='exp4'):
     clear_dir(folder)
 
     from solver2d import SolveOptimization as Problem
-
-    problem = Problem(
-        theta_n=Constant(0.1),
-        phi_n=Constant(0.25),
-        theta_b=Expression('pow((x[0]-0.5),2) - 0.5*x[1] + 0.75', degree=2)
-    )
+    theta_b = interpolate(Expression('pow((x[0]-0.5),2) - 0.5*x[1] + 0.75', degree=2), Problem.simple_space)
+    n = interpolate(Normal(Problem.omega), Problem.vector_space)
+    grad_t_b = project(grad(theta_b), Problem.vector_space)
+    theta_n = project(dot(grad_t_b, n), Problem.simple_space)
+    # theta_n = Expression('a*b', a=n,b=grad_t_b, element=Problem.simple_space.ufl_element())
+    problem = Problem(phi_n=Constant(0.25), theta_n=theta_n, theta_b=theta_b)
 
     print('Setting up optimization problem')
     problem.solve_boundary()
     print('Boundary init problem is set. Working on setting optimization problem.')
 
     print('Launching iterations')
-
-    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=10)
-    print_2d(problem.state.split()[0], folder=folder)
+    try:
+        problem.find_optimal_control(iterations=1 * 10 ** 3, _lambda=10)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        print_2d(problem.state.split()[0], name='theta', folder=folder)
 
 
 if __name__ == "__main__":
