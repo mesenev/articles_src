@@ -132,12 +132,12 @@ def print_2d(v, name='function', folder='results'):
     y = np.arange(0, 1.0, delta)
     X, Y = np.meshgrid(x, y)
     Z = vectorize(lambda _, __: v(Point(_, __)))(X, Y)
-    frame1 = plt.gca()
-    frame1.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
-    frame1.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    print(len(Z), len(Z[0]))
+    # frame1.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    # frame1.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
     # levels = sorted(v(Point(0, _/10)) for _ in range(1, 11))
     levels = [0.4, 0.55, 0.65, 0.7, 0.74, 0.79, 0.84, 0.9]
-    a = plt.contour(Z, levels=levels, colors='k', linewidths=0.4)
+    a = plt.contour(Z, colors='k', linewidths=0.4)
     fmt = {}
     for l in levels:
         fmt[l] = str(l)[:4]

@@ -18,7 +18,7 @@ class DirichletBoundary(SubDomain):
 
 
 class DefaultValues2D:
-    omega = UnitSquareMesh(100, 100)
+    omega = UnitSquareMesh(20, 20)
     omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 1)
 

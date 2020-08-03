@@ -120,7 +120,7 @@ def experiment_3(folder='exp3'):
 
 
 def experiment_4(folder='exp4'):
-    clear_dir(folder)
+    # clear_dir(folder)
 
     from solver2d import SolveOptimization as Problem
     theta_b = interpolate(Expression('pow((x[0]-0.5),2) - 0.5*x[1] + 0.75', degree=2), Problem.simple_space)
@@ -136,7 +136,7 @@ def experiment_4(folder='exp4'):
 
     print('Launching iterations')
     try:
-        problem.find_optimal_control(iterations=1 * 10 ** 3, _lambda=10)
+        problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=10)
     except KeyboardInterrupt:
         pass
     finally:
