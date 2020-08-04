@@ -1,5 +1,3 @@
-import os
-
 from direct_solve import DirectSolve
 from phd_2.optimization.default_values import ThetaN
 from phd_2.optimization.solver import SolveOptimization, SolveBoundary
@@ -9,15 +7,6 @@ set_log_active(False)
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
-
-
-def clear_dir(folder):
-    try:
-        shutil.rmtree(folder)
-    except OSError:
-        print("Deletion of the directory %s failed" % folder)
-    finally:
-        os.mkdir(folder)
 
 
 def make_pics(problem: SolveBoundary, name_modifier: str, folder: str):
@@ -120,14 +109,17 @@ def experiment_3(folder='exp3'):
 
 
 def experiment_4(folder='exp4'):
-    # clear_dir(folder)
-
+    clear_dir(folder)
+    print('Experiment four in a run')
     from solver2d import SolveOptimization as Problem
-    theta_b = interpolate(Expression('pow((x[0]-0.5),2) - 0.5*x[1] + 0.75', degree=2), Problem.simple_space)
+    theta_b = interpolate(
+        Expression('pow((x[0]-0.5),2) - 0.5*x[1] + 0.75', degree=2),
+        Problem.simple_space
+    )
     n = interpolate(Normal(Problem.omega), Problem.vector_space)
     grad_t_b = project(grad(theta_b), Problem.vector_space)
+    # theta_n = Constant(0.1)
     theta_n = project(dot(grad_t_b, n), Problem.simple_space)
-    # theta_n = Expression('a*b', a=n,b=grad_t_b, element=Problem.simple_space.ufl_element())
     problem = Problem(phi_n=Constant(0.25), theta_n=theta_n, theta_b=theta_b)
 
     print('Setting up optimization problem')
@@ -140,11 +132,71 @@ def experiment_4(folder='exp4'):
     except KeyboardInterrupt:
         pass
     finally:
-        print_2d(problem.state.split()[0], name='theta', folder=folder)
+        import numpy as np
+        x = np.arange(0, 1.0, 0.04)
+        y = np.arange(0, 1.0, 0.04)
+        X, Y = np.meshgrid(x, y)
+        Z = vectorize(lambda _, __: problem.state.split()[0](Point(_, __)))(X, Y)
+        import numpy as np
+        import codecs, json
+        json.dump(
+            Z.tolist(), codecs.open("theta.json", 'w', encoding='utf-8'),
+            separators=(',', ':'), sort_keys=True, indent=4
+        )
+        return problem.state.split()[0]
+        # print_2d(problem.state.split()[0], name='theta', folder=folder, precision=0.1)
 
 
 if __name__ == "__main__":
     # experiment_1()
     # experiment_2()
     # experiment_3()
-    experiment_4()
+    v = experiment_4()
+    import numpy as np
+    import codecs, json
+
+    obj_text = codecs.open('theta.json', 'r', encoding='utf-8').read()
+    b_new = json.loads(obj_text)
+    Z = np.array(b_new)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    levels_0 = sorted([
+        v(Point(0.2, 1)),
+        v(Point(0.5, 0.9)),
+        v(Point(0.5, 0.7)),
+        v(Point(0.5, 0.6)),
+        v(Point(0.5, 0.5)),
+        v(Point(0.5, 0.4)),
+        v(Point(0.5, 0.35)),
+        v(Point(0.0, 0.2)),
+    ])
+    levels_1 = sorted([
+        0.4,
+        0.55,
+        0.65,
+        0.7,
+        0.74,
+        0.79,
+        0.84,
+        0.9,
+    ])
+    levels = sorted((levels_0 + levels_1))
+    colors = list()
+    for color in levels:
+        if color in levels_0:
+            colors.append('blue')
+        else:
+            colors.append('red')
+    a = ax.contour(Z, levels=levels, colors=colors, linewidths=0.4, extent=[0, 100, 0, 100])
+    # fmt = {}
+    # for l in levels:
+    #     fmt[l] = str(l)[:4]
+
+    ax.clabel(a, a.levels, fontsize=9, inline=True)
+    ax.set_aspect('equal')
+    ax.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    ax.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    fig.savefig(f'exp4/theta_equal.png', bbox_inches='tight')
+    ax.set_aspect('auto')
+    fig.savefig(f'exp4/theta_auto.png', bbox_inches='tight')

@@ -1,3 +1,4 @@
+import os
 import shutil
 from abc import ABC
 from os import mkdir
@@ -11,7 +12,15 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits.mplot3d import Axes3D
 from numpy import array, linspace, meshgrid, random, cross, sqrt, newaxis, vectorize
 
-from utilities import asciichartpy
+
+def clear_dir(folder):
+    try:
+        shutil.rmtree(folder)
+    except OSError:
+        print("Deletion of the directory %s failed" % folder)
+    finally:
+        os.mkdir(folder)
+
 
 font = {'family': 'sans-serif',
         'name': 'Sans',
@@ -125,8 +134,8 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
     plt.savefig(f'{folder}/{name}.eps', bbox_inches='tight')
 
 
-def print_2d(v, name='function', folder='results'):
-    delta = 0.001
+def print_2d(v, name='function', folder='results', precision=0.001):
+    delta = precision
     import numpy as np
     x = np.arange(0, 1.0, delta)
     y = np.arange(0, 1.0, delta)
@@ -136,14 +145,30 @@ def print_2d(v, name='function', folder='results'):
     # frame1.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
     # frame1.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
     # levels = sorted(v(Point(0, _/10)) for _ in range(1, 11))
-    levels = [0.4, 0.55, 0.65, 0.7, 0.74, 0.79, 0.84, 0.9]
-    a = plt.contour(Z, colors='k', linewidths=0.4)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    levels = sorted([
+        v(Point(0.2, 0)),
+        v(Point(0.0, 0.9)),
+        v(Point(0.0, 0.7)),
+        v(Point(0.0, 0.6)),
+        v(Point(0.0, 0.5)),
+        v(Point(0.0, 0.4)),
+        v(Point(0.0, 0.3)),
+        v(Point(0.0, 0.2)),
+    ])
+    a = ax.contour(Z, levels=levels, colors='k', linewidths=0.4, extent=[0, 100, 0, 100])
     fmt = {}
     for l in levels:
         fmt[l] = str(l)[:4]
 
-    plt.clabel(a, fontsize=9, inline=True, fmt=fmt, )
-    plt.savefig(f'{folder}/{name}.png')
+    ax.clabel(a, a.levels, fontsize=9, inline=True, fmt=fmt)
+    ax.set_aspect('equal')
+    ax.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    ax.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    fig.savefig(f'{folder}/{name}_equal.png', bbox_inches='tight')
+    ax.set_aspect('auto')
+    fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
 
 
 def print_two_with_colorbar(v1, v2, name, folder='results'):
@@ -277,25 +302,28 @@ def print_simple_graphic(data, name=None):
     print()
     if name:
         print(name.center(60, ' '))
+    from utilities import asciichartpy
     print(asciichartpy.plot(data, dict(height=10)))
     print()
 
 
 def checkers():
     # 3d boundary drawer check
+    clear_dir('checker')
     print('3d boundary check')
-    mesh = UnitCubeMesh(10, 10, 10)
-    V = FunctionSpace(mesh, 'P', 1)
-    u = interpolate(Expression('x[0]/2+x[1]/3+x[2]', degree=3), V)
-    print_3d_boundaries_on_cube(u, 'test_3d_cube', folder='checker')
+    # mesh = UnitCubeMesh(10, 10, 10)
+    # V = FunctionSpace(mesh, 'P', 1)
+    # u = interpolate(Expression('x[0]/2+x[1]/3+x[2]', degree=3), V)
+    # print_3d_boundaries_on_cube(u, 'test_3d_cube', folder='checker')
     # simple graphic check
     # print('Simple graphic check')
     # draw_simple_graphic([1, 2, 3, 4, 5, 6, 7, 8, 9], 'test_simple_graphic', folder='checker')
 
     # print('2d boundaries check')
-    # mesh = UnitSquareMesh(10, 10)
-    # V = FunctionSpace(mesh, 'P', 1)
-    # u = interpolate(Expression('x[0]+x[1]', degree=2), V)
+    mesh = UnitSquareMesh(10, 10)
+    V = FunctionSpace(mesh, 'P', 1)
+    u = interpolate(Expression('x[0]+x[1]', degree=2), V)
+    print_2d(u, folder='checker', name='2dtest', precision=0.1)
     # print_2d_boundaries(u, 'test_2d_boundary', folder='checker')
 
     return

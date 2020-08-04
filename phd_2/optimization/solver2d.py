@@ -50,7 +50,7 @@ class DefaultValues2D:
         self._r = project(
             Expression(
                 'a * (theta_n + theta_b)',
-                degree=3,
+                degree=2,
                 a=self.a, theta_n=self.theta_n,
                 beta=self.beta, theta_b=self.theta_b
             ),
@@ -84,7 +84,7 @@ class SolveBoundary(DefaultValues2D):
     def target_diff(self):
         return interpolate(
             Expression(
-                'pow(theta - tb, 2)', degree=3,
+                'pow(theta - tb, 2)', degree=2,
                 theta=self.state.split()[0], tb=self.theta_b
             ), self.simple_space
         )
