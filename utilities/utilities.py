@@ -1,9 +1,9 @@
+import itertools
 import os
 import shutil
 from abc import ABC
 from os import mkdir
 
-import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 from dolfin import *
 from matplotlib import pyplot as plt, cm, gridspec
@@ -15,11 +15,14 @@ from numpy import array, linspace, meshgrid, random, cross, sqrt, newaxis, vecto
 
 def clear_dir(folder):
     try:
-        shutil.rmtree(folder)
+        shutil.rmtree(f'{folder}_prev')
     except OSError:
-        print("Deletion of the directory %s failed" % folder)
-    finally:
-        os.mkdir(folder)
+        print(f"Deletion of the directory {folder}_prev is failed.")
+    try:
+        os.rename(folder, folder + '_prev')
+    except OSError:
+        print(f"Renaming the directory {folder} to {folder}_prev is failed.")
+    mkdir(folder)
 
 
 font = {'family': 'sans-serif',
@@ -29,19 +32,21 @@ font = {'family': 'sans-serif',
         'size': 10,
         }
 
-
-def clear_dir(folder):
-    try:
-        shutil.rmtree(folder)
-    except OSError:
-        print("Deletion of the directory %s failed" % folder)
-    finally:
-        mkdir(folder)
-
-
 default_colormap = cm.Greys
 
 points_2d = [Point(0, 0.5), Point(0.5, 1), Point(1, 0.5), Point(0.5, 0)]
+
+
+def function2d_dumper(v, folder, name):
+    import numpy as np
+    import codecs, json
+    x, y = np.meshgrid(np.arange(0, 1.0, 0.01), np.arange(0, 1.0, 0.01))
+    answer = vectorize(lambda _, __: v(Point(_, __)))(x, y)
+    json.dump(
+        answer.tolist(), codecs.open(f"{folder}/{name}", 'w', encoding='utf-8'),
+        separators=(',', ':'), sort_keys=True, indent=1
+    )
+    return answer
 
 
 def print_all_variations(v, name, folder):
@@ -134,29 +139,52 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
     plt.savefig(f'{folder}/{name}.eps', bbox_inches='tight')
 
 
-def print_2d(v, name='function', folder='results', precision=0.001):
-    delta = precision
-    import numpy as np
-    x = np.arange(0, 1.0, delta)
-    y = np.arange(0, 1.0, delta)
-    X, Y = np.meshgrid(x, y)
-    Z = vectorize(lambda _, __: v(Point(_, __)))(X, Y)
-    print(len(Z), len(Z[0]))
-    # frame1.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
-    # frame1.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
-    # levels = sorted(v(Point(0, _/10)) for _ in range(1, 11))
+def print_2d(v, name='function', folder='results', colormap=default_colormap, table=False):
+    plt.figure()
+    if not table:
+        mesh = UnitSquareMesh(100, 100)
+        V = FunctionSpace(mesh, 'P', 1)
+        c = plot(interpolate(v, V), title="function", mode='color')
+    else:
+        c = plt.imshow(v, cmap=colormap)
+    try:
+        mx, mn = v.max(), v.min()
+        ticks = [mn] + [mn + (mx - mn) / 4 * i for i in range(1, 4)] + [mx]
+        plt.colorbar(
+            c, ticks=ticks, extend='both', extendfrac='auto',
+            spacing='uniform', orientation='vertical'
+        )
+    except:
+        plt.colorbar(c)
+    c.axes.set_xticks([-1, 79])
+    c.axes.set_yticks([0])
+    c.axes.yaxis.set_ticklabels(['1', ])
+    c.axes.xaxis.set_ticklabels(['0', '1'])
+    plt.savefig(f'{folder}/{name}.png')
+
+
+def print_2d_isolines(v, name='function', folder='results', precision=0.01, table=False):
+    if table:
+        Z = v
+    else:
+        delta = precision
+        import numpy as np
+        x = np.arange(0, 1.0, delta)
+        y = np.arange(0, 1.0, delta)
+        X, Y = np.meshgrid(x, y)
+        Z = vectorize(lambda _, __: v(Point(_, __)))(X, Y)
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    levels = sorted([
-        v(Point(0.2, 0)),
-        v(Point(0.0, 0.9)),
-        v(Point(0.0, 0.7)),
-        v(Point(0.0, 0.6)),
-        v(Point(0.0, 0.5)),
-        v(Point(0.0, 0.4)),
-        v(Point(0.0, 0.3)),
-        v(Point(0.0, 0.2)),
-    ])
+    levels = [
+        0.4,
+        0.55,
+        0.65,
+        0.7,
+        0.74,
+        0.79,
+        0.84,
+        0.9,
+    ]
     a = ax.contour(Z, levels=levels, colors='k', linewidths=0.4, extent=[0, 100, 0, 100])
     fmt = {}
     for l in levels:
@@ -277,23 +305,23 @@ def print_3d_boundaries_separate(v, name='solution', folder='results'):
     return
 
 
-def draw_simple_graphic(
-        data, target_file, logarithmic=False, folder='results', x_label='', y_label='',
-):
-    x = [i for i in range(0, data.__len__())]
+def draw_simple_graphic(data, name, logarithmic=False, folder='results', x_label='iterations', y_label='', ):
+    x = list(range(0, data.__len__()))
     plt.figure()
-    plt.semilogx(x, data, color='black') if logarithmic else plt.plot(x, data, color='black')
+    if logarithmic:
+        plt.semilogx(x, data, linewidth=1, color='black')
+    else:
+        plt.plot(x, data, linewidth=1, color='black')
     # scale = (max(data) - min(data)) / 8
     # plt.semilogx([-0.01, x.__len__(), min(y) - scale, max(y) + scale])
     # plt.text((x.__len__()+10)*1/3, (max(y) + scale)*4/5, , fontsize=14)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    blue_line = mlines.Line2D([], [], color='black', label=r"")
     extra1 = mpatches.Patch(color='none', label=f'Начальное значение: {data[0]}')
     extra2 = mpatches.Patch(color='none', label=f'Конечное значение: {data[-1]}')
     plt.legend([extra1, extra2], [extra1.get_label(), extra2.get_label()], prop={'size': 10})
     plt.grid(True)
-    plt.savefig(f'{folder}/{target_file}.eps')
+    plt.savefig(f'{folder}/{name}.eps')
     plt.close()
     return
 
@@ -323,7 +351,7 @@ def checkers():
     mesh = UnitSquareMesh(10, 10)
     V = FunctionSpace(mesh, 'P', 1)
     u = interpolate(Expression('x[0]+x[1]', degree=2), V)
-    print_2d(u, folder='checker', name='2dtest', precision=0.1)
+    print_2d_isolines(u, folder='checker', name='2dtest', precision=0.1)
     # print_2d_boundaries(u, 'test_2d_boundary', folder='checker')
 
     return
@@ -333,27 +361,31 @@ def checkers():
 
 
 class Normal(UserExpression, ABC):
-    def __init__(self, mesh, **kwargs):
+    def __init__(self, mesh, dimension, **kwargs):
         self.mesh = mesh
+        self.dimension = dimension
         super().__init__(**kwargs)
 
     def eval_cell(self, values, x, ufc_cell):
         values[0] = 0
         values[1] = 0
-        if x[0] < DOLFIN_EPS:
-            values[0] = -1
-        if x[0] + DOLFIN_EPS > 1:
-            values[0] = 1
-        if x[1] < DOLFIN_EPS:
-            values[1] = -1
-        if x[1] + DOLFIN_EPS > 1:
-            values[1] = 1
-        if abs(values[0]) == abs(values[1]) == 1:
-            values[0] *= 0.65
-            values[1] *= 0.65
+        if self.dimension == 3:
+            values[2] = 0
+        for i in range(self.dimension):
+
+            if x[i] < DOLFIN_EPS:
+                values[i] = -1
+            if x[i] + DOLFIN_EPS > 1:
+                values[i] = 1
+        for i, j in itertools.combinations(list(range(self.dimension)), 2):
+            if abs(values[i]) == abs(values[j]) == 1:
+                values[0] = 0.65
+                values[1] = 0.65
+                if self.dimension == 3:
+                    values[2] = 0.65
 
     def value_shape(self):
-        return (2,)
+        return (2,) if self.dimension == 2 else (3,)
 
 
 def get_facet_normal(bmesh):

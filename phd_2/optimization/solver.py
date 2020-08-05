@@ -49,7 +49,7 @@ class SolveOptimization(SolveBoundary):
     p1, p2 = TrialFunctions(DefaultValues3D.state_space)
     conjugate = Function(DefaultValues3D.state_space)
     tau, nu = TestFunctions(DefaultValues3D.state_space)
-    epsilon = 0.1 ** 10
+    epsilon = 0.1 ** 12
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

@@ -27,16 +27,15 @@ phi_n_default_3d = Constant(0.1)  # Expression("x[0] / 3 * sin(x[1]) + 0.1 + x[2
 theta_b_3d = Expression('x[2]*0.1+0.3', degree=3)
 
 
-
-
 class DefaultValues3D:
-    omega = UnitCubeMesh(8, 8, 8)
+    omega = UnitCubeMesh(10, 10, 10)
     omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 2)
 
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
     boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
+    vector_space = VectorFunctionSpace(omega, 'Lagrange', 2)
     boundary_simple_space = FunctionSpace(omega_b, 'Lagrange', 1)
 
     v, h = TestFunctions(state_space)

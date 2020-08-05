@@ -24,9 +24,9 @@ def experiment_1(folder='exp1'):
     clear_dir(folder)
 
     problem = SolveOptimization()
-    r_default = Expression("x[1]", degree=3)
+    r_default = Expression("0.8 * cos(x[0]*3.14/2) + 0.1", degree=3)
     problem._r = r_default
-    problem.phi_n = Expression('0.1 + x[0]*0.5', degree=3)
+    problem.phi_n = Expression('x[1]', degree=3)
     problem.solve_boundary()
     make_pics(problem, 'target', folder)
     target_phi_n = Expression('t', degree=3, t=interpolate(problem.phi_n, problem.simple_space))
@@ -50,6 +50,18 @@ def experiment_1(folder='exp1'):
         project((target_phi_n - phi_n) ** 2, problem.boundary_simple_space),
         name='diff_end_control', folder=folder
     )
+    n = interpolate(Normal(problem.omega, dimension=3), problem.boundary_vector_space)
+    theta_n = Expression('r/a - tb', r=r_default, a=problem.a, tb=problem.theta_b, degree=3)
+    print_3d_boundaries_on_cube(theta_n, name='theta_n', folder=folder)
+    theta = problem.state.split()[0]
+    grad_theta = project(grad(theta), problem.vector_space)
+    grad_theta_b = interpolate(grad_theta, problem.boundary_vector_space)
+    theta_n_diff = project(dot(grad_theta_b, n) - theta_n, problem.boundary_simple_space)
+    to_print = function2d_dumper(
+        lambda p: theta_n_diff(Point(p[0], p[1], 1)),
+        folder=folder, name='theta_n_diff'
+    )
+    print_2d(to_print, folder=folder, name='theta_n_diff', table=True)
     draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
     print('ggwp all done!')
 
@@ -116,7 +128,7 @@ def experiment_4(folder='exp4'):
         Expression('pow((x[0]-0.5),2) - 0.5*x[1] + 0.75', degree=2),
         Problem.simple_space
     )
-    n = interpolate(Normal(Problem.omega), Problem.vector_space)
+    n = interpolate(Normal(Problem.omega, dimension=2), Problem.vector_space)
     grad_t_b = project(grad(theta_b), Problem.vector_space)
     # theta_n = Constant(0.1)
     theta_n = project(dot(grad_t_b, n), Problem.simple_space)
@@ -127,76 +139,24 @@ def experiment_4(folder='exp4'):
     print('Boundary init problem is set. Working on setting optimization problem.')
 
     print('Launching iterations')
-    try:
-        problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=10)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        import numpy as np
-        x = np.arange(0, 1.0, 0.04)
-        y = np.arange(0, 1.0, 0.04)
-        X, Y = np.meshgrid(x, y)
-        Z = vectorize(lambda _, __: problem.state.split()[0](Point(_, __)))(X, Y)
-        import numpy as np
-        import codecs, json
-        json.dump(
-            Z.tolist(), codecs.open("theta.json", 'w', encoding='utf-8'),
-            separators=(',', ':'), sort_keys=True, indent=4
-        )
-        return problem.state.split()[0]
-        # print_2d(problem.state.split()[0], name='theta', folder=folder, precision=0.1)
+    problem.find_optimal_control(iterations=1 * 10 ** 4, _lambda=20)
+
+    print_2d_isolines(problem.state.split()[0], name='theta', folder=folder)
+    draw_simple_graphic(problem.quality_history, name='quality', folder=folder)
+    draw_simple_graphic(problem.quality_history, name='quality_log', folder=folder, logarithmic=True)
+    function2d_dumper(problem.state.split()[0], name='theta', folder=folder)
+    function2d_dumper(problem.state.split()[1], name='phi', folder=folder)
+    function2d_dumper(problem.phi_n, name='phi_n', folder=folder)
+    import json, codecs
+    json.dump(
+        problem.quality_history, codecs.open(f"{folder}/quality", 'w', encoding='utf-8'),
+        separators=(',', ':'), indent=1
+    )
+    return problem.state.split()[0]
 
 
 if __name__ == "__main__":
-    # experiment_1()
+    experiment_1()
     # experiment_2()
     # experiment_3()
-    v = experiment_4()
-    import numpy as np
-    import codecs, json
-
-    obj_text = codecs.open('theta.json', 'r', encoding='utf-8').read()
-    b_new = json.loads(obj_text)
-    Z = np.array(b_new)
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    levels_0 = sorted([
-        v(Point(0.2, 1)),
-        v(Point(0.5, 0.9)),
-        v(Point(0.5, 0.7)),
-        v(Point(0.5, 0.6)),
-        v(Point(0.5, 0.5)),
-        v(Point(0.5, 0.4)),
-        v(Point(0.5, 0.35)),
-        v(Point(0.0, 0.2)),
-    ])
-    levels_1 = sorted([
-        0.4,
-        0.55,
-        0.65,
-        0.7,
-        0.74,
-        0.79,
-        0.84,
-        0.9,
-    ])
-    levels = sorted((levels_0 + levels_1))
-    colors = list()
-    for color in levels:
-        if color in levels_0:
-            colors.append('blue')
-        else:
-            colors.append('red')
-    a = ax.contour(Z, levels=levels, colors=colors, linewidths=0.4, extent=[0, 100, 0, 100])
-    # fmt = {}
-    # for l in levels:
-    #     fmt[l] = str(l)[:4]
-
-    ax.clabel(a, a.levels, fontsize=9, inline=True)
-    ax.set_aspect('equal')
-    ax.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
-    ax.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
-    fig.savefig(f'exp4/theta_equal.png', bbox_inches='tight')
-    ax.set_aspect('auto')
-    fig.savefig(f'exp4/theta_auto.png', bbox_inches='tight')
+    # experiment_4()
