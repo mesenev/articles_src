@@ -37,6 +37,15 @@ default_colormap = cm.Greys
 points_2d = [Point(0, 0.5), Point(0.5, 1), Point(1, 0.5), Point(0.5, 0)]
 
 
+def get_trace(v, steps=10):
+    left = list(map(lambda x: v(Point(0, x)), (1 / (steps - 1) * _ for _ in range(0, steps))))
+    top = list(map(lambda x: v(Point(x, 1)), (1 / (steps - 1) * _ for _ in range(0, steps))))
+    right = list(map(lambda x: v(Point(1, x)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
+    bottom = list(map(lambda x: v(Point(x, 0)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
+
+    return left[:-1] + top[:-1] + right[:-1] + bottom
+
+
 def function2d_dumper(v, folder, name):
     import numpy as np
     import codecs, json
@@ -59,20 +68,19 @@ def print_all_variations(v, name, folder):
 
 
 def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=True):
-    left = list(map(lambda x: v(Point(0, x)), (1 / (steps - 1) * _ for _ in range(0, steps))))
-    top = list(map(lambda x: v(Point(x, 1)), (1 / (steps - 1) * _ for _ in range(0, steps))))
-    right = list(map(lambda x: v(Point(1, x)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
-    bottom = list(map(lambda x: v(Point(x, 0)), (1 - 1 / (steps - 1) * _ for _ in range(0, steps))))
-
-    # print("Values on left = ", *left)
-    # print("Values on top = ", *top)
-    # print("Values on right = ", *right)
-    # print("Values on bottom = ", *bottom)
-    print_simple_graphic(left[:-1] + top[:-1] + right[:-1] + bottom, name=name)
+    data = get_trace(v, steps)
+    x = list(range(1, len(data) + 1))
+    print_simple_graphic(data, name=name)
     if not terminal_only:
         if not name:
             raise Exception
-        draw_simple_graphic(left[:-1] + top[:-1] + right[:-1] + bottom, target_file=name, folder=folder)
+        plt.figure()
+        plt.plot(x, data, linewidth=1, color='black')
+        plt.xlabel('Граница области')
+        plt.ylabel('Значение')
+        plt.grid(True)
+        plt.savefig(f'{folder}/{name}.eps')
+        plt.close()
     return
 
 
@@ -156,8 +164,8 @@ def print_2d(v, name='function', folder='results', colormap=default_colormap, ta
         )
     except:
         plt.colorbar(c)
-    c.axes.set_xticks([-1, 79])
-    c.axes.set_yticks([0])
+    # c.axes.set_xticks([-1, 89])
+    # c.axes.set_yticks([0])
     c.axes.yaxis.set_ticklabels(['1', ])
     c.axes.xaxis.set_ticklabels(['0', '1'])
     plt.savefig(f'{folder}/{name}.png')
@@ -167,33 +175,38 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
     if table:
         Z = v
     else:
-        delta = precision
         import numpy as np
-        x = np.arange(0, 1.0, delta)
-        y = np.arange(0, 1.0, delta)
+        x = np.arange(0, 1.0, precision)
+        y = np.arange(0, 1.0, precision)
         X, Y = np.meshgrid(x, y)
         Z = vectorize(lambda _, __: v(Point(_, __)))(X, Y)
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    levels = [
-        0.4,
-        0.55,
-        0.65,
-        0.7,
-        0.74,
-        0.79,
-        0.84,
-        0.9,
-    ]
-    a = ax.contour(Z, levels=levels, colors='k', linewidths=0.4, extent=[0, 100, 0, 100])
+    # levels = [
+    #     0.4,
+    #     0.55,
+    #     0.65,
+    #     0.7,
+    #     0.74,
+    #     0.79,
+    #     0.84,
+    #     0.9,
+    # ]
+    # a = ax.contour(Z, levels=levels, colors='k', linewidths=0.4, extent=[0, 100, 0, 100])
+    a = ax.contour(Z, colors='k', linewidths=0.4, extent=[0, 100, 0, 100])
     fmt = {}
-    for l in levels:
-        fmt[l] = str(l)[:4]
+    # for l in levels:
+    #     fmt[l] = str(l)[:4]
 
-    ax.clabel(a, a.levels, fontsize=9, inline=True, fmt=fmt)
+    # ax.clabel(a, a.levels, fontsize=9, inline=True, fmt=fmt)
+    ax.clabel(a, a.levels, fontsize=9, inline=True)
     ax.set_aspect('equal')
     ax.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
     ax.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    extra2 = mpatches.Patch(color='none', label=f'Максимальное значение: {Z.max()}')
+    extra1 = mpatches.Patch(color='none', label=f'Минимальное значение: {Z.min()}')
+    plt.legend([extra1, extra2], [extra1.get_label(), extra2.get_label()], prop={'size': 10})
+
     fig.savefig(f'{folder}/{name}_equal.png', bbox_inches='tight')
     ax.set_aspect('auto')
     fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
@@ -369,6 +382,7 @@ class Normal(UserExpression, ABC):
     def eval_cell(self, values, x, ufc_cell):
         values[0] = 0
         values[1] = 0
+        # values[2] = 1
         if self.dimension == 3:
             values[2] = 0
         for i in range(self.dimension):
@@ -379,10 +393,10 @@ class Normal(UserExpression, ABC):
                 values[i] = 1
         for i, j in itertools.combinations(list(range(self.dimension)), 2):
             if abs(values[i]) == abs(values[j]) == 1:
-                values[0] = 0.65
-                values[1] = 0.65
+                values[0] *= 0.5
+                values[1] *= 0.5
                 if self.dimension == 3:
-                    values[2] = 0.65
+                    values[2] *= 0.57
 
     def value_shape(self):
         return (2,) if self.dimension == 2 else (3,)
@@ -390,7 +404,7 @@ class Normal(UserExpression, ABC):
 
 def get_facet_normal(bmesh):
     # https://bitbucket.org/fenics-project/dolfin/issues/53/dirichlet-boundary-conditions-of-the-form
-    '''Manually calculate FacetNormal function'''
+    """Manually calculate FacetNormal function"""
 
     if not bmesh.type().dim() == 2:
         raise ValueError('Only works for 2-D mesh')
