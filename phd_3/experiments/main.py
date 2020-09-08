@@ -1,5 +1,7 @@
+from dolfin import Constant
 from dolfin.cpp.parameter import parameters
 
+from default_values import DefaultValues3D
 from solver import Problem
 from utilities import clear_dir, print_3d_boundaries_on_cube
 
@@ -22,8 +24,13 @@ def make_pics(problem: Problem, name_modifier: str, folder: str):
 
 def experiment_1(folder='exp1'):
     clear_dir(folder)
+    default_values = DefaultValues3D(
+        theta_n=Constant(0),
+        theta_b=Constant(0),
+        psi_n=Constant(0)
+    )
 
-    problem = Problem()
+    problem = Problem(default_values=default_values)
     answer = problem.solve_boundary()
     print_3d_boundaries_on_cube(answer[0], name=f'theta', folder=folder)
     print_3d_boundaries_on_cube(answer[1], name=f'psi', folder=folder)

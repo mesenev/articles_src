@@ -1,10 +1,8 @@
 # noinspection PyUnresolvedReferences
-from abc import ABC
-
 from dolfin import (
     FunctionSpace, Function, FiniteElement,
     Expression, FacetNormal, project, VectorFunctionSpace, Constant,
-    UnitCubeMesh, grad, dot, BoundaryMesh, UserExpression, TestFunction, MeshFunction
+    UnitCubeMesh, grad, dot, BoundaryMesh, UserExpression, TestFunction, MeshFunction, dx, ds
 )
 from dolfin.cpp.common import DOLFIN_EPS
 from dolfin.cpp.mesh import SubDomain
@@ -37,14 +35,16 @@ class ThetaN(UserExpression):
 
 theta_n_default_3d = ThetaN()  # Expression("(x[0] + x[1] + x[2])/4 + 0.1", degree=3)
 psi_n_default_3d = Constant(0.1)  # Expression("x[0] / 3 * sin(x[1]) + 0.1 + x[2] / 2", degree=3)
-theta_b_3d = Expression('x[2]*0.1+0.3', degree=3)
+theta_b_3d = Expression('x[2]*0.1+0.1', degree=3)
 
 
 class DefaultValues3D:
     omega = UnitCubeMesh(8, 8, 8)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
-    NewmanBoundary().mark(sub_domains, 0)
+    sub_domains.set_all(0)
     DirichletBoundary().mark(sub_domains, 1)
+    NewmanBoundary().mark(sub_domains, 2)
+    dss = ds(subdomain_data=sub_domains, domain=omega)
     omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 2)
 
@@ -63,6 +63,7 @@ class DefaultValues3D:
         self.ka = 1
         self.b = 0.025
         self.beta = 1
+        self.gamma = 1
         self.theta_n = theta_n
         self.psi_n = psi_n
         self.theta_b = theta_b_3d  # Warning! Might be ambiguous
@@ -70,17 +71,16 @@ class DefaultValues3D:
         self.lmbd = 1
         self.epsilon = 0.1 ** 10
         self.init_control = Constant(0.2)
-        self.recalculate_r()
         for key, val in kwargs.items():
             setattr(self, key, val)
+        self.recalculate_r()
 
     def recalculate_r(self):
         self.r = project(
             Expression(
-                'a * (theta_n + theta_b)',
-                degree=3,
-                a=self.a, theta_n=self.theta_n,
-                beta=self.beta, theta_b=self.theta_b
+                'alpha * b * gamma * pow(theta_b, 4) + alpha * a * theta_b + gamma * a * theta_n', degree=3,
+                a=self.a, alpha=self.alpha, b=self.b, gamma=self.gamma,
+                theta_b=self.theta_b, theta_n=self.theta_n
             ),
             self.simple_space)
 

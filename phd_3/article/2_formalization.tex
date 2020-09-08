@@ -9,7 +9,7 @@ $H^s_0(\Omega)$ есть замыкание $C^\infty_0(\Omega)$ по норме
 \]
 Пусть $V = H^2_0(\Omega)$.
 Условия на область $\Omega$ позволяют выбрать скалярное произведение в V в виде
-$[u, v] = (\delta u, \delta v), \| f \|_V = \| \delta f \|$.
+$[u, v] = (\nabla u, \nabla v), \| f \|_V = \| \nabla f \|$.
 Через $U$ обозначаем пространство $L^2(\Gamma)$ с нормой
 $\|u\|_\Gamma=\left(\int_\Gamma u^2 d\Gamma\right)^{1/2}.$
 
@@ -22,21 +22,22 @@ $(ii) \;\, \theta_b, \,g \, u \in U,\;\; r=a(\theta_b+q_b).$
 Определим операторы $A_1\colon V \to V'$, $A_2\colon U \to V'$, используя
 следующие равенства, справедливые для любых $y,z \in V$, $w\in U$:
 \[
-    (A_1 y,z) = a(\delta y, \delta z) + \int_{\Gamma_1} yz d\Gamma, \,
-    (A_2 y, z) = \alpha (\delta y, \delta z) + \int_{\Gamma_1} \gamma yz d\Gamma.
+    (A_1 y,z) = a(\nabla y, \nabla z) + \int_{\Gamma_1} yz d\Gamma, \,
+    (A_2 y, z) = \alpha (\nabla y, \nabla z) + \int_{\Gamma_1} \gamma yz d\Gamma.
 \]
 Слабым решением задачи~\eqref{model}-\eqref{boundary} будем называть
 пару $\theta, \psi \in V$ если
 \begin{equation}
     \label{weak}
-    A_1\theta  + g(\theta) = \frac{\kappa}{\alpha} \psi + f_1 \,
+    A_1\theta  + g(\theta) = \frac{\kappa}{\alpha} \psi + f_1, \quad
     A_2\psi = f_2 + B_2 u.
 \end{equation}
 
 Здесь
-$(f_1, v) = \int_{\Gamma_1} (a q_b + \theta_b)d\Gamma + \int_{\Gamma_2} a q_b d\Gamma$,
-$(f_2, v) = \int_{\Gamma_1} r v d\Gamma$,
-$(B_1 h,v) = \int_{\Gamma_1} h v d\Gamma$,
-$(B_2 u, v) = \int_{\Gamma_2} u v d\Gamma$.
+$(f_1, v) = \int_{\Gamma_1} (a q_b + \theta_b)d\Gamma + \int_{\Gamma_2} a q_b d\Gamma$,\\
+$(f_2, v) = \int_{\Gamma_1} r v d\Gamma$,\\
+$(B_1 h,v) = \int_{\Gamma_1} h v d\Gamma$,\\
+$(B_2 u, v) = \int_{\Gamma_2} u v d\Gamma$,\\
+$g(\theta) = b\kappa_a \theta^3 |\theta| + \frac{a\kappa_a}{\alpha}\theta.$
 
 

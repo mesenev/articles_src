@@ -1,5 +1,5 @@
-# noinspection PyUnresolvedReferences
 from dolfin import *
+# noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 
 from default_values import DefaultValues3D
@@ -12,18 +12,20 @@ class Problem:
         self.theta, self.psi = None, None
         self.p1, self.p2 = None, None
         self.control = default_values.init_control
+        self.ds = default_values.dss
 
     def solve_boundary(self):
         v = self.def_values.v
+        ds = self.ds
         theta = self.def_values.theta
-        a, b, ka, alpha, = self.def_values.a, self.def_values.b, \
-                           self.def_values.ka, self.def_values.alpha
+        a, b, ka, alpha, gamma, r = self.def_values.a, self.def_values.b, \
+                                    self.def_values.ka, self.def_values.alpha, self.def_values.gamma, self.def_values.r
         theta_n, psi_n = self.def_values.theta_n, self.def_values.psi_n
+        theta_b = self.def_values.theta_b
         psi = TrialFunction(self.def_values.simple_space)
 
-        psi_equation = inner(grad(psi), grad(v)) * dx + v * psi * ds
-
-        psi_src = psi_n * v * ds
+        psi_equation = alpha * inner(grad(psi), grad(v)) * dx + gamma * v * psi * ds(1)
+        psi_src = r * v * ds(1) + psi_n * v * ds(2)
 
         psi = Function(self.def_values.simple_space)
         solve(psi_equation == psi_src, psi)
@@ -31,9 +33,10 @@ class Problem:
         theta_equation = \
             a * inner(grad(theta), grad(v)) * dx \
             + b * ka * inner(theta ** 4, v) * dx \
-            + a * ka / alpha * inner(theta, v) * dx
+            + a * ka / alpha * inner(theta, v) * dx \
+            + inner(theta, v) * ds(1)
 
-        theta_src = a * theta_n * v * ds
+        theta_src = (a * theta_n + theta_b) * v * ds(1) + inner(psi, v) * dx
 
         solve(
             theta_equation - theta_src == 0, theta,
