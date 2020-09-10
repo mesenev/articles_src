@@ -57,7 +57,7 @@ class DefaultValues3D:
     state = Function(state_space)
     theta, psi = Function(simple_space), Function(simple_space)
 
-    def __init__(self, theta_n=theta_n_default_3d, psi_n=psi_n_default_3d, **kwargs):
+    def __init__(self, theta_n, psi_n, **kwargs):
         self.a = 0.6
         self.alpha = 0.333
         self.ka = 1
