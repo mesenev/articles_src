@@ -36,12 +36,12 @@ class Problem:
 
         theta_equation = \
             a * inner(grad(theta), grad(v)) * dx \
+            + inner(theta, v) * ds(1) \
             + b * ka * inner(theta ** 4, v) * dx \
-            + a * ka / alpha * inner(theta, v) * dx \
-            + inner(theta, v) * ds(1)
+            + a * ka / alpha * inner(theta, v) * dx
 
-        theta_src = ka / alpha * inner(psi, v) * dx + \
-                    (a * theta_n + theta_b) * v * ds(1) + a * theta_n * v * ds(2)
+        theta_src = ka / alpha * inner(psi, v) * dx \
+                    + (a * theta_n + theta_b) * v * ds(1) + a * theta_n * v * ds(2)
 
         solve(
             theta_equation - theta_src == 0, theta,
@@ -52,10 +52,9 @@ class Problem:
         return theta, psi
 
     def solve_conjugate(self):
-        theta, psi = self.theta, self.psi
+        theta = self.theta
         v = self.def_values.v
         ds = self.ds
-        theta = self.def_values.theta
         a, b, ka, alpha, gamma, r = self.def_values.a, self.def_values.b, \
                                     self.def_values.ka, self.def_values.alpha, \
                                     self.def_values.gamma, self.def_values.r
@@ -63,9 +62,9 @@ class Problem:
 
         p1, p2 = TrialFunction(self.def_values.simple_space), TrialFunction(self.def_values.simple_space)
 
-        p1_equation = a * inner(grad(p1), grad(v)) * dx + \
+        p1_equation = a * inner(grad(p1), grad(v)) * dx \
                       + inner(p1, v) * ds(1) + \
-                      + ka * inner((4 * b * Constant(1) + a / alpha) * p1, v) * dx
+                      + ka * inner((4 * b * theta + a / alpha) * p1, v) * dx
         p1_src = - inner(theta - theta_b, v) * ds(1)
 
         p1 = Function(self.def_values.simple_space)
@@ -85,7 +84,7 @@ class Problem:
             Expression(
                 'u - lm * (eps * u - p_2)',
                 element=self.def_values.simple_space.ufl_element(),
-                u=self.control, lm=self.def_values.lmbd,
+                u=self.psi_n, lm=self.def_values.lmbd,
                 p_2=self.p2, eps=self.def_values.epsilon
             ), self.def_values.simple_space
         )

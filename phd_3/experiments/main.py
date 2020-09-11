@@ -28,16 +28,17 @@ def experiment_1(folder='exp1'):
     default_values = DefaultValues3D(
         theta_n=Constant(0),
         theta_b=Constant(0),
-        psi_n=Constant(0.1)
+        psi_n_init=Constant(0.1)
     )
 
     problem = Problem(default_values=default_values)
     answer = problem.solve_boundary()
     print_3d_boundaries_on_cube(answer[0], name=f'theta', folder=folder)
     print_3d_boundaries_on_cube(answer[1], name=f'psi', folder=folder)
-    p = problem.find_optimal_control(iterations=10, _lambda=1)
+    p = problem.find_optimal_control(iterations=100, _lambda=0.1)
     print_3d_boundaries_on_cube(answer[0], name=f'theta_end', folder=folder)
     print_3d_boundaries_on_cube(answer[1], name=f'psi_end', folder=folder)
+    print_3d_boundaries_on_cube(problem.psi_n, name=f'psi_n', folder=folder)
 
 if __name__ == "__main__":
     experiment_1()
