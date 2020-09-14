@@ -84,7 +84,7 @@ class Problem:
             Expression(
                 'u - lm * (eps * u - p_2)',
                 element=self.def_values.simple_space.ufl_element(),
-                u=self.psi_n, lm=self.def_values.lmbd,
+                u=self.psi_n, lm=self._lambda,
                 p_2=self.p2, eps=self.def_values.epsilon
             ), self.def_values.simple_space
         )

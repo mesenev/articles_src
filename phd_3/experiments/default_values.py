@@ -26,7 +26,7 @@ class NewmanBoundary(SubDomain):
 
 
 class DefaultValues3D:
-    omega = UnitCubeMesh(20, 20, 20)
+    omega = UnitCubeMesh(10, 10, 10)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
     DirichletBoundary().mark(sub_domains, 1)
