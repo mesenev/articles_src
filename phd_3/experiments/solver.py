@@ -2,7 +2,7 @@ from dolfin import *
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 
-from default_values import DefaultValues3D
+from default_values import DefaultValues3D, DirichletBoundary
 
 
 class Problem:
@@ -26,6 +26,7 @@ class Problem:
                                     self.def_values.gamma, self.def_values.r
         theta_n, psi_n = self.def_values.theta_n, self.psi_n
         theta_b = self.def_values.theta_b
+        bc = DirichletBC(self.def_values.simple_space, theta_b, DirichletBoundary())
         psi = TrialFunction(self.def_values.simple_space)
 
         psi_equation = alpha * inner(grad(psi), grad(v)) * dx + gamma * v * psi * ds(1)
@@ -34,17 +35,15 @@ class Problem:
         psi = Function(self.def_values.simple_space)
         solve(psi_equation == psi_src, psi)
 
-        theta_equation = \
-            a * inner(grad(theta), grad(v)) * dx \
-            + inner(theta, v) * ds(1) \
-            + b * ka * inner(theta ** 4, v) * dx \
-            + a * ka / alpha * inner(theta, v) * dx
+        theta_equation = a * inner(grad(theta), grad(v)) * dx \
+                         + b * ka * inner(theta ** 4, v) * dx \
+                         + a * ka / alpha * inner(theta, v) * dx
 
         theta_src = ka / alpha * inner(psi, v) * dx \
-                    + (a * theta_n + theta_b) * v * ds(1) + a * theta_n * v * ds(2)
+                    + a * theta_n * v * ds
 
         solve(
-            theta_equation - theta_src == 0, theta,
+            theta_equation - theta_src == 0, theta, bc,
             form_compiler_parameters={"optimize": True, 'quadrature_degree': 3},
             solver_parameters={"newton_solver": {"maximum_iterations": 500}}
         )

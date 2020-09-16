@@ -1,4 +1,4 @@
-from dolfin import Expression
+from dolfin import Expression, Constant
 from dolfin.cpp.log import set_log_active
 from dolfin.cpp.parameter import parameters
 
@@ -27,7 +27,7 @@ def experiment_1(folder='exp1'):
     clear_dir(folder)
     default_values = DefaultValues3D(
         theta_n=Expression('x[0]/2+0.1', degree=3),
-        theta_b=Expression('x[2]', degree=3),
+        theta_b=Constant(0.3),
         psi_n_init=Expression('cos(x[1])', degree=3)
     )
 
