@@ -6,6 +6,9 @@ from dolfin import (
     TrialFunctions, VectorFunctionSpace)
 from dolfin.cpp.generation import UnitSquareMesh
 from dolfin.cpp.mesh import BoundaryMesh, SubDomain
+from ufl import dot
+
+from utilities import Normal
 
 _MAX_ITERATIONS = 10 ** 8
 
@@ -18,14 +21,17 @@ class DirichletBoundary(SubDomain):
 
 
 class DefaultValues2D:
-    omega = UnitSquareMesh(50, 50)
+    omega = UnitSquareMesh(75, 75)
     omega_b = BoundaryMesh(omega, 'exterior')
-    finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 1)
+    finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 2)
 
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
     vector_space = VectorFunctionSpace(omega, 'Lagrange', 2)
+    boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 1)
     boundary_simple_space = FunctionSpace(omega_b, 'Lagrange', 1)
+
+    normal = interpolate(Normal(omega, dimension=2), boundary_vector_space)
 
     v, h = TestFunctions(state_space)
     state = Function(state_space)
@@ -54,7 +60,7 @@ class DefaultValues2D:
                 a=self.a, theta_n=self.theta_n,
                 beta=self.beta, theta_b=self.theta_b
             ),
-            self.simple_space)
+            self.boundary_simple_space)
 
 
 class SolveBoundary(DefaultValues2D):
@@ -69,7 +75,7 @@ class SolveBoundary(DefaultValues2D):
             self.a * inner(grad(self.theta), grad(self.v)) * dx \
             + self.a * self.theta * self.v * ds + \
             + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx
-        theta_src = self._r * self.v * ds
+        theta_src = dot(self._r, self.v) * ds
         phi_equation = \
             self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
             + self.alpha * self.phi * self.h * ds \

@@ -382,9 +382,6 @@ class Normal(UserExpression, ABC):
     def eval_cell(self, values, x, ufc_cell):
         values[0] = 0
         values[1] = 0
-        # values[2] = 1
-        if self.dimension == 3:
-            values[2] = 0
         for i in range(self.dimension):
 
             if x[i] < DOLFIN_EPS:
@@ -395,8 +392,6 @@ class Normal(UserExpression, ABC):
             if abs(values[i]) == abs(values[j]) == 1:
                 values[0] *= 0.5
                 values[1] *= 0.5
-                if self.dimension == 3:
-                    values[2] *= 0.57
 
     def value_shape(self):
         return (2,) if self.dimension == 2 else (3,)

@@ -1,1 +1,1 @@
-docker run --rm -it -v $(pwd):/source quay.io/fenicsproject/stable
+docker run --rm -it -v $(pwd):/source quay.io/fenicsproject/stable:current

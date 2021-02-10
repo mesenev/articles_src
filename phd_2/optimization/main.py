@@ -1,3 +1,5 @@
+import json, codecs
+
 from direct_solve import DirectSolve
 from phd_2.optimization.default_values import ThetaN
 from phd_2.optimization.solver import SolveOptimization, SolveBoundary
@@ -124,22 +126,21 @@ def experiment_4(folder='exp4'):
     clear_dir(folder)
     print('Experiment four in a run')
     from solver2d import SolveOptimization as Problem
-    theta_b = interpolate(
-        Expression('pow((x[0]-0.5),2) - 0.5*x[1] + 0.75', degree=2),
+    init = project(
+        Expression('pow((x[0]-0.5), 2) - 0.5*x[1] + 0.75', element=Problem.simple_space.ufl_element()),
         Problem.simple_space
     )
-    n = interpolate(Normal(Problem.omega, dimension=2), Problem.vector_space)
-    grad_t_b = project(grad(theta_b), Problem.vector_space)
-    # theta_n = Constant(0.1)
-    theta_n = project(dot(grad_t_b, n), Problem.simple_space)
-    problem = Problem(phi_n=Constant(0.25), theta_n=theta_n, theta_b=theta_b)
+    grad_t_b = interpolate(project(grad(init), Problem.vector_space), Problem.boundary_vector_space)
+
+    theta_n = project(inner(grad_t_b, Problem.normal), Problem.boundary_simple_space)
+    problem = Problem(phi_n=Constant(0.25), theta_n=theta_n, theta_b=interpolate(init, Problem.boundary_simple_space))
 
     print('Setting up optimization problem')
     problem.solve_boundary()
     print('Boundary init problem is set. Working on setting optimization problem.')
 
     print('Launching iterations')
-    problem.find_optimal_control(iterations=1 * 10 ** 4, _lambda=20)
+    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=20)
 
     print_2d_isolines(problem.state.split()[0], name='theta', folder=folder)
     draw_simple_graphic(problem.quality_history, name='quality', folder=folder)
@@ -147,7 +148,6 @@ def experiment_4(folder='exp4'):
     function2d_dumper(problem.state.split()[0], name='theta', folder=folder)
     function2d_dumper(problem.state.split()[1], name='phi', folder=folder)
     function2d_dumper(problem.phi_n, name='phi_n', folder=folder)
-    import json, codecs
     json.dump(
         problem.quality_history, codecs.open(f"{folder}/quality", 'w', encoding='utf-8'),
         separators=(',', ':'), indent=1
@@ -156,7 +156,7 @@ def experiment_4(folder='exp4'):
 
 
 if __name__ == "__main__":
-    experiment_1()
+    # experiment_1()
     # experiment_2()
     # experiment_3()
-    # experiment_4()
+    experiment_4()
