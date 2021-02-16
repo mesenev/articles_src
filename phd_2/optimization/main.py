@@ -45,7 +45,7 @@ def experiment_1(folder='exp1'):
     )
 
     print('Launching iterations')
-    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=5000)
+    problem.find_optimal_control(iterations=1 * 10 ** 1, _lambda=10 * 6)
     make_pics(problem, 'end', folder)
     phi_n = Expression('t', degree=3, t=interpolate(problem.phi_n, problem.simple_space))
     print_3d_boundaries_on_cube(
@@ -63,6 +63,7 @@ def experiment_1(folder='exp1'):
         lambda p: theta_n_diff(Point(p[0], p[1], 1)),
         folder=folder, name='theta_n_diff'
     )
+    print_3d_boundaries_on_cube(theta_n_diff, name='theta_n_diff', folder=folder)
     print_2d(to_print, folder=folder, name='theta_n_diff', table=True)
     draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
     print('ggwp all done!')
@@ -107,7 +108,9 @@ def experiment_3(folder='exp3'):
 
     problem = DirectSolve()
     problem._r = r_default
-    problem.theta_b = Expression('t', degree=3, t=interpolate(test.state.split()[0], test.simple_space))
+    problem.theta_b = Expression(
+        't', degree=3, t=interpolate(test.state.split()[0], test.simple_space)
+    )
     problem.solve_direct()
 
     make_pics(problem=problem, name_modifier='end', folder=folder)
@@ -127,29 +130,39 @@ def experiment_4(folder='exp4'):
     print('Experiment four in a run')
     from solver2d import SolveOptimization as Problem
     init = project(
-        Expression('pow((x[0]-0.5), 2) - 0.5*x[1] + 0.75', element=Problem.simple_space.ufl_element()),
+        Expression('pow((x[0]-0.5), 2) - 0.5*x[1] + 0.75',
+                   element=Problem.simple_space.ufl_element()),
         Problem.simple_space
     )
-    grad_t_b = interpolate(project(grad(init), Problem.vector_space), Problem.boundary_vector_space)
-
-    theta_n = project(inner(grad_t_b, Problem.normal), Problem.boundary_simple_space)
-    problem = Problem(phi_n=Constant(0.25), theta_n=theta_n, theta_b=interpolate(init, Problem.boundary_simple_space))
+    grad_t_b = interpolate(project(grad(init), Problem.vector_space), Problem.vector_space)
+    normal = interpolate(Normal(Problem.omega, dimension=2), Problem.boundary_vector_space)
+    theta_n = inner(grad_t_b, FacetNormal(Problem.omega))
+    problem = Problem(
+        phi_n=Constant(0),
+        theta_n=theta_n,
+        theta_b=init,
+    )
 
     print('Setting up optimization problem')
     problem.solve_boundary()
     print('Boundary init problem is set. Working on setting optimization problem.')
 
     print('Launching iterations')
-    problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=20)
-
+    problem.find_optimal_control(iterations=1 * 10 ** 0 + 2, _lambda=20)
+    grad_t_b = interpolate(
+        project(grad(problem.state.split()[0]), Problem.vector_space),
+        Problem.boundary_vector_space)
+    theta_n = project(inner(grad_t_b, normal), problem.boundary_simple_space)
     print_2d_isolines(problem.state.split()[0], name='theta', folder=folder)
-    draw_simple_graphic(problem.quality_history, name='quality', folder=folder)
-    draw_simple_graphic(problem.quality_history, name='quality_log', folder=folder, logarithmic=True)
-    function2d_dumper(problem.state.split()[0], name='theta', folder=folder)
-    function2d_dumper(problem.state.split()[1], name='phi', folder=folder)
-    function2d_dumper(problem.phi_n, name='phi_n', folder=folder)
+    # draw_simple_graphic(problem.quality_history, name='quality', folder=folder)
+    # draw_simple_graphic(problem.quality_history, name='quality_log', folder=folder, logarithmic=True)
+    f = File(f'{folder}/state_theta.pvd')
+    f << problem.state
+
+    print_2d_boundaries(theta_n, name='theta_n', folder=folder, terminal_only=False)
     json.dump(
-        problem.quality_history, codecs.open(f"{folder}/quality", 'w', encoding='utf-8'),
+        problem.quality_history,
+        codecs.open(f"{folder}/quality", 'w', encoding='utf-8'),
         separators=(',', ':'), indent=1
     )
     return problem.state.split()[0]

@@ -10,6 +10,8 @@
 \usepackage{algorithm}% http://ctan.org/pkg/algorithms
 \captionsetup[algorithm]{labelformat=empty}
 \usepackage[noend]{algpseudocode}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 
 \newtheorem{theorem}{Теорема}
 \newtheorem{lemma}{Лемма}
@@ -30,8 +32,8 @@
     \begin{center}
     {\bf \copyright\  2020 г.\ \  П.Р. Месенев, А.Ю. Чеботарев $^{*}$}
         \\
-        {\it (690041 Владивосток,ул.Радио,7,ИПМ ДВО РАН)\\
-            e-mail:  $^{*}$cheb@iam.dvo.ru}\\
+        {\textit{$^{*}$} (690041 Владивосток,ул.Радио,7,ИПМ ДВО РАН)\\
+            e-mail:  cheb@iam.dvo.ru}\\
         {\small  Поступила в редакцию 30.04.2020 г.\\
             Принята к публикации 2020 г.}
     \end{center}
@@ -475,9 +477,6 @@
     \kappa_a(\varphi-[\theta]^4)=0$ почти всюду в $\Omega.$ Таким образом,
     пара $\theta_*,\varphi_*$ -- решение задачи~\eqref{eq11},\eqref{bc11}.
 
-
-
-
     \begin{center}
         \textbf{6. АЛГОРИТМ РЕШЕНИЯ ЗАДАЧИ И ЧИСЛЕННЫЕ ПРИМЕРЫ}
     \end{center}
@@ -498,13 +497,13 @@
             \State Выбираем количество итераций $N$,
             \State Выбираем произвольное $u_0 \in U$,
             \For{$k \gets 0,1,2,\dots,N$}:
-            \State Для полученного $u_k$ расчитываем состояние $y_k = \{\theta_k, \varphi_k\}$ из~\eqref{eq1}.
-            \State Расчитываем значение функционала качества $J(\theta_k, u_k)$ из~\eqref{cost}.
-            \State Расчитываем состояние $p_k=\{p_{1k},p_{2k}\}$ из уравнений~\eqref{OC1},
+            \State Для полученного $u_k$ вычисляем состояние $y_k = \{\theta_k, \varphi_k\}$ из~\eqref{eq1}.
+            \State Вычисляем значение функционала качества $J(\theta_k, u_k)$ из~\eqref{cost}.
+            \State Вычисляем состояние $p_k=\{p_{1k},p_{2k}\}$ из уравнений~\eqref{OC1},
             где $ \hat{\theta} := \theta_k, \hat{u}=u_k$.
             \State Пересчитываем управление $u_{k+1} = u_k - \varepsilon (\lambda u_k - p_2)$
             \EndFor
-        \end{algorithmic}
+        \end{algorithmic}\label{alg:algorithm}
     \end{algorithm}
     Значение параметра $\varepsilon$ выбирается эмпирически таким образом, чтобы значение
     $\varepsilon (\lambda u_k - p_2)$ являлась существенной поправкой для $u_{k+1}$.
@@ -516,7 +515,7 @@
 
     \textbf{Для численного решения прямой задачи с заданным управлением и сопряженной системы
     использовался солвер FEniCS~\cite{fenics, dolfin}.}
-%    Исходные коды расчётов для настоящей статьи представлены по адресу \url{https://github.com/mesenev/articles_src}
+    Исходный код расчётов для настоящей статьи представлены по адресу \url{https://github.com/mesenev/articles_src}
 
 
     Приведем примеры расчетов для куба с ребром $l=1~\text{см}$,
