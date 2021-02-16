@@ -1,5 +1,3 @@
-import json, codecs
-
 from direct_solve import DirectSolve
 from phd_2.optimization.default_values import ThetaN
 from phd_2.optimization.solver import SolveOptimization, SolveBoundary
@@ -125,51 +123,11 @@ def experiment_3(folder='exp3'):
     return 0
 
 
-def experiment_4(folder='exp4'):
-    clear_dir(folder)
-    print('Experiment four in a run')
-    from solver2d import SolveOptimization as Problem
-    init = project(
-        Expression('pow((x[0]-0.5), 2) - 0.5*x[1] + 0.75',
-                   element=Problem.simple_space.ufl_element()),
-        Problem.simple_space
-    )
-    grad_t_b = interpolate(project(grad(init), Problem.vector_space), Problem.vector_space)
-    normal = interpolate(Normal(Problem.omega, dimension=2), Problem.boundary_vector_space)
-    theta_n = inner(grad_t_b, FacetNormal(Problem.omega))
-    problem = Problem(
-        phi_n=Constant(0),
-        theta_n=theta_n,
-        theta_b=init,
-    )
 
-    print('Setting up optimization problem')
-    problem.solve_boundary()
-    print('Boundary init problem is set. Working on setting optimization problem.')
-
-    print('Launching iterations')
-    problem.find_optimal_control(iterations=1 * 10 ** 0 + 2, _lambda=20)
-    grad_t_b = interpolate(
-        project(grad(problem.state.split()[0]), Problem.vector_space),
-        Problem.boundary_vector_space)
-    theta_n = project(inner(grad_t_b, normal), problem.boundary_simple_space)
-    print_2d_isolines(problem.state.split()[0], name='theta', folder=folder)
-    # draw_simple_graphic(problem.quality_history, name='quality', folder=folder)
-    # draw_simple_graphic(problem.quality_history, name='quality_log', folder=folder, logarithmic=True)
-    f = File(f'{folder}/state_theta.pvd')
-    f << problem.state
-
-    print_2d_boundaries(theta_n, name='theta_n', folder=folder, terminal_only=False)
-    json.dump(
-        problem.quality_history,
-        codecs.open(f"{folder}/quality", 'w', encoding='utf-8'),
-        separators=(',', ':'), indent=1
-    )
-    return problem.state.split()[0]
 
 
 if __name__ == "__main__":
+    pass
     # experiment_1()
     # experiment_2()
     # experiment_3()
-    experiment_4()

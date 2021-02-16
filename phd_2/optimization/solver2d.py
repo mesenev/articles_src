@@ -48,7 +48,7 @@ class DefaultValues2D:
         self.theta_b = theta_b  # Warning! Might be ambiguous
         self._r = None
         self.theta_bc = DirichletBC(self.state_space.sub(0), theta_b, DirichletBoundary())
-        self.recalculate_r()
+        # self.recalculate_r()
         for key, val in kwargs.items():
             setattr(self, key, val)
 
@@ -75,7 +75,8 @@ class SolveBoundary(DefaultValues2D):
             self.a * inner(grad(self.theta), grad(self.v)) * dx \
             + self.a * self.theta * self.v * ds + \
             + self.b * self.ka * inner(self.theta ** 4 - self.phi, self.v) * dx
-        theta_src = dot(self._r, self.v) * ds
+        theta_src = inner(self.a * (self.theta_b + self.theta_n), self.v) * ds
+
         phi_equation = \
             self.alpha * inner(grad(self.phi), grad(self.h)) * dx \
             + self.alpha * self.phi * self.h * ds \

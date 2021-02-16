@@ -3,11 +3,11 @@ from subprocess import call
 import numpy as np
 import sys
 import matplotlib
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
-
 
 print('Launched...')
 if len(sys.argv) == 1:
@@ -37,7 +37,7 @@ plt.savefig(folder + "/cost_functional_dynamics.eps")
 # plt.show()
 plt.close()
 
-if len(sys.argv) ==  1:
+if len(sys.argv) == 1:
     folder = "calculations"
 else:
     folder = sys.argv[1]
@@ -53,7 +53,6 @@ y1 = [i for i in map(lambda elem: float(elem), y1)]
 y2 = [i for i in map(lambda elem: float(elem), " ".join(y2).split(" "))]
 y3 = [i for i in map(lambda elem: float(elem), " ".join(y3).split(" "))]
 x = np.arange(0, 1.0, 1.0 / (y1.__len__() - 1)).tolist() + [1.0]
-
 
 plt.figure(1)
 plt.plot(x, y1, "g-.", x, y2, 'b--', x, y3, 'r-')
@@ -81,7 +80,7 @@ for data in data_new:
     data = [data[0]] + [float(i) for i in data[1:]]
     input_data += [data]
 
-allvals = input_data[0][1:] + input_data[1][1:] + input_data[2][1:]# + input_data[3][1:]
+allvals = input_data[0][1:] + input_data[1][1:] + input_data[2][1:]  # + input_data[3][1:]
 yscale = (max(allvals) - min(allvals)) / 8
 plt.axis([0, 1.0, min(allvals) - yscale, max(allvals) + yscale])
 
