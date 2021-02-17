@@ -103,7 +103,7 @@ def get_facet_normal(bmesh):
     return norm
 
 
-def normal_derivative_for_square_mesh():
+def normal_for_square_mesh():
     mesh = UnitSquareMesh(100, 100)
     n = FacetNormal(mesh)
     V = VectorFunctionSpace(mesh, "CG", 1)
@@ -127,7 +127,7 @@ normal_function = []
 
 def get_normal_derivative(function):
     if not normal_function:
-        normal_function.append(normal_derivative_for_square_mesh())
+        normal_function.append(normal_for_square_mesh())
     normal = normal_function[0]
     mesh = UnitSquareMesh(100, 100)
     f = FunctionSpace(mesh, "CG", 1)

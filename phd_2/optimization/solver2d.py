@@ -143,7 +143,7 @@ class SolveOptimization(SolveBoundary):
 
     def quality(self, add_to_story=True):
         quality = assemble(
-            0.5 * (self.state.split()[0] - self.theta_b) ** 2 * dx
+            0.5 * (self.state.split()[0] - self.theta_b) ** 2 * ds
             # + self.epsilon * 0.5 * self.phi_n ** 2 * ds(self.omega)
         )
         if add_to_story:

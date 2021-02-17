@@ -1,8 +1,10 @@
+%! suppress = FileNotFound
 \documentclass[12pt]{article}
 \usepackage[russian]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts,amssymb}
 \usepackage{graphicx}
+\usepackage{mathtools}
 \textwidth 16.5cm \textheight 23cm \topmargin -1.5cm
 \oddsidemargin -0.5cm
 
@@ -76,7 +78,8 @@
     такой, что
     \begin{equation}
         \label{cost}
-        J_\lambda(\theta, u) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^2d\Gamma + \frac{\lambda}{2}\int\limits_\Gamma u^2d\Gamma \rightarrow\inf
+        J_\lambda(\theta, u) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^2d\Gamma +
+        \frac{\lambda}{2}\int\limits_\Gamma u^2d\Gamma \rightarrow\inf
     \end{equation}
     на решениях краевой задачи (\ref{eq1}),(\ref{bc1}).
     Функция $\theta_b(x),\, x\in\Gamma$  и параметр регуляризации $\lambda>0$ заданы.
@@ -349,7 +352,8 @@
     +\frac{\kappa_a}{\alpha}f_3, ;\ \;
     \eta =\frac{1}{\alpha b}( f_3-a\xi).
     $$
-    Здесь $f_3=A^{-1}(f_1+bf_2)\in V.$ Разрешимость первого уравнения указанной системы очевидным образом следует из леммы Лакса-Мильграма.
+    Здесь $f_3=A^{-1}(f_1+bf_2)\in V.$ Разрешимость первого уравнения указанной системы очевидным образом следует из
+    леммы Лакса-Мильграма.
 
 
     В соответствии с леммой 2, лагранжиан задачи $(CP)$ имеет вид
@@ -381,15 +385,12 @@
         {\it  Если $\{\hat{\theta}, \hat{\varphi}, \hat{u}\}$ -- решение
     задачи $(CP)$, то существует единственная пара $\{p_1, p_2 \} \in V\times V$
         такая, что}
-    $$
-    aA\hat{\theta} + b \kappa_a([\hat{\theta}]^4 -\hat{\varphi}) = Br, \;\;
-    \alpha A \hat{\varphi} + \kappa_a(\hat{\varphi} - [\hat{\theta}]^4) = B\hat{u},
-    $$
-    $$
-    aAp_1 +4|\hat{\theta}|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}), \;\;
-    \alpha A p_2 + \kappa_a (p_2 - b p_1) = 0
-    $$
-        {\it и при этом} $\lambda\hat{u} = p_2.$
+    \begin{equation}
+        \label{eq:as}
+        aAp_1 +4|\hat{\theta}|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}), \;\;
+        \alpha A p_2 + \kappa_a (p_2 - b p_1)=0
+    \end{equation}
+    {\it и при этом} $\lambda\hat{u} = p_2.$
 
 
 
@@ -472,7 +473,8 @@
     Из первого уравнения в~\eqref{CC}, с учетом, что $r=a(\theta_b+q_b)$,
     выводим
     $$
-    - a\Delta\theta_* + b\kappa_a([\theta_*]^4- \varphi_*)=0 \text{ п.в. в }\Omega,\quad \theta_*=\theta_b,\quad \partial_n\theta = q_b \text{ п.в. на  }\Gamma.
+    - a\Delta\theta_* + b\kappa_a([\theta_*]^4- \varphi_*)=0 \text{ п.в. в }\Omega,\quad \theta_*=\theta_b,\quad
+    \partial_n\theta = q_b \text{ п.в. на  }\Gamma.
     $$
     Из второго уравнения в~\eqref{CC} следует, что $-\alpha \Delta \varphi +
     \kappa_a(\varphi-[\theta]^4)=0$ почти всюду в $\Omega.$ Таким образом,
@@ -486,10 +488,91 @@
     \end{center}
 
     Представим итерационный алгоритм решения краевой задачи~\eqref{eq1}--\eqref{bc2} управления.
+    Пусть $\tilde J_\lambda(u)=J_\lambda(\theta(u), u)$, где $\theta(u)$ компонента решения
+    задачи~\eqref{eq1},\eqref{bc3}, соответствующая управлению $u\in U$.
 
+    В соответствии с~\eqref{eq:as} градиент функционала $\tilde J_\lambda(u)$ равен
+    \[
+        \tilde J'_\lambda (u) = \lambda u - p_2.
+    \]
+    Здесь $p_2$ -- соответствующая компонента сопряженного состояния из системы~\eqref{eq:as},
+    где $\hat{\theta}\coloneqq\theta(u)$.
+
+    \begin{algorithm}[H]
+        \caption{Алгоритм градиентного спуска}
+        \label{alg:algorithm}
+        \begin{algorithmic}[1]
+            \State Выбираем значение градиентного шага $\varepsilon$,
+            \State Выбираем количество итераций $N$,
+            \State Выбираем начальное приближение для управления $u_0 \in U$,
+            \For{$k \gets 0,1,2,\dots,N$}
+                :
+                \State Для данного $u_k$ рассчитываем состояние $y_k = \{\theta_k, \varphi_k\}$ --
+                решение задачи~\eqref{eq1},\eqref{bc1}.
+                \State Рассчитываем значение функционала качества $J_\lambda(\theta_k, u_k)$.
+                \State Рассчитываем сопряженное состояние $p_k=\{p_{1k},p_{2k}\}$ из уравнений~\eqref{OC1},
+                где $ \hat{\theta} \coloneqq \theta_k, \hat{u}=u_k$.
+                \State Пересчитываем управление $u_{k+1} = u_k - \varepsilon (\lambda u_k - p_2)$
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+    Значение параметра $\varepsilon$ выбирается эмпирически таким образом, чтобы значение
+    $\varepsilon (\lambda u_k - p_2)$ являлось существенной поправкой для $u_{k+1}$.
+    Количество итераций $N$ выбирается достаточным для выполнения условия
+    $J_\lambda(\theta_k, u_k) - J_\lambda(\theta_{k+1}, u_{k+1}) < \delta$, где $\delta>0$ определяет точность расчетов.
+
+    Примеры, рассмотренные ниже, иллюстрируют работоспособность предложенного алгоритма при
+    малых, что важно, значениях параметра регуляризации $\lambda \leq 10^{-12}.$
+    В первом примере приводится сравнение расчетов по
+    предложенному алгоритму с результатами работы~\cite{CNSNS19}.
+    Во втором примере выполнены тестовые расчеты для куба.
+
+    \textbf{Пример 1.}
+
+    Приведем примеры расчетов для куба
+    $\Omega = {(x, y, z), 0 \leq x,y,z \leq l}$.
+    Будем считать, что $l=1~\text{см}$, $a = 0.006[\text{см}^2/\text{c}]$,
+    $b=0.025[\text{см}/\text{с}]$,
+    $\kappa_a=1[\text{см}^{-1}]$, $\alpha = 0.(3)[\text{см}]$.
+    Указанные параметры соответствуют стеклу~\cite{Grenkin5}.
+    Параметр регуляризации $\lambda=10^{-12}.$
+
+    Пусть граничные данные $r$ и $u$ в~\eqref{bc3} имеют вид:
+    \begin{gather*}
+        r = 0.8 cos(\frac{\pi}{2}x) + 0.1,\quad
+        u = \hat u = y.
+    \end{gather*}
+    Далее рассчитываем состояние $\theta$ и $\varphi$ как решение задачи~\eqref{eq1},\eqref{bc3} и в качестве
+    $\theta_b$ выбираем граничные значение функции $\theta$ на $\Gamma$.
+    Значения нормальной производной $\partial_n\theta$ на $\Gamma$ должны соответствовать
+    значениям $q_b=r/a-\theta_b.$
+    Применяя предложенный алгоритм с начальным приближением $u_0 = 0.1$, находим приближенное решение
+    $\{\theta_\lambda,\varphi_\lambda,u_\lambda\}$ задачи (CP)\@.
+    Для демонстрации того, что алгоритм находит приближенное решение задачи с данными
+    Коши для температуры, важно сравнить значения $\partial_n\theta_\lambda$ на $\Gamma$ с $q_b.$
+
+    На рисунке~\ref{fig:img_test_1} представлен модуль относительного отклонения $\partial_n\theta_\lambda$ от $q_b$
+    на грани куба в плоскости $z=l$, где $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$,
+    а также динамика функционала качества, определяющего норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$.
+    На остальных гранях куба значения относительного отклонения имеют тот же порядок малости.
+
+    \begin{figure}[H]
+        \centering
+        \subfloat[$|q_n - \partial_n\theta|$]
+        { \label{fig:img_test_1} \includegraphics[width=.49\linewidth]{img/exp1/theta_n_diff_auto.png}
+        }
+        \subfloat[Изменение функционала в зависимости от числа итераций]
+        { \includegraphics[width=.49\linewidth]{img/exp1/quality} }
+        \caption{Результаты первого эксперимента}
+    \end{figure}
+
+
+    \textbf{Пример 2.}
+    Сравним работу предложенного алгоритма с результатами статьи~\cite{CNSNS19}, где
+    соавтором был один из авторов данной работы.
     Задача рассматривается в области $\Omega\times (-L,L)$, где $\Omega = \{ x = (x_1,x_2) \colon 0 < x_{1,2} < d\}$
     и при больших $L$ сводится к двумерной задаче с вычислительной областью $\Omega$.
-    Выбраны следующие значения параметров задачи: $d= \mathrm{1(m)}$, $a = 0.92~10^{-4}~\mathrm{(m^2/s)}$, $b=
+    Выбраны следующие значения параметров задачи: $d = \mathrm{1(m)}$, $a = 0.92~10^{-4}~\mathrm{(m^2/s)}$, $b=
     0.19~\mathrm{(m/s)}$, $\alpha = 0.0333~\mathrm{(m)}$ и $\kappa_a = 1~\mathrm{(m^{-1})}$.
     Параметры соответствуют воздуху при нормальном атмосферном давлении и температуре 400$^\circ$C\@.
 
@@ -505,6 +588,52 @@
     Решение стабилизировалось через 120 секунд, но вычисления на каждом временном
     шаге потребовали довольно значительных затрат~\cite{CNSNS19}.
 
+%  Убрать график Боткина
+    На рис.~\ref{fig2:theta_auto} представлено температурное поле, полученное
+    предложенным в данной статье методом, достаточно точно совпадающее с результатом в~\cite{CNSNS19}.
+    Величина $\|\partial_n\theta_\lambda-q_b\|_{L^2(\Gamma)}/\|q_b\|_{L^2(\Gamma)}$ равна $~0.000567$.
+    Значение функционала качества, определяющего
+    норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$, равно $~0.000255$ и стабилизируется после 10
+    итераций.
+
+    Представленные численные примеры иллюстрируют, что предложенный алгоритм достаточно успешно справляется
+    с нахождением численного решения задачи~\eqref{eq1}-\eqref{bc2}.
+
+    Исходный программный код, а также графический инструментарий можно найти по ссылке~\cite{mesenev-github}.
+
+    \begin{figure}[H]
+        \centering
+        \subfloat[Температурное поле, полученное в статье~\cite{CNSNS19}]
+        {
+        \label{fig2:CNSNS19}
+        \includegraphics[width=.49\linewidth]{img/exp2/2.jpeg}
+        }
+        \subfloat[Температурное поле, полученное предложенным алгоритмом]
+        {
+        \label{fig2:theta_auto}
+        \includegraphics[width=.49\linewidth]{img/exp2/theta.png}
+        }
+        \caption{Графики температурного поля $\theta$}
+        \label{fig2}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \subfloat[График функций $q_b, \partial_n \theta_{init}, \partial_n \theta_{end}$]
+        {
+        \label{fig:theta_n}
+        \includegraphics[width=.49\linewidth]{img/exp2/theta_n_g}
+        }
+        \subfloat[Изменение функционала качества]
+        {
+        \label{fig3:quality}
+        \includegraphics[width=.49\linewidth]{img/exp2/quality}
+        }
+        \caption{}
+        \label{fig3}
+    \end{figure}
+
+
 
     Представленные численные примеры иллюстрируют, что предложенный алгоритм достаточно успешно справляется
     с нахождением численного решения задачи~\eqref{eq1}-\eqref{bc2}.
@@ -516,203 +645,143 @@
 
         \bibitem{Modest}
         Modest~M.F. Radiative Heat Transfer.
-        Academic Press.
-                2003. 822 p.
+        Academic Press. 2003. 822 p.
 
         \bibitem{Kovt}
         Kovtanyuk A.E., Chebotarev A.Yu., Botkin N.D. Unique solvability of a steady-state complex heat
-        transfer model // Commun.
-        Nonlinear Sci.
-                Numer.
-                                                                                                                                Simul. 2015. V.~20. N 3. P. 776--784.
+        transfer model // Commun. Nonlinear Sci. Numer.
+        Simul. 2015. V.~20. N 3. P. 776--784.
 
         \bibitem{Pinnau07}
-        R.~Pinnau.
-        Analysis of Optimal Boundary Control for Radiative Heat
+        R.~Pinnau. Analysis of Optimal Boundary Control for Radiative Heat
         Transfer Modelled by the SP$_1$-System~// Comm.
-        Math.
-                Sci. 2007. V.~5.
-        N~4.
-        P.~951--969.
+        Math. Sci. 2007. V.~5. N~4. P.~951--969.
 
         \bibitem{Tse12}
         Tse O., Pinnau R., Siedow N. Identification of temperature
         dependent parameters in laser--interstitial thermo therapy~//
-        Math.
-        Models Methods Appl.
-                Sci.
-                                                                2012. V.~22. N~9. P. 1--29.
+        Math. Models Methods Appl. Sci. 2012. V.~22. N~9. P. 1--29.
 
         \bibitem{Kovt13}
         Kovtanyuk~A.E., Chebotarev~A.Yu. An iterative method for solving a
         complex heat transfer problem~// Appl.
-        Math.
-                Comput. 2013. V.~219.
-        P.~9356--9362.
+        Math. Comput. 2013. V.~219. P.~9356--9362.
 
         \bibitem{Cheb14-1}
         Kovtanyuk~A.E., Chebotarev~A.Yu., Botkin~N.D., Hoffmann~K.-H. The
         unique solvability of a complex 3D heat transfer problem~// J.
-        Math.
-        Anal.
-                Appl.
-                                                                2014. V.~409. N~2. P.~808-815.
+        Math. Anal. Appl. 2014. V.~409. N~2. P.~808-815.
 
         \bibitem{JVM-14}
         Ковтанюк А.Е., Чеботарев А.Ю. Стационарная задача сложного теплообмена // Ж.
-        вычисл.
-                матем.
-                                                                и матем. физ. 2014. Т. 54. \textnumero~4.
-        С. 711--719.
+        вычисл. матем. и матем. физ. 2014. Т. 54. \textnumero~4. С. 711--719.
 
         \bibitem{Kovt14-2}
         Ковтанюк А.Е., Чеботарев А.Ю. Стационарная задача свободной конвекции с радиационным теплообменом // Дифференц.
-        ур-ния.
-                2014. Т. 50. \textnumero~12.
-        С. 1590--1597.
+        ур-ния. 2014. Т. 50. \textnumero~12. С. 1590--1597.
 
         \bibitem{Kovt14-3}
-        Kovtanyuk A.E., Chebotarev A.Yu., Botkin N.D., Hoffmann K.-H. Theoretical analysis of an optimal control problem of conductive-convective-radiative heat transfer // J. Math.
-        Anal.
-        Appl.
-        2014.
-        V. 412. \textnumero~1.
-        P. 520--528.
+        Kovtanyuk A.E., Chebotarev A.Yu., Botkin N.D., Hoffmann K.-H. Theoretical analysis of an optimal
+        control problem of conductive-convective-radiative heat transfer // J. Math.
+        Anal. Appl. 2014. V. 412. \textnumero~1. P. 520--528.
 
         \bibitem{Grenkin1}
         Гренкин Г.В., Чеботарев А.Ю. Нестационарная задача сложного теплообмена // Ж.
-        вычисл.
-                матем.
-                                                                и матем. физ. 2014. Т. 54. \textnumero~11.
-        С. 1806--1816.
+        вычисл. матем. и матем. физ. 2014. Т. 54. \textnumero~11. С. 1806--1816.
 
         \bibitem{Grenkin3}
         Гренкин Г.В., Чеботарев А.Ю. Неоднородная нестационарная задача сложного теплообмена // Сиб.
-        электрон.
-                матем.
-                                                                изв. 2015. Т. 12. С. 562--576.
+        электрон. матем. изв. 2015. Т. 12. С. 562--576.
 
         \bibitem{Grenkin4}
         Гренкин Г.В., Чеботарев А.Ю. Нестационарная задача свободной конвекции с радиационным теплообменом // Ж.
-        вычисл.
-                матем.
-                                                                и матем. физ. 2016. Т. 56. \textnumero~2.
-        С. 275--282.
+        вычисл. матем. и матем. физ. 2016. Т. 56. \textnumero~2. С. 275--282.
 
         \bibitem{Grenkin5}
-        Grenkin G.V., Chebotarev A.Yu., Kovtanyuk A.E., Botkin N.D., Hoffmann K.-H. Boundary optimal control problem of complex heat transfer model // J. Math.
-        Anal.
-                Appl. 2016. V. 433. \textnumero~2.
-        P. 1243--1260.
+        Grenkin G.V., Chebotarev A.Yu., Kovtanyuk A.E., Botkin N.D., Hoffmann K.-H. Boundary optimal control problem
+        of complex heat transfer model // J. Math.
+        Anal. Appl. 2016. V. 433. \textnumero~2. P. 1243--1260.
 
         \bibitem{JMAA-16}
-        Kovtanyuk A.E., Chebotarev A.Yu., Botkin N.D., Hoffmann K.-H. Optimal boundary control of a steady-state heat transfer model accounting for radiative effects // J. Math.
-        Anal. Appl.
-        2016.
-        V. 439. \textnumero~2.
-        P. 678--689.
+        Kovtanyuk A.E., Chebotarev A.Yu., Botkin N.D., Hoffmann K.-H. Optimal boundary control of a steady-state heat
+        transfer model accounting for radiative effects // J. Math.
+        Anal. Appl. 2016. V. 439. \textnumero~2. P. 678--689.
 
         \bibitem{AMC-16}
         Chebotarev A.Yu., Kovtanyuk A.E., Grenkin G.V., Botkin N.D., Hoffmann K.-H.
-        Nondegeneracy of optimality conditions in control problems for a radiative-conductive heat transfer model // Appl.
-        Math.
-                Comput.
-                                2016. V. 289. P. 371--380.
+        Nondegeneracy of optimality conditions in control problems for a radiative-conductive heat transfer model
+        // Appl.
+        Math. Comput. 2016. V. 289. P. 371--380.
 
         \bibitem{JVM-16}
-        Ковтанюк А.Е., Чеботарев А.Ю. Нелокальная однозначная разрешимость стационарной задачи сложного теплообмена // Ж.
-        вычисл.
-                матем.
-                                                                и матем. физ. 2016. Т. 56. \textnumero~5.
-        С. 816--823.
+        Ковтанюк А.Е., Чеботарев А.Ю. Нелокальная однозначная разрешимость стационарной задачи сложного теплообмена
+        // Ж.
+        вычисл. матем. и матем. физ. 2016. Т. 56. \textnumero~5. С. 816--823.
 
         \bibitem{ESAIM}
-        Chebotarev A.Yu., Grenkin G.V., Kovtanyuk A.E. Inhomogeneous steady-state problem of complex heat transfer // ESAIM Math.
-        Model.
-                Numer. Anal. 2017. V. 51. \textnumero~6.
-        P. 2511--2519.
+        Chebotarev A.Yu., Grenkin G.V., Kovtanyuk A.E. Inhomogeneous steady-state problem of complex heat transfer //
+        ESAIM Math.
+        Model. Numer. Anal. 2017. V. 51. \textnumero~6. P. 2511--2519.
 
         \bibitem{JMAA-18}
-        Chebotarev A.Yu., Grenkin G.V., Kovtanyuk A.E., Botkin N.D., Hoffmann K.-H. Inverse problem with finite overdetermination for steady-state equations of radiative heat exchange // J. Math.
-        Anal.
-                Appl. 2018. V. 460. \textnumero~2.
-        P. 737--744.
+        Chebotarev A.Yu., Grenkin G.V., Kovtanyuk A.E., Botkin N.D., Hoffmann K.-H. Inverse problem with finite
+        overdetermination for steady-state equations of radiative heat exchange // J. Math.
+        Anal. Appl. 2018. V. 460. \textnumero~2. P. 737--744.
 
         \bibitem{JMAA-19}
-        Chebotarev A.Yu., Pinnau R. An inverse problem for a quasi-static approximate model of radiative heat transfer // J. Math.
-        Anal.
-                Appl. 2019. V. 472. \textnumero~1.
-        P. 737--744.
+        Chebotarev A.Yu., Pinnau R. An inverse problem for a quasi-static approximate model of radiative heat transfer
+        // J. Math.
+        Anal. Appl. 2019. V. 472. \textnumero~1. P. 737--744.
 
 
         \bibitem{AmosA05}
         Амосов~А.А. Глобальная разрешимость одной нелинейной
         нестационарной задачи с нелокальным краевым условием типа
         теплообмена излучением~// Дифференц.
-        ур-ния.
-                Т.~41. N~1.
-        2005.
-        С.~93--104.
+        ур-ния. Т.~41. N~1. 2005. С.~93--104.
 
         \bibitem{AmosA10}
         Amosov~A.A. Stationary nonlinear nonlocal problem of
         radiative-conductive heat transfer in a system of opaque bodies
         with properties depending on the radiation frequency~// J.
-        Math.
-        Sc.
-        2010.
-                V.~164. N~3. P.~309--344.
+        Math. Sc. 2010. V.~164. N~3. P.~309--344.
 
         \bibitem{Amosov16}
         Amosov A. Unique Solvability of a Nonstationary Problem of Radiative - Conductive
         Heat Exchange in a System of Semitransparent Bodies // Russian J. of Math.
-        Phys.
-        2016.
-        V.
-        23, N~3. P.~309-334.
+        Phys. 2016. V. 23, N~3. P.~309-334.
 
         \bibitem{Amosov17}
-        Амосов А.А. Стационарная задача сложного теплообмена в системе полупрозрачных тел с краевыми условиями диффузного отражения и преломления излучения // Ж.
-        вычисл.
-                матем.
-                                                                и матем. физ. 2017. Т. 57. \textnumero~3.
-        С. 510--535.
+        Амосов А.А. Стационарная задача сложного теплообмена в системе полупрозрачных тел с краевыми условиями
+        диффузного отражения и преломления излучения // Ж.
+        вычисл. матем. и матем. физ. 2017. Т. 57. \textnumero~3. С. 510--535.
 
         \bibitem{Amosov17-1}
         Amosov A.A. Unique Solvability of Stationary Radiative - Conductive Heat Transfer
         Problem in a System of Semitransparent Bodies // J. of Math.
-        Sc.(United
-        States).
-        2017.
-                V. 224. N~5. P.~618-646.
+        Sc.(United States). 2017. V. 224. N~5. P.~618-646.
 
         \bibitem{Amosov18}
         Amosov A.A. Nonstationary problem of complex heat transfer in a system of
         semitransparent bodies with boundary-value conditions of diffuse reflection and refraction
-        of radiation // J. of Math.
-        Sc.(United
-        States).
-        2018.
-                V. 233. N~6. P.~777 -806.
+        of radiation // J. of Math. Sc.(United States). 2018. V. 233. N~6. P.~777 -806.
 
         \bibitem{CNSNS19}
-        Chebotarev A.Yu., Kovtanyuk A.E., Botkin N.D. Problem of radiation heat exchange with boundary conditions of the Cauchy type // Commun.
-        Nonlinear Sci.
-                Numer. Simul. 75 (2019) 262-269.
+        Chebotarev A.Yu., Kovtanyuk A.E., Botkin N.D. Problem of radiation heat exchange with boundary conditions
+        of the Cauchy type // Commun.
+        Nonlinear Sci. Numer. Simul. 75 (2019) 262-269.
 
         \bibitem{CMMP20}
-        Колобов А.Г., Пак Т.В., Чеботарев А.Ю. Стационарная задача радиационного теплообмена с граничными условиями типа Коши // Журнал вычислительной математики и математической физики.
-        2019, том 59, № 7, с.
-        1258-1263.
+        Колобов А.Г., Пак Т.В., Чеботарев А.Ю. Стационарная задача радиационного теплообмена с граничными условиями
+        типа Коши // Журнал вычислительной математики и математической физики.
+        2019, том 59, № 7, с. 1258-1263.
 
 
         \bibitem{Kufner} S.~Fu\v{c}ik, A.~Kufner, Nonlinear differential equations,
         Elsevier, Amsterdam--Oxford--New York, 1980.
 
         \bibitem{10} A.V.~Fursikov, Optimal Control of Distributed
-        Systems.
-        Theory and Applications, American Math.
-        Soc., 2000.
+        Systems. Theory and Applications, American Math. Soc., 2000.
 
         \bibitem{11} A.D.~Ioffe, V.M.~Tikhomirov, Theory of Extremal
         Problems, North-Holland, Amsterdam, 1979.
