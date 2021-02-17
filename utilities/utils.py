@@ -135,3 +135,36 @@ def get_normal_derivative(function):
     V = VectorFunctionSpace(mesh, "CG", 1)
     return project(inner(normal, project(grad(project(function, f)), V)), f)
 # normal_derivative_for_square_mesh()
+
+
+def normal_for_cube_mesh():
+    mesh = UnitCubeMesh(12, 12, 12)
+    n = FacetNormal(mesh)
+    V = VectorFunctionSpace(mesh, "CG", 1)
+    u = TrialFunction(V)
+    v = TestFunction(V)
+    a = inner(u, v) * ds
+    l = inner(n, v) * ds
+    A = assemble(a, keep_diagonal=True)
+    L = assemble(l)
+
+    A.ident_zeros()
+    nh = Function(V)
+
+    solve(A, nh.vector(), L)
+    File("nh.xml") << nh
+    return nh
+
+
+normal_function_3d = []
+
+
+def get_normal_derivative_3d(function):
+    if not normal_function_3d:
+        normal_function.append(normal_for_cube_mesh())
+    normal = normal_function[0]
+    mesh = UnitCubeMesh(12, 12, 12)
+    f = FunctionSpace(mesh, "CG", 1)
+    function = interpolate(function, f)
+    V = VectorFunctionSpace(mesh, "CG", 1)
+    return project(inner(normal, project(grad(project(function, f)), V)), f)

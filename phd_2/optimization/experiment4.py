@@ -86,7 +86,7 @@ blue_legend = lines.Line2D(
     [], [], color='blue', linestyle='-', label=r"$\partial_n\theta$ начальное значение"
 )
 yellow_legend = lines.Line2D(
-    [], [], color='green', linestyle='--', label=r'$\partial_n\theta$ на сотой итерации'
+    [], [], color='green', linestyle='--', label=r'$\partial_n\theta_\lambda$ приближенное решение'
 )
 plt.legend(handles=[green_legend, blue_legend, yellow_legend], prop={'size': 10})
 plt.plot(x, theta_n_original['data'], "r-.")
@@ -125,7 +125,7 @@ blue_legend = lines.Line2D(
     [], [], color='blue', linestyle='-', label=r"$\theta|_\Gamma$ начальное значение"
 )
 yellow_legend = lines.Line2D(
-    [], [], color='green', linestyle='--', label=r'$\theta|_\Gamma$ на сотой итерации'
+    [], [], color='green', linestyle='--', label=r'$\theta|_\Gamma_\lambda$ приближенное решение'
 )
 plt.legend(handles=[green_legend, blue_legend, yellow_legend], prop={'size': 10})
 plt.plot(x, theta_b_original['data'], "r-.")

@@ -558,7 +558,7 @@
 
     \begin{figure}[H]
         \centering
-        \subfloat[$|q_n - \partial_n\theta|$]
+        \subfloat[$|q_n - \partial_n\theta_\lambda|$]
         { \label{fig:img_test_1} \includegraphics[width=.49\linewidth]{img/exp1/theta_n_diff_auto.png}
         }
         \subfloat[Изменение функционала в зависимости от числа итераций]
@@ -588,33 +588,26 @@
     Решение стабилизировалось через 120 секунд, но вычисления на каждом временном
     шаге потребовали довольно значительных затрат~\cite{CNSNS19}.
 
-%  Убрать график Боткина
     На рис.~\ref{fig2:theta_auto} представлено температурное поле, полученное
     предложенным в данной статье методом, достаточно точно совпадающее с результатом в~\cite{CNSNS19}.
     Величина $\|\partial_n\theta_\lambda-q_b\|_{L^2(\Gamma)}/\|q_b\|_{L^2(\Gamma)}$ равна $~0.000567$.
-    Значение функционала качества, определяющего
-    норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$, равно $~0.000255$ и стабилизируется после 10
-    итераций.
-
-    Представленные численные примеры иллюстрируют, что предложенный алгоритм достаточно успешно справляется
-    с нахождением численного решения задачи~\eqref{eq1}-\eqref{bc2}.
-
-    Исходный программный код, а также графический инструментарий можно найти по ссылке~\cite{mesenev-github}.
+    Значение функционала качества, определяющего норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$,
+    равно $~0.000255$ и стабилизируется после 10 итераций.
 
     \begin{figure}[H]
+        \label{fig:fig2}
         \centering
-        \subfloat[Температурное поле, полученное в статье~\cite{CNSNS19}]
+        \subfloat[Температурное поле на $\Gamma$]
         {
-        \label{fig2:CNSNS19}
-        \includegraphics[width=.49\linewidth]{img/exp2/2.jpeg}
+        \label{fig2:theta_b}
+        \includegraphics[width=.49\linewidth]{img/exp2/theta_b.png}
         }
-        \subfloat[Температурное поле, полученное предложенным алгоритмом]
+        \subfloat[Производная по нормали]
         {
-        \label{fig2:theta_auto}
-        \includegraphics[width=.49\linewidth]{img/exp2/theta.png}
+        \label{fig2:theta_n}
+        \includegraphics[width=.49\linewidth]{img/exp2/theta_n.png}
         }
         \caption{Графики температурного поля $\theta$}
-        \label{fig2}
     \end{figure}
 
     \begin{figure}[H]
@@ -633,13 +626,10 @@
         \label{fig3}
     \end{figure}
 
-
-
-    Представленные численные примеры иллюстрируют, что предложенный алгоритм достаточно успешно справляется
+    Представленные численные примеры иллюстрируют, что предложенный алгоритм успешно справляется
     с нахождением численного решения задачи~\eqref{eq1}-\eqref{bc2}.
 
-    Исходный программный код, а также графический инструментарий можно найти по ссылке~\cite{mesenev-github}.
-
+    Исходный программный код экспериментов можно найти по ссылке~\cite{mesenev-github}.
 
     \begin{thebibliography}{999}
 

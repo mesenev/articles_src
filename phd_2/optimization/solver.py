@@ -17,7 +17,6 @@ class SolveBoundary(DefaultValues3D):
             f = interpolate(i, self.simple_space).vector()
             print("Minimum:", f.min(), "\t maximum:", f.max())
 
-    # TODO: WRITE TESTS FOR BOUNDARY PROBLEM
     def solve_boundary(self):
         theta_equation = \
             self.a * inner(grad(self.theta), grad(self.v)) * dx \
@@ -49,7 +48,7 @@ class SolveOptimization(SolveBoundary):
     p1, p2 = TrialFunctions(DefaultValues3D.state_space)
     conjugate = Function(DefaultValues3D.state_space)
     tau, nu = TestFunctions(DefaultValues3D.state_space)
-    epsilon = 0.1 ** 12
+    epsilon = 0.1 ** 10
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

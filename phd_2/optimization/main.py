@@ -127,7 +127,9 @@ def experiment_3(folder='exp3'):
 
 
 if __name__ == "__main__":
-    pass
+
+
     # experiment_1()
     # experiment_2()
     # experiment_3()
+    pass
