@@ -69,7 +69,7 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
         x = np.arange(0, 1.0, precision)
         y = np.arange(0, 1.0, precision)
         X, Y = np.meshgrid(x, y)
-        Z = vectorize(lambda _, __: v(Point(_, __)))(X, Y)
+        Z = vectorize(lambda _, __: abs(v(Point(_, __))))(X, Y)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     # levels = [
@@ -98,8 +98,10 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
     plt.legend([extra1, extra2], [extra1.get_label(), extra2.get_label()], prop={'size': 10})
 
     fig.savefig(f'{folder}/{name}_equal.png', bbox_inches='tight')
+    fig.savefig(f'{folder}/{name}_equal.eps', bbox_inches='tight')
     ax.set_aspect('auto')
     fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
+    fig.savefig(f'{folder}/{name}_auto.eps', bbox_inches='tight')
 
 
 def print_two_with_colorbar(v1, v2, name, folder='results'):

@@ -28,7 +28,7 @@ theta_b_3d = Expression('x[2]*0.1+0.3', degree=3)
 
 
 class DefaultValues3D:
-    omega = UnitCubeMesh(7, 7, 7)
+    omega = UnitCubeMesh(13, 13, 13)
     omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 2)
 

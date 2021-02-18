@@ -1,12 +1,17 @@
-%! suppress = FileNotFound
 \documentclass[12pt]{article}
 \usepackage[russian]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts,amssymb}
-\usepackage{graphicx}
 \usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\selectcolormodel{gray}
+\usepackage{subfig}
 \textwidth 16.5cm \textheight 23cm \topmargin -1.5cm
-\oddsidemargin -0.5cm
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\captionsetup[algorithm]{labelformat=empty}
+\usepackage[noend]{algpseudocode}
+\usepackage{hyperref}
 
 \newtheorem{theorem}{Теорема}
 \newtheorem{lemma}{Лемма}
@@ -15,7 +20,7 @@
 \newtheorem{remark}{Замечание}
 \newtheorem{problem}{Задача}
 
-\renewcommand{\div}{\mathop{\mathrm{div}}\nolimits}
+\renewcommand{\div}{\mathop{\mathrm{div}}\nolimts}
 
 \begin{document}
 %\Large
@@ -539,8 +544,8 @@
 
     Пусть граничные данные $r$ и $u$ в~\eqref{bc3} имеют вид:
     \begin{gather*}
-        r = 0.8 cos(\frac{\pi}{2}x) + 0.1,\quad
-        u = \hat u = y.
+        r = 0.7,\quad
+        u = \hat u = 0.5.
     \end{gather*}
     Далее рассчитываем состояние $\theta$ и $\varphi$ как решение задачи~\eqref{eq1},\eqref{bc3} и в качестве
     $\theta_b$ выбираем граничные значение функции $\theta$ на $\Gamma$.
@@ -551,7 +556,54 @@
     Для демонстрации того, что алгоритм находит приближенное решение задачи с данными
     Коши для температуры, важно сравнить значения $\partial_n\theta_\lambda$ на $\Gamma$ с $q_b.$
 
-    На рисунке~\ref{fig:img_test_1} представлен модуль относительного отклонения $\partial_n\theta_\lambda$ от $q_b$
+    На рисунке~\ref{fig:img_test_11_iso} представлен модуль относительного отклонения $\partial_n\theta_\lambda$ от $q_b$
+    на грани куба в плоскости $z=l$, где $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$,
+    а также динамика функционала качества, определяющего норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$.
+    На остальных гранях куба значения относительного отклонения имеют тот же порядок малости.
+    \begin{figure}[H]
+        \centering
+        \subfloat[$|q_n - \partial_n\theta_\lambda|$]
+        { \label{fig:img_test_11} \includegraphics[width=.49\linewidth]{img/exp11/theta_n_diff_iso}
+        }
+        \subfloat[Изменение функционала в зависимости от числа итераций]
+        { \includegraphics[width=.49\linewidth]{img/exp11/quality} }
+        \caption{Результаты первого эксперимента}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfloat[$|q_n - \partial_n\theta_\lambda|$]
+        { \label{fig:img_test_11_cube} \includegraphics[width=.49\linewidth]{img/exp11/theta_n_diff_cube}
+        }
+        \subfloat[Изменение функционала в зависимости от числа итераций]
+        { \includegraphics[width=.49\linewidth]{img/exp11/quality} }
+        \caption{Результаты первого эксперимента}
+    \end{figure}
+
+    \textbf{Пример 1. С константными граничными условиями}
+
+    Приведем примеры расчетов для куба
+    $\Omega = {(x, y, z), 0 \leq x,y,z \leq l}$.
+    Будем считать, что $l=1~\text{см}$, $a = 0.006[\text{см}^2/\text{c}]$,
+    $b=0.025[\text{см}/\text{с}]$,
+    $\kappa_a=1[\text{см}^{-1}]$, $\alpha = 0.(3)[\text{см}]$.
+    Указанные параметры соответствуют стеклу~\cite{Grenkin5}.
+    Параметр регуляризации $\lambda=10^{-12}.$
+
+    Пусть граничные данные $r$ и $u$ в~\eqref{bc3} имеют вид:
+    \begin{gather*}
+        r = 0.8 cos(\frac{\pi}{2}x) + 0.1,\quad
+        u = \hat u = 0.5.
+    \end{gather*}
+    Далее рассчитываем состояние $\theta$ и $\varphi$ как решение задачи~\eqref{eq1},\eqref{bc3} и в качестве
+    $\theta_b$ выбираем граничные значение функции $\theta$ на $\Gamma$.
+    Значения нормальной производной $\partial_n\theta$ на $\Gamma$ должны соответствовать
+    значениям $q_b=r/a-\theta_b.$
+    Применяя предложенный алгоритм с начальным приближением $u_0 = 0.1$, находим приближенное решение
+    $\{\theta_\lambda,\varphi_\lambda,u_\lambda\}$ задачи (CP)\@.
+    Для демонстрации того, что алгоритм находит приближенное решение задачи с данными
+    Коши для температуры, важно сравнить значения $\partial_n\theta_\lambda$ на $\Gamma$ с $q_b.$
+
+    На рисунке~\ref{fig:img_test_12_iso} представлен модуль относительного отклонения $\partial_n\theta_\lambda$ от $q_b$
     на грани куба в плоскости $z=l$, где $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$,
     а также динамика функционала качества, определяющего норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$.
     На остальных гранях куба значения относительного отклонения имеют тот же порядок малости.
@@ -559,13 +611,21 @@
     \begin{figure}[H]
         \centering
         \subfloat[$|q_n - \partial_n\theta_\lambda|$]
-        { \label{fig:img_test_1} \includegraphics[width=.49\linewidth]{img/exp1/theta_n_diff_auto.png}
+        { \label{fig:img_test_12_iso} \includegraphics[width=.49\linewidth]{img/exp12/theta_n_diff_iso}
         }
         \subfloat[Изменение функционала в зависимости от числа итераций]
-        { \includegraphics[width=.49\linewidth]{img/exp1/quality} }
+        { \includegraphics[width=.49\linewidth]{img/exp12/quality} }
         \caption{Результаты первого эксперимента}
     \end{figure}
-
+    \begin{figure}[H]
+        \centering
+        \subfloat[$|q_n - \partial_n\theta_\lambda|$]
+        { \label{fig:img_test_12_cube} \includegraphics[width=.49\linewidth]{img/exp12/theta_n_diff_cube}
+        }
+        \subfloat[Изменение функционала в зависимости от числа итераций]
+        { \includegraphics[width=.49\linewidth]{img/exp12/quality} }
+        \caption{Результаты первого эксперимента}
+    \end{figure}
 
     \textbf{Пример 2.}
     Сравним работу предложенного алгоритма с результатами статьи~\cite{CNSNS19}, где
@@ -600,22 +660,22 @@
         \subfloat[Температурное поле на $\Gamma$]
         {
         \label{fig2:theta_b}
-        \includegraphics[width=.49\linewidth]{img/exp2/theta_b.png}
+        \includegraphics[width=.49\linewidth]{img/exp2/theta_b}
         }
         \subfloat[Производная по нормали]
         {
         \label{fig2:theta_n}
-        \includegraphics[width=.49\linewidth]{img/exp2/theta_n.png}
+        \includegraphics[width=.49\linewidth]{img/exp2/theta_n}
         }
         \caption{Графики температурного поля $\theta$}
     \end{figure}
 
     \begin{figure}[H]
         \centering
-        \subfloat[График функций $q_b, \partial_n \theta_{init}, \partial_n \theta_{end}$]
+        \subfloat[Полученное решение $\theta$]
         {
-        \label{fig:theta_n}
-        \includegraphics[width=.49\linewidth]{img/exp2/theta_n_g}
+        \label{fig2:theta_auto}
+        \includegraphics[width=.49\linewidth]{img/exp2/theta_auto}
         }
         \subfloat[Изменение функционала качества]
         {

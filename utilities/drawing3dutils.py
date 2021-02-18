@@ -22,9 +22,9 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
     """
     plt.close('all')
     fig = plt.figure()
-    top = lambda x, y: v(Point(x, y, 1))
-    vertical_left = lambda x, y: v(Point(x, 0, y))
-    vertical_right = lambda x, y: v(Point(1, y, x))
+    top = lambda x, y: abs(v(Point(x, y, 1)))
+    vertical_left = lambda x, y: abs(v(Point(x, 0, y)))
+    vertical_right = lambda x, y: abs(v(Point(1, y, x)))
 
     x_m, y_m = meshgrid(linspace(0, 1, num=100), linspace(0, 1, num=100))
     left_vals = array(list(map(vertical_left, x_m.reshape(100 ** 2), y_m.reshape(100 ** 2)))).reshape(100, 100)
@@ -71,6 +71,7 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
     #              spacing='uniform',
     #              orientation='vertical')
     plt.savefig(f'{folder}/{name}.eps', bbox_inches='tight')
+    plt.savefig(f'{folder}/{name}.png', bbox_inches='tight')
 
 
 def print_all_variations(v, name, folder):

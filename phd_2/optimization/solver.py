@@ -105,11 +105,12 @@ class SolveOptimization(SolveBoundary):
     def find_optimal_control(self, iterations=_MAX_ITERATIONS, _lambda=None):
         if _lambda:
             self._lambda = _lambda
-
-        for i in range(iterations):
-            self._gradient_step()
-            diff = self.quality_history[-2] - self.quality_history[-1] if len(self.quality_history) > 1 else 0
-            print(f'Iteration {i},\tquality: {self.quality_history[-1]},\t{diff}')
-            if diff < 0:
-                print('warning')
-        return self.phi_n
+        try:
+            for i in range(iterations):
+                self._gradient_step()
+                diff = self.quality_history[-2] - self.quality_history[-1] if len(self.quality_history) > 1 else 0
+                print(f'Iteration {i},\tquality: {self.quality_history[-1]},\t{diff}')
+                if diff < 0:
+                    print('warning')
+        except KeyboardInterrupt:
+            return self.phi_n
