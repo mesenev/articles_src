@@ -46,7 +46,8 @@
         $P_1$--приближения уравнения переноса излучения.
         Показано, что последовательность решений экстремальных задач
         сходится к решению краевой задачи с условиями типа Коши для температуры.
-        Результаты теоретического анализа проиллюстрированы численными примерами. Библ. 30.
+        Результаты теоретического анализа проиллюстрированы численными примерами.
+        Библ.\ 30.
     \end{quote}
     \textbf{Ключевые слова:} уравнения радиационного теплообмена, диффузионное
     приближение, задача оптимального управления, условия типа Коши.
@@ -366,13 +367,13 @@
         Если $\{\hat{\theta}, \hat{\varphi}, \hat{u}\}$ -- решение
         задачи $(CP)$, то существует единственная пара $\{p_1, p_2 \} \in V\times V$ такая, что
     }
-    \begin{gather*}
+    \begin{gather}
+        \label{eq:as}
         aA\hat{\theta} + b \kappa_a([\hat{\theta}]^4 -\hat{\varphi}) = Br, \;\;
         \alpha A \hat{\varphi} + \kappa_a(\hat{\varphi} - [\hat{\theta}]^4) = B\hat{u},\\
-
         aAp_1 +4|\hat{\theta}|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}), \;\;
         \alpha A p_2 + \kappa_a (p_2 - b p_1) = 0\\
-    \end{gather*}
+    \end{gather}
     \textit{и при этом} $\lambda\hat{u} = p_2.$
 
 
@@ -465,14 +466,12 @@
         \textbf{6. ЧИСЛЕННЫЕ ЭКСПЕРИМЕНТЫ}
     \end{center}
 
-    Представим итерационный алгоритм решения краевой задачи~\eqref{eq1}--\eqref{bc2} управления.
+    Представим итерационный алгоритм решения задачи оптимального управления.
     Пусть $\tilde J_\lambda(u)=J_\lambda(\theta(u), u)$, где $\theta(u)$ компонента решения
-    задачи~\eqref{eq1},\eqref{bc3}, соответствующая управлению $u\in U$.
+    задачи~\eqref{eq1},\eqref{bc2}, соответствующая управлению $u\in U$.
 
     В соответствии с~\eqref{eq:as} градиент функционала $\tilde J_\lambda(u)$ равен
-    \[
-        \tilde J'_\lambda (u) = \lambda u - p_2.
-    \]
+    \[ \tilde J'_\lambda (u) = \lambda u - p_2. \]
     Здесь $p_2$ -- соответствующая компонента сопряженного состояния из системы ~\eqref{eq:as},
     где $\hat{\theta}\coloneqq\theta(u)$.
 
@@ -483,7 +482,7 @@
             \State Выбираем значение градиентного шага $\varepsilon$,
             \State Выбираем количество итераций $N$,
             \State Выбираем начальное приближение для управления $u_0 \in U$,
-            \For{$k \gets 0,1,2,\dots,N$}:
+            \For{$k \gets 0,1,2,\dots,N$}
                 \State Для данного $u_k$ рассчитываем состояние $y_k = \{\theta_k, \varphi_k\}$ --
                 решение задачи~\eqref{eq1},\eqref{bc1}.
                 \State Рассчитываем значение функционала качества $J_\lambda(\theta_k, u_k)$.
@@ -496,113 +495,66 @@
     Значение параметра $\varepsilon$ выбирается эмпирически таким образом, чтобы значение
     $\varepsilon (\lambda u_k - p_2)$ являлось существенной поправкой для $u_{k+1}$.
     Количество итераций $N$ выбирается достаточным для выполнения условия
-    $J_\lambda(\theta_k, u_k) - J_\lambda(\theta_{k+1}, u_{k+1}) < \delta$, где $\delta>0$ определяет точность расчетов.
+    $J_\lambda(\theta_k, u_k) - J_\lambda(\theta_{k+1}, u_{k+1}) < \delta$, где $\delta>0$
+    определяет точность расчетов.
 
     Примеры, рассмотренные ниже, иллюстрируют работоспособность предложенного алгоритма при
-    малых, что важно, значениях параметра регуляризации $\lambda \leq 10^{-12}.$
-    В первом примере приводится сравнение расчетов по
+    малых, что важно, значениях параметра регуляризации $\lambda \leq 10^{-12}$.
+    В первом примере выполнены тестовые расчеты для куба.
+    Во втором примере приводится сравнение расчетов по
     предложенному алгоритму с результатами работы~\cite{CNSNS19}.
-    Во втором примере выполнены тестовые расчеты для куба.
+
+    Отметим, что для численного решения прямой задачи с заданным управлением использовался
+    метод простой итерации для линеаризации задачи и ее решения методом конечных элементов.
+    Решение сопряженной системы, которая является линейной при заданной температуре, не вызывает трудностей.
+    Для численного моделирования использовался солвер FEniCS~\cite{fenics, dolfin}.
+
+    Исходный код экспериментов можно найти по ссылке~\cite{mesenev-github}.
 
     \textbf{Пример 1.}
 
-    Приведем примеры расчетов для куба
-    $\Omega = {(x, y, z), 0 \leq x,y,z \leq l}$.
+    Приведем примеры расчетов для куба $\Omega = {(x, y, z), 0 \leq x,y,z \leq l}$.
     Будем считать, что $l=1~\text{см}$, $a = 0.006[\text{см}^2/\text{c}]$,
-    $b=0.025[\text{см}/\text{с}]$,
-    $\kappa_a=1[\text{см}^{-1}]$, $\alpha = 0.(3)[\text{см}]$.
+    $b=0.025[\text{см}/\text{с}]$, $\kappa_a=1[\text{см}^{-1}]$, $\alpha = 0.(3)[\text{см}]$.
     Указанные параметры соответствуют стеклу~\cite{Grenkin5}.
     Параметр регуляризации $\lambda=10^{-12}.$
 
-    Пусть граничные данные $r$ и $u$ в~\eqref{bc3} имеют вид:
+    Пусть граничные данные $r$ и $u$ в~\eqref{bc1} имеют вид:
     \begin{gather*}
-        r = 0.7,\quad
+        r = 0.7,\\
         u = \hat u = 0.5.
     \end{gather*}
-    Далее рассчитываем состояние $\theta$ и $\varphi$ как решение задачи~\eqref{eq1},\eqref{bc3} и в качестве
-    $\theta_b$ выбираем граничные значение функции $\theta$ на $\Gamma$.
-    Значения нормальной производной $\partial_n\theta$ на $\Gamma$ должны соответствовать
-    значениям $q_b=r/a-\theta_b.$
+    Далее рассчитываем состояние $\theta$ и $\varphi$ как решение
+    задачи~\eqref{eq1},\eqref{bc1} и в качестве $\theta_b$ выбираем
+    граничные значение функции $\theta$ на $\Gamma$.
+    Значения нормальной производной $\partial_n\theta$ на $\Gamma$
+    должны соответствовать значениям $q_b=r/a-\theta_b$.
     Применяя предложенный алгоритм с начальным приближением $u_0 = 0.1$, находим приближенное решение
-    $\{\theta_\lambda,\varphi_\lambda,u_\lambda\}$ задачи (CP)\@.
+    $\{\theta_\lambda, \varphi_\lambda, u_\lambda\}$ задачи (CP).
     Для демонстрации того, что алгоритм находит приближенное решение задачи с данными
     Коши для температуры, важно сравнить значения $\partial_n\theta_\lambda$ на $\Gamma$ с $q_b.$
 
-    На рисунке~\ref{fig:img_test_11_iso} представлен модуль относительного отклонения $\partial_n\theta_\lambda$ от $q_b$
-    на грани куба в плоскости $z=l$, где $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$,
-    а также динамика функционала качества, определяющего норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$.
-    На остальных гранях куба значения относительного отклонения имеют тот же порядок малости.
-    \begin{figure}[H]
-        \centering
-        \subfloat[$|q_n - \partial_n\theta_\lambda|$]
-        { \label{fig:img_test_11} \includegraphics[width=.49\linewidth]{img/exp11/theta_n_diff_iso}
-        }
-        \subfloat[Изменение функционала в зависимости от числа итераций]
-        { \includegraphics[width=.49\linewidth]{img/exp11/quality} }
-        \caption{Результаты первого эксперимента}
-    \end{figure}
-    \begin{figure}[H]
-        \centering
-        \subfloat[$|q_n - \partial_n\theta_\lambda|$]
-        { \label{fig:img_test_11_cube} \includegraphics[width=.49\linewidth]{img/exp11/theta_n_diff_cube}
-        }
-        \subfloat[Изменение функционала в зависимости от числа итераций]
-        { \includegraphics[width=.49\linewidth]{img/exp11/quality} }
-        \caption{Результаты первого эксперимента}
-    \end{figure}
-
-    \textbf{Пример 1. С константными граничными условиями}
-
-    Приведем примеры расчетов для куба
-    $\Omega = {(x, y, z), 0 \leq x,y,z \leq l}$.
-    Будем считать, что $l=1~\text{см}$, $a = 0.006[\text{см}^2/\text{c}]$,
-    $b=0.025[\text{см}/\text{с}]$,
-    $\kappa_a=1[\text{см}^{-1}]$, $\alpha = 0.(3)[\text{см}]$.
-    Указанные параметры соответствуют стеклу~\cite{Grenkin5}.
-    Параметр регуляризации $\lambda=10^{-12}.$
-
-    Пусть граничные данные $r$ и $u$ в~\eqref{bc3} имеют вид:
-    \begin{gather*}
-        r = 0.8 cos(\frac{\pi}{2}x) + 0.1,\quad
-        u = \hat u = 0.5.
-    \end{gather*}
-    Далее рассчитываем состояние $\theta$ и $\varphi$ как решение задачи~\eqref{eq1},\eqref{bc3} и в качестве
-    $\theta_b$ выбираем граничные значение функции $\theta$ на $\Gamma$.
-    Значения нормальной производной $\partial_n\theta$ на $\Gamma$ должны соответствовать
-    значениям $q_b=r/a-\theta_b.$
-    Применяя предложенный алгоритм с начальным приближением $u_0 = 0.1$, находим приближенное решение
-    $\{\theta_\lambda,\varphi_\lambda,u_\lambda\}$ задачи (CP)\@.
-    Для демонстрации того, что алгоритм находит приближенное решение задачи с данными
-    Коши для температуры, важно сравнить значения $\partial_n\theta_\lambda$ на $\Gamma$ с $q_b.$
-
-    На рисунке~\ref{fig:img_test_12_iso} представлен модуль относительного отклонения $\partial_n\theta_\lambda$ от $q_b$
-    на грани куба в плоскости $z=l$, где $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$,
-    а также динамика функционала качества, определяющего норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$.
+    На рисунке~\ref{fig:img_test_1_iso} представлен модуль относительного
+    отклонения $\partial_n\theta_\lambda$ от $q_b$ на грани куба в плоскости $z=l$,
+    где $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$,
+    а также динамика функционала качества, определяющего норму
+    разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$.
     На остальных гранях куба значения относительного отклонения имеют тот же порядок малости.
 
     \begin{figure}[H]
         \centering
         \subfloat[$|q_n - \partial_n\theta_\lambda|$]
-        { \label{fig:img_test_12_iso} \includegraphics[width=.49\linewidth]{img/exp12/theta_n_diff_iso}
-        }
-        \subfloat[Изменение функционала в зависимости от числа итераций]
-        { \includegraphics[width=.49\linewidth]{img/exp12/quality} }
-        \caption{Результаты первого эксперимента}
-    \end{figure}
-    \begin{figure}[H]
-        \centering
-        \subfloat[$|q_n - \partial_n\theta_\lambda|$]
-        { \label{fig:img_test_12_cube} \includegraphics[width=.49\linewidth]{img/exp12/theta_n_diff_cube}
-        }
-        \subfloat[Изменение функционала в зависимости от числа итераций]
-        { \includegraphics[width=.49\linewidth]{img/exp12/quality} }
+        { \label{fig:img_test_1_iso} \includegraphics[width=.47\linewidth]{img/exp1/theta_n_diff_iso} }
+        \subfloat[Изменение функционала качества по итерациям]
+        {\label{fig:quality_1}  \includegraphics[width=.47\linewidth]{img/exp1/quality} }
         \caption{Результаты первого эксперимента}
     \end{figure}
 
     \textbf{Пример 2.}
-    Сравним работу предложенного алгоритма с результатами статьи~\cite{CNSNS19}, где
-    соавтором был один из авторов данной работы.
-    Задача рассматривается в области $\Omega\times (-L,L)$, где $\Omega = \{ x = (x_1,x_2) \colon 0 < x_{1,2} < d\}$
+    Сравним работу предложенного алгоритма с результатами статьи~\cite{CNSNS19},
+    где соавтором был один из авторов данной работы.
+    Задача рассматривается в области $\Omega \times (-L,L)$,
+    где $\Omega = \{ x = (x_1,x_2) \colon 0 < x_{1,2} < d\}$
     и при больших $L$ сводится к двумерной задаче с вычислительной областью $\Omega$.
     Выбраны следующие значения параметров задачи:
     $d = \mathrm{1(m)}$, $a = 0.92~10^{-4}~\mathrm{(m^2/s)}$, $b= 0.19~\mathrm{(m/s)}$,
@@ -613,7 +565,7 @@
     $\theta_b = \widehat{\theta}|_{\Gamma}$, $q_b = \partial_n \widehat{\theta}|_{\Gamma}$, где
     $\widehat{\theta} = (x_1-0.5)^2 - 0.5x_2+0.75$.
 
-    Приближенное решение задачи с данными Коши, представленное в~\cite{CNSNS19} (рис.~\ref{fig2:CNSNS19}),
+    Приближенное решение задачи с данными Коши, представленное в~\cite{CNSNS19}
     получено путем решения эллиптической задачи четвертого
     порядка для температуры методом установления по времени.
     Использовались $H^2$ конформные конечные элементы Богнера-Фокса-Шмитта и
@@ -621,48 +573,34 @@
     Решение стабилизировалось через 120 секунд, но вычисления на каждом временном
     шаге потребовали довольно значительных затрат~\cite{CNSNS19}.
 
-    На рис.~\ref{fig2:theta_auto} представлено температурное поле, полученное
+    На рис.~\ref{fig:theta_auto_2} представлено температурное поле, полученное
     предложенным в данной статье методом, достаточно точно совпадающее с результатом в~\cite{CNSNS19}.
     Величина $\|\partial_n\theta_\lambda-q_b\|_{L^2(\Gamma)}/\|q_b\|_{L^2(\Gamma)}$ равна $~0.000567$.
     Значение функционала качества, определяющего норму разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$,
-    равно $~0.000255$ и стабилизируется после 10 итераций.
-
-    \begin{figure}[H]
-        \label{fig:fig2}
-        \centering
-        \subfloat[Температурное поле на $\Gamma$]
-            {
-            \label{fig2:theta_b}
-            \includegraphics[width=.49\linewidth]{img/exp2/theta_b}
-        }
-        \subfloat[Производная по нормали]
-        {
-            \label{fig2:theta_n}
-            \includegraphics[width=.49\linewidth]{img/exp2/theta_n}
-        }
-        \caption{Графики температурного поля $\theta$}
-    \end{figure}
+    равно $~0.000255$ и стабилизируется после 10 итераций~\ref{fig:quality_2}.
 
     \begin{figure}[H]
         \centering
         \subfloat[Полученное решение $\theta$]
-            {
-            \label{fig2:theta_auto}
-            \includegraphics[width=.49\linewidth]{img/exp2/theta_auto}
-        }
+            { \label{fig:theta_auto_2} \includegraphics[width=.49\linewidth]{img/exp2/theta_auto} }
         \subfloat[Изменение функционала качества]
-        {
-            \label{fig3:quality}
-            \includegraphics[width=.49\linewidth]{img/exp2/quality}
-        }
-        \caption{}
-        \label{fig3}
+        { \label{fig:quality_2} \includegraphics[width=.49\linewidth]{img/exp2/quality} }
+        \caption{Результаты второго эксперимента}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \subfloat[Температурное поле на $\Gamma$]
+            { \label{fig:theta_b} \includegraphics[width=.49\linewidth]{img/exp2/theta_b} }
+        \subfloat[Производная по нормали]
+        { \label{fig:theta_n} \includegraphics[width=.49\linewidth]{img/exp2/theta_n} }
+        \caption{Графики температурного поля $\theta$}
     \end{figure}
 
     Представленные численные примеры иллюстрируют, что предложенный алгоритм успешно справляется
-    с нахождением численного решения задачи~\eqref{eq1}-\eqref{bc2}.
+    с нахождением численного решения задачи~\eqref{eq1}-\eqref{bc1}.
 
-    Исходный программный код экспериментов можно найти по ссылке~\cite{mesenev-github}.
+
 
     \begin{thebibliography}{999}
 
@@ -808,6 +746,17 @@
 
         \bibitem{11} A.D.~Ioffe, V.M.~Tikhomirov, Theory of Extremal
         Problems, North-Holland, Amsterdam, 1979.
+
+        \bibitem{fenics} M. S. Alnaes, J. Blechta, J. Hake, A. Johansson,
+        B. Kehlet, A. Logg, C. Richardson, J. Ring, M. E. Rognes, G. N. Wells
+        The FEniCS Project Version 1.5
+        Archive of Numerical Software, vol. 3, 2015,
+
+        \bibitem{dolfin} A. Logg and G. N. Wells, DOLFIN: Automated Finite Element Computing
+        ACM Transactions on Mathematical Software, vol. 37, 2010
+
+
+        \bibitem{mesenev-github} \url{https://github.com/mesenev/articles_src}
 
     \end{thebibliography}
 
