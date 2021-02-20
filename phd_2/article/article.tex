@@ -41,13 +41,15 @@
     \sloppy
     \begin{quote}
         \small
-        Исследована стационарная задача оптимального управления для уравнений
-        радиационно-кондуктивного теплообмена в трехмерной области в рамках $P_1$--приближения уравнения
-        переноса излучения.
-        Показано, что последовательность решений экстремальных задач
+        Исследована стационарная задача оптимального управления для
+        уравнений
+        радиационно-кондуктивного теплообмена в трехмерной
+        области в рамках $P_1$--приближения уравнения
+        переноса излучения. Показано, что
+        последовательность решений
+        экстремальных задач
         сходится к решению краевой задачи с условиями типа Коши для температуры.
-        Результаты теоретического анализа проиллюстрированы численными примерами.
-        Библ. 30.
+        Результаты теоретического анализа проиллюстрированы численными примерами. Библ. 30.
     \end{quote}
     {\bf Ключевые слова:} уравнения радиационного теплообмена, диффузионное
     приближение, задача оптимального управления, условия типа Коши.
@@ -59,32 +61,30 @@
     Стационарный радиационный и диффузионный теплообмен в
     ограниченной области $\Omega\subset \mathbb{R}^3$ с границей
     $\Gamma=\partial\Omega$ моделируется в рамках $P_1$--приближения для уравнения
-    переноса излучения следующей краевой задачей~\cite{Modest,Kovt}:
+    переноса излучения следующей
+    краевой задачей \cite{Modest,Kovt}:
     \begin{equation}
-        \label{eq1}
-        - a\Delta\theta + b\kappa_a(|\theta|\theta^3- \varphi)=0,\quad
-        -\alpha \Delta \varphi + \kappa_a(\varphi-|\theta|\theta^3)=0,\; x\in\Omega.
+        \label{eq1}  - a\Delta\theta + b\kappa_a(|\theta|\theta^3- \varphi)=0,\quad
+        -\alpha \Delta \varphi +
+        \kappa_a(\varphi-|\theta|\theta^3)=0,\; x\in\Omega.
     \end{equation}
     \begin{equation}
-        \label{bc1}
-        a(\partial_n\theta+\theta) = r,\;\;
-        \alpha(\partial_n\varphi+\varphi) = u \text{  на  }\Gamma.
+        \label{bc1} a(\partial_n\theta+\theta) = r,\;\; \alpha(\partial_n\varphi+\varphi) = u \text{  на  }\Gamma.
     \end{equation}
     Здесь $\theta$ -- нормализованная температура, $\varphi$ --
-    нормализованная интенсивность излучения, усредненная по всем направлениям.
+    нормализованная интенсивность излучения, усредненная по всем
+    направлениям.
     Положительные физические параметры $a$, $b$, $\kappa_a$ и $\alpha$, описывающие
-    свойства среды, определяются стандартным образом~\cite{Kovt}.
+    свойства среды, определяются стандартным образом \cite{Kovt}.
     Функция $r(x),\, x\in\Gamma$ является заданной, а неизвестная функция $u(x),\, x\in\Gamma$
-    играет роль управления.
-    Через $\partial_n$ обозначаем производную в направлении
+    играет роль управления. Через $\partial_n$ обозначаем производную в направлении
     внешней нормали $\mathbf n$.
 
     Экстремальная задача заключается в отыскании тройки $\{\theta_\lambda,\varphi_\lambda,u_\lambda\}$
     такой, что
     \begin{equation}
         \label{cost}
-        J_\lambda(\theta, u) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^2d\Gamma +
-        \frac{\lambda}{2}\int\limits_\Gamma u^2d\Gamma \rightarrow\inf
+        J_\lambda(\theta, u) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^2d\Gamma + \frac{\lambda}{2}\int\limits_\Gamma u^2d\Gamma \rightarrow\inf
     \end{equation}
     на решениях краевой задачи (\ref{eq1}),(\ref{bc1}).
     Функция $\theta_b(x),\, x\in\Gamma$  и параметр регуляризации $\lambda>0$ заданы.
@@ -101,17 +101,17 @@
     \end{equation}
 
 
-    В статьях~\cite{Pinnau07}--\cite{JMAA-19} представлен анализ
+    В статьях \cite{Pinnau07}--\cite{JMAA-19} представлен анализ
     краевых и обратных задач, а также задач управления
     для уравнений радиационного теплообмена
     в рамках $P_1$--приближения для уравнения
-    переноса излучения.
-    Различные краевые задачи, связанных с радиационным теплообменом
-    изучены в~\cite{AmosA05}--\cite{Amosov18}.
+    переноса излучения. Различные краевые задачи, связанных с радиационным теплообменом
+    изучены в \cite{AmosA05}--\cite{Amosov18}.
     Нелокальная разрешимость
     нестационарной и стационарной краевых задач для уравнений сложного теплообмена
     без краевых условий на интенсивность излучения и
-    с условиями (\ref{bc2}) для температуры доказана в~\cite{CNSNS19},\cite{CMMP20}.
+    с условиями (\ref{bc2}) для температуры доказана в
+    \cite{CNSNS19},\cite{CMMP20}.
 
 
     Основные результаты работы состоят в получении априорных оценок
@@ -134,10 +134,8 @@
     гладких кусков.
     Через $L^p$, $1 \leq p \leq \infty$ обозначаем
     пространство Лебега, а через $H^s$ -- пространство Соболева
-    $W^s_2$.
-    Пусть $H = L^2(\Omega), \; V = H^1(\Omega)$, через $V'$ обозначаем
-    пространство, сопряженное с пространством $V$.
-    Пространство $H$
+    $W^s_2$. Пусть $H = L^2(\Omega), \; V = H^1(\Omega)$, через $V'$ обозначаем
+    пространство, сопряженное с пространством $V$. Пространство $H$
     отождествляем с пространством $H'$, так что $V \subset H = H'
     \subset V'$.
     Обозначим через $\|\cdot\|$ стандартную норму
@@ -166,8 +164,7 @@
     $$
     Билинейная форма $(Ay,z)$ определяет скалярное произведение
     в пространстве $V$, а соответствующая норма $\|z\|_V=\sqrt{(Az,z)}$ эквивалентна
-    стандартной норме $V$.
-    Поэтому определен непрерывный обратный оператор
+    стандартной норме $V$. Поэтому определен непрерывный обратный оператор
     $A^{-1}:\,V'\mapsto V.$ Отметим справедливость, для любых
     $v\in V$, $w\in U$, $g\in V'$,
     следующих неравенств
@@ -247,14 +244,11 @@
     \end{equation}
     Здесь $$g = Br + \frac{\kappa_a}{\alpha}A^{-1}B(r+bu) \in V'.$$
     Однозначная разрешимость уравнения~\eqref{lemma-1-1} с монотонной нелинейностью
-    хорошо известна (см.
-    например~\cite{Kufner}).
-    Следовательно задача (\ref{w1})
+    хорошо известна (см. например \cite{Kufner}). Следовательно задача (\ref{w1})
     однозначно разрешима.
 
     Для получения оценок (\ref{E1}) умножим скалярно~\eqref{lemma-1-1} на $\theta \in V$ и отбросим неотрицательные
-    слагаемые в левой части.
-    Тогда
+    слагаемые в левой части. Тогда
     $$
     a \|\theta\|^2_V \leq (g, \theta) \leq \|g\|_{V'}\|\theta\|_V,
     \quad a\|\theta\|_V \leq \|g\|_{V'}.
@@ -264,7 +258,7 @@
     \|g\|_{V'} \leq \|r\|_\Gamma + \frac{C_0\kappa_a}{\alpha}\|r + bu\|_\Gamma, \quad
     \|\varphi\|_V \leq \frac{1}{\alpha b} \|r + bu\|_\Gamma + \frac{a}{\alpha b} \|\theta\|_V.
     $$
-    В результате получаем оценки~\eqref{E1}.
+    В результате получаем оценки \eqref{E1}.
 
     \textbf{Теорема 1.}
     {\it
@@ -305,9 +299,8 @@
         \leq 2 \| \theta_m - \hat{\theta}\|_{L^4(\Omega)} \|v\|_{L^4(\Omega)}
         \left( \| \theta_m \|^3_{L_6(\Omega)} + \| \hat{\theta} \|^3_{L_6(\Omega)}\right).
     \end{equation}
-    Результаты о сходимости~\eqref{L},\eqref{L1} позволяют перейти
-    к пределу в~\eqref{MS}.
-    Поэтому
+    Результаты о сходимости \eqref{L},\eqref{L1} позволяют перейти
+    к пределу в~\eqref{MS}. Поэтому
     \[
         a A \hat{\theta} + b \kappa_a ([\hat{\theta}]^4 - \hat{\varphi} = Br), \;
         \alpha A \hat{\varphi} + \kappa_a (\hat{\varphi} -[\hat{\theta}]^4) = B \hat{u},
@@ -326,7 +319,7 @@
     \end{center}
 
     Для получения системы оптимальности достаточно использовать
-    принцип Лагранжа для гладко-выпуклых экстремальных задач~\cite{10,11}.
+    принцип Лагранжа для гладко-выпуклых экстремальных задач \cite{10,11}.
     Проверим справедливость ключевого условия, что образ производной
     оператора ограничений $F(y, u)$, где $y=\{\theta,\varphi\}\in V\times V$,
     совпадает с пространством $V'\times V'.$ Именно это условие гарантирует
@@ -357,8 +350,7 @@
     +\frac{\kappa_a}{\alpha}f_3, ;\ \;
     \eta =\frac{1}{\alpha b}( f_3-a\xi).
     $$
-    Здесь $f_3=A^{-1}(f_1+bf_2)\in V.$ Разрешимость первого уравнения указанной системы очевидным образом следует из
-    леммы Лакса-Мильграма.
+    Здесь $f_3=A^{-1}(f_1+bf_2)\in V.$ Разрешимость первого уравнения указанной системы очевидным образом следует из леммы Лакса-Мильграма.
 
 
     В соответствии с леммой 2, лагранжиан задачи $(CP)$ имеет вид
@@ -369,7 +361,7 @@
     $$
     Здесь $p=\{p_1,p_2\}\in V\times V$ -- сопряженное состояние.
     Если $\{\hat{\theta}, \hat{\varphi}, \hat{u} \}$ -- решение задачи $(CP)$, то
-    в силу принципа Лагранжа~\cite[Теорема 1.5]{10} справедливы вариационные равенства
+    в силу принципа Лагранжа \cite[Теорема 1.5]{10} справедливы вариационные равенства
     $\forall v\in V,\, w\in U$
     \begin{equation}
         \label{OC1}
@@ -381,7 +373,7 @@
         \label{OC2}
         \lambda(\hat{u},w)_\Gamma - (Bw, p_2) = 0.
     \end{equation}
-    Таким образом, из условий~\eqref{OC1},\eqref{OC2}
+    Таким образом, из условий \eqref{OC1},\eqref{OC2}
     получаем следующий результат
 
     \textbf{Теорема 2.}
@@ -390,12 +382,15 @@
         {\it  Если $\{\hat{\theta}, \hat{\varphi}, \hat{u}\}$ -- решение
     задачи $(CP)$, то существует единственная пара $\{p_1, p_2 \} \in V\times V$
         такая, что}
-    \begin{equation}
-        \label{eq:as}
-        aAp_1 +4|\hat{\theta}|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}), \;\;
-        \alpha A p_2 + \kappa_a (p_2 - b p_1)=0
-    \end{equation}
-    {\it и при этом} $\lambda\hat{u} = p_2.$
+    $$
+    aA\hat{\theta} + b \kappa_a([\hat{\theta}]^4 -\hat{\varphi}) = Br, \;\;
+    \alpha A \hat{\varphi} + \kappa_a(\hat{\varphi} - [\hat{\theta}]^4) = B\hat{u},
+    $$
+    $$
+    aAp_1 +4|\hat{\theta}|^3 \kappa_a(bp_1 - p_2) = B(\theta_b - \hat{\theta}), \;\;
+    \alpha A p_2 + \kappa_a (p_2 - b p_1) = 0
+    $$
+        {\it и при этом} $\lambda\hat{u} = p_2.$
 
 
 
@@ -415,59 +410,57 @@
     \begin{equation}
         \label{bc11} \theta=\theta_b,\quad \partial_n\theta = q_b \text{  на  }\Gamma.
     \end{equation}
-    Существование $\theta,\varphi\in H^2(\Omega)$, удовлетворяющих~\eqref{eq11},\eqref{bc11}
+    Существование $\theta,\varphi\in H^2(\Omega)$, удовлетворяющих \eqref{eq11},\eqref{bc11}
     для достаточно гладких
     $\theta_b,\, q_b$ и достаточные условия единственности решения
-    установлены в~\cite{CMMP20}.
-    Покажем, что решения задачи $(CP)$ при $\lambda\to+0$
-    аппроксимируют решение задачи~\eqref{eq11},\eqref{bc11}.
+    установлены в \cite{CMMP20}. Покажем, что решения задачи $(CP)$ при $\lambda\to+0$
+    аппроксимируют решение задачи \eqref{eq11},\eqref{bc11}.
 
 
     \textbf{Теорема 3.}
     {\it
-    Пусть выполняются условия} (i),(ii) {\it и существует решение задачи~\eqref{eq11},\eqref{bc11}.}
+    Пусть выполняются условия} (i),(ii) {\it и существует решение задачи \eqref{eq11},\eqref{bc11}.}
         {\it  Если $\{\theta_\lambda,\varphi_\lambda,u_\lambda\}$ -- решение
     задачи $(CP)$ для $\lambda>0$, то существует последовательность
         $\lambda\to +0$
         такая, что}
-    $$
-    \theta_\lambda\rightarrow\theta_*, \;\; \varphi_\lambda\rightarrow\varphi_*
-    \text{ слабо в }V,\text{ сильно в }H,
-    $$
-        {\it где $\theta_*,\varphi_*$ -- решение задачи~\eqref{eq11},\eqref{bc11}.}
+    \[
+        \theta_\lambda\rightarrow\theta_*, \;\; \varphi_\lambda\rightarrow\varphi_*
+        \text{ слабо в }V,\text{ сильно в }H,
+    \]
+        {\it где $\theta_*,\varphi_*$ -- решение задачи \eqref{eq11},\eqref{bc11}.}
 
         {\bf Доказательство.}
-    Пусть $\theta,\varphi\in H^2(\Omega)$ -- решение задачи~\eqref{eq11},\eqref{bc11},
+    Пусть $\theta,\varphi\in H^2(\Omega)$ -- решение задачи \eqref{eq11},\eqref{bc11},
     $u=\alpha(\partial_n\varphi+\varphi)\in U.$ Тогда
-    $$
-    a A \theta + b \kappa_a ([\theta]^4 - \varphi ) = Br,\quad
-    \alpha A \varphi + \kappa_a (\varphi - [\theta]^4)  = Bu,
-    $$
+    \[
+        a A \theta + b \kappa_a ([\theta]^4 - \varphi ) = Br,\quad
+        \alpha A \varphi + \kappa_a (\varphi - [\theta]^4)  = Bu,
+    \]
     где $r:=a(\theta_b+q_b).$ Поэтому, с учетом того, что $\theta|_\Gamma=\theta_b$,
-    $$
-    J_\lambda(\theta_\lambda, u_\lambda) = \frac{1}{2}\|\theta_\lambda -\theta_b\|^2_\Gamma
-    + \frac{\lambda}{2}\|u_\lambda\|^2_\Gamma\leq J_\lambda(\theta, u)=\frac{\lambda}{2}\|u\|^2_\Gamma.
-    $$
+    \[
+        J_\lambda(\theta_\lambda, u_\lambda) = \frac{1}{2}\|\theta_\lambda -\theta_b\|^2_\Gamma
+        + \frac{\lambda}{2}\|u_\lambda\|^2_\Gamma\leq J_\lambda(\theta, u)=\frac{\lambda}{2}\|u\|^2_\Gamma.
+    \]
     Следовательно,
-    $$
-    \|u_\lambda\|^2_\Gamma\leq C,\;\; \|\theta_\lambda -\theta_b\|^2_\Gamma\to 0,\; \lambda\to +0.
-    $$
+    \[
+        \|u_\lambda\|^2_\Gamma\leq C,\;\; \|\theta_\lambda -\theta_b\|^2_\Gamma\to 0,\; \lambda\to +0.
+    \]
     Здесь и далее $C>0$ не зависит от $\lambda.$
     Из ограниченности последовательности $u_\lambda$ в пространстве $U$ следуют, на основании
     леммы 1, оценки
-    $$
-    \|\theta_\lambda\|_V \leq C,\;\;
-    \|\varphi\|_\lambda \leq C.
-    $$
+    \[
+        \|\theta_\lambda\|_V \leq C,\;\;
+        \|\varphi\|_\lambda \leq C.
+    \]
     Поэтому можно выбрать последовательность $\lambda\to+0$ такую, что
     \begin{equation}
         \label{LL}
         u_\lambda \rightarrow u_* \text{  слабо в } U, \;\;
-        \theta_\lambda, \varphi_\lambda \rightarrow \theta_*,\varphi_* \text{
-            слабо в } V, \text{
-            сильно в } L^4(\Omega).
+        \theta_\lambda, \varphi_\lambda \rightarrow \theta_*,\varphi_*
+        \text{ слабо в } V, \text{ сильно в } L^4(\Omega).
     \end{equation}
-    Результаты~\eqref{LL} позволяют перейти к пределу при $\lambda\to+0$
+    Результаты \eqref{LL} позволяют перейти к пределу при $\lambda\to+0$
     в уравнениях для $\theta_\lambda,\varphi_\lambda,u_\lambda$ и тогда
     \begin{equation}
         \label{CC}
@@ -475,18 +468,14 @@
         \alpha A \varphi_* + \kappa_a (\varphi_* - [\theta_*]^4)  = Bu_*.
     \end{equation}
     При этом $\theta_*|_\Gamma=\theta_b.$
-    Из первого уравнения в~\eqref{CC}, с учетом, что $r=a(\theta_b+q_b)$,
+    Из первого уравнения в \eqref{CC}, с учетом, что $r=a(\theta_b+q_b)$,
     выводим
-    $$
-    - a\Delta\theta_* + b\kappa_a([\theta_*]^4- \varphi_*)=0 \text{ п.в. в }\Omega,\quad \theta_*=\theta_b,\quad
-    \partial_n\theta = q_b \text{ п.в. на  }\Gamma.
-    $$
+    \[
+        - a\Delta\theta_* + b\kappa_a([\theta_*]^4- \varphi_*)=0 \text{ п.в. в }\Omega,\quad \theta_*=\theta_b,\quad \partial_n\theta = q_b \text{ п.в. на  }\Gamma.
+    \]
     Из второго уравнения в~\eqref{CC} следует, что $-\alpha \Delta \varphi +
     \kappa_a(\varphi-[\theta]^4)=0$ почти всюду в $\Omega.$ Таким образом,
     пара $\theta_*,\varphi_*$ -- решение задачи~\eqref{eq11},\eqref{bc11}.
-
-
-
 
     \begin{center}
         \textbf{6. ЧИСЛЕННЫЕ ЭКСПЕРИМЕНТЫ}
@@ -658,14 +647,14 @@
         \label{fig:fig2}
         \centering
         \subfloat[Температурное поле на $\Gamma$]
-        {
-        \label{fig2:theta_b}
-        \includegraphics[width=.49\linewidth]{img/exp2/theta_b}
+            {
+            \label{fig2:theta_b}
+            \includegraphics[width=.49\linewidth]{img/exp2/theta_b}
         }
         \subfloat[Производная по нормали]
         {
-        \label{fig2:theta_n}
-        \includegraphics[width=.49\linewidth]{img/exp2/theta_n}
+            \label{fig2:theta_n}
+            \includegraphics[width=.49\linewidth]{img/exp2/theta_n}
         }
         \caption{Графики температурного поля $\theta$}
     \end{figure}
@@ -673,14 +662,14 @@
     \begin{figure}[H]
         \centering
         \subfloat[Полученное решение $\theta$]
-        {
-        \label{fig2:theta_auto}
-        \includegraphics[width=.49\linewidth]{img/exp2/theta_auto}
+            {
+            \label{fig2:theta_auto}
+            \includegraphics[width=.49\linewidth]{img/exp2/theta_auto}
         }
         \subfloat[Изменение функционала качества]
         {
-        \label{fig3:quality}
-        \includegraphics[width=.49\linewidth]{img/exp2/quality}
+            \label{fig3:quality}
+            \includegraphics[width=.49\linewidth]{img/exp2/quality}
         }
         \caption{}
         \label{fig3}
