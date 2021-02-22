@@ -138,7 +138,7 @@ def get_normal_derivative(function):
 
 
 def normal_for_cube_mesh():
-    mesh = UnitCubeMesh(12, 12, 12)
+    mesh = UnitCubeMesh(40, 40, 40)
     n = FacetNormal(mesh)
     V = VectorFunctionSpace(mesh, "CG", 1)
     u = TrialFunction(V)

@@ -13,4 +13,3 @@ theta_n_diff = project(abs(project(
     project(get_normal_derivative_3d(theta), problem.simple_space) - theta_n, problem.simple_space
 )))
 print_3d_boundaries_on_cube(theta_n_diff, name='theta_n_diff_abs', folder='exp1')
-print_2d_isolines()
