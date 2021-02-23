@@ -1,4 +1,4 @@
-from phd_2.optimization.solver import SolveOptimization, SolveBoundary
+from phd_2.optimization.solver import SolveOptimization
 from utilities import *
 
 folder = 'exp1'
@@ -14,6 +14,7 @@ problem.solve_boundary()
 print('Setting up optimization problem')
 problem.theta_b = Expression('t', degree=3, t=interpolate(problem.state.split()[0], problem.simple_space))
 File(f'{folder}/theta_b.xml') << project(problem.theta_b, problem.simple_space)
+theta_n = project(get_normal_derivative_3d(problem.state.split()[0]), problem.simple_space)
 problem.phi_n = Constant(0.1)
 answer = problem.solve_boundary().split()
 print('Boundary init problem is set. Working on setting optimization problem.')
@@ -21,7 +22,6 @@ print('Boundary init problem is set. Working on setting optimization problem.')
 print('Launching iterations')
 problem.find_optimal_control(iterations=1 * 10 ** 3, _lambda=1000)
 
-theta_n = Expression('r/a - tb', r=r_default, a=problem.a, tb=problem.theta_b, degree=3)
 print_3d_boundaries_on_cube(theta_n, name='theta_n', folder=folder)
 theta = problem.state.split()[0]
 theta_n_final = project(get_normal_derivative_3d(theta), problem.simple_space)
