@@ -3,13 +3,11 @@ import codecs
 import json
 
 from dolfin import *
-
-from utilities.utils import get_trace, Point, UnitSquareMesh, vectorize
-from utilities.defaults import default_colormap
-from utilities.drawingsimple import print_simple_graphic
-
 from matplotlib import patches, pyplot as plt
 
+from utilities.defaults import default_colormap
+from utilities.drawingsimple import print_simple_graphic
+from utilities.utils import get_trace, Point, UnitSquareMesh, vectorize
 
 points_2d = [Point(0, 0.5), Point(0.5, 1), Point(1, 0.5), Point(0.5, 0)]
 
@@ -91,8 +89,10 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
     # ax.clabel(a, a.levels, fontsize=9, inline=True, fmt=fmt)
     ax.clabel(a, a.levels, fontsize=9, inline=True)
     ax.set_aspect('equal')
-    # ax.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
-    # ax.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    ax.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    ax.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
+    plt.xlabel('$x_1$')
+    plt.ylabel('$x_2$')
     extra2 = patches.Patch(color='none', label=f'Максимальное значение: {Z.max()}')
     extra1 = patches.Patch(color='none', label=f'Минимальное значение: {Z.min()}')
     plt.legend([extra1, extra2], [extra1.get_label(), extra2.get_label()], prop={'size': 10})

@@ -42,7 +42,7 @@ print_2d_boundaries(problem.phi_n, name='phi_n_0', folder=folder, terminal_only=
 print('Boundary init problem is set. Working on setting optimization problem.')
 
 print('Launching iterations')
-problem.find_optimal_control(iterations=1 * 10 ** 1, _lambda=20)
+problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=20)
 
 theta_100 = problem.state.split()[0]
 print_2d_boundaries(
