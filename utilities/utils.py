@@ -36,7 +36,7 @@ def get_trace(v, steps=100):
 def function2d_dumper(v, folder, name):
     import numpy as np
     import codecs, json
-    x, y = np.meshgrid(np.arange(0, 1.0, 0.01), np.arange(0, 1.0, 0.01))
+    x, y = np.meshgrid(np.arange(0, 1.0, 0.02), np.arange(0, 1.0, 0.02))
     answer = vectorize(lambda _, __: v(Point(_, __)))(x, y)
     json.dump(
         answer.tolist(), codecs.open(f"{folder}/{name}", 'w', encoding='utf-8'),
@@ -158,12 +158,9 @@ def normal_for_cube_mesh():
 normal_function_3d = []
 
 
-def get_normal_derivative_3d(function):
+def get_normal_derivative_3d(function, f_space, v_space):
     if not normal_function_3d:
         normal_function.append(normal_for_cube_mesh())
     normal = normal_function[0]
-    mesh = UnitCubeMesh(12, 12, 12)
-    f = FunctionSpace(mesh, "CG", 1)
-    function = interpolate(function, f)
-    V = VectorFunctionSpace(mesh, "CG", 1)
-    return project(inner(normal, project(grad(project(function, f)), V)), f)
+    function = interpolate(function, f_space)
+    return project(inner(normal, project(grad(function), v_space)), f_space)

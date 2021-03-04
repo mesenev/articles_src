@@ -96,11 +96,11 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
     extra1 = patches.Patch(color='none', label=f'Минимальное значение: {Z.min()}')
     plt.legend([extra1, extra2], [extra1.get_label(), extra2.get_label()], prop={'size': 10})
 
-    fig.savefig(f'{folder}/{name}_equal.png', bbox_inches='tight')
-    fig.savefig(f'{folder}/{name}_equal.svg', bbox_inches='tight')
+    # fig.savefig(f'{folder}/{name}_equal.png', bbox_inches='tight')
+    # fig.savefig(f'{folder}/{name}_equal.eps', bbox_inches='tight')
     ax.set_aspect('auto')
-    fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
-    fig.savefig(f'{folder}/{name}_auto.svg', bbox_inches='tight')
+    # fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
+    fig.savefig(f'{folder}/{name}_auto.eps', bbox_inches='tight')
 
 
 def print_two_with_colorbar(v1, v2, name, folder='results'):

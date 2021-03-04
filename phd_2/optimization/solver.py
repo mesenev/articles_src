@@ -30,7 +30,8 @@ class SolveBoundary(DefaultValues3D):
         phi_src = self.phi_n * self.h * ds
         solve(
             theta_equation + phi_equation - theta_src - phi_src == 0, self.state,
-            form_compiler_parameters={"optimize": True, 'quadrature_degree': 3}
+            form_compiler_parameters={"optimize": True, 'quadrature_degree': 3},
+            solver_parameters={"newton_solver": {"linear_solver": "mumps"}}
         )
         return self.state
 

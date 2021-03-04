@@ -70,8 +70,8 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
     #              extendfrac='auto',
     #              spacing='uniform',
     #              orientation='vertical')
-    plt.savefig(f'{folder}/{name}.eps', bbox_inches='tight')
-    plt.savefig(f'{folder}/{name}.png', bbox_inches='tight')
+    plt.savefig(f'{folder}/{name}.svg', bbox_inches='tight')
+    # plt.savefig(f'{folder}/{name}.png', bbox_inches='tight')
 
 
 def print_all_variations(v, name, folder):

@@ -4,7 +4,7 @@ from abc import ABC
 from dolfin import (
     FunctionSpace, Function, split, TestFunctions, FiniteElement,
     Expression, FacetNormal, project, VectorFunctionSpace, Constant,
-    UnitCubeMesh, grad, dot, BoundaryMesh, UserExpression
+    UnitCubeMesh, grad, dot, BoundaryMesh, UserExpression, interpolate
 )
 from dolfin.cpp.common import DOLFIN_EPS
 
@@ -28,15 +28,15 @@ theta_b_3d = Expression('x[2]*0.1+0.3', degree=3)
 
 
 class DefaultValues3D:
-    omega = UnitCubeMesh(16, 16, 16)
+    omega = UnitCubeMesh(25, 25, 25)
     omega_b = BoundaryMesh(omega, 'exterior')
-    finite_element = FiniteElement("Lagrange", omega.ufl_cell(), 2)
+    finite_element = FiniteElement("CG", omega.ufl_cell(), 1)
 
     state_space = FunctionSpace(omega, finite_element * finite_element)
     simple_space = FunctionSpace(omega, finite_element)
-    boundary_vector_space = VectorFunctionSpace(omega_b, 'Lagrange', 3)
-    vector_space = VectorFunctionSpace(omega, 'Lagrange', 3)
-    boundary_simple_space = FunctionSpace(omega_b, 'Lagrange', 1)
+    boundary_vector_space = VectorFunctionSpace(omega_b, 'CG', 1)
+    vector_space = VectorFunctionSpace(omega, 'CG', 1)
+    boundary_simple_space = FunctionSpace(omega_b, 'CG', 1)
 
     v, h = TestFunctions(state_space)
     state = Function(state_space)
@@ -57,14 +57,15 @@ class DefaultValues3D:
             setattr(self, key, val)
 
     def recalculate_r(self):
-        self._r = project(
-            Expression(
-                'a * (theta_n + theta_b)',
-                degree=3,
-                a=self.a, theta_n=self.theta_n,
-                beta=self.beta, theta_b=self.theta_b
-            ),
-            self.simple_space)
+        # self._r = interpolate(
+        #     Expression(
+        #         'a * (theta_n + theta_b)',
+        #         degree=3,
+        #         a=self.a, theta_n=self.theta_n,
+        #         beta=self.beta, theta_b=self.theta_b
+        #     ),
+        #     self.simple_space)
+        pass
 
 
 _n_3d = FacetNormal(DefaultValues3D.omega)
