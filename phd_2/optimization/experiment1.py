@@ -3,7 +3,7 @@ from utilities import *
 
 folder = 'exp1'
 
-clear_dir(folder)
+# clear_dir(folder)
 print('Experiment one in a run')
 
 problem = SolveOptimization()
@@ -15,27 +15,28 @@ print('Setting up optimization problem')
 problem.theta_b = Expression('t', degree=3, t=interpolate(problem.state.split()[0], problem.simple_space))
 File(f'{folder}/theta_b.xml') << project(problem.theta_b, problem.simple_space)
 theta_n = project(get_normal_derivative_3d(problem.state.split()[0]), problem.simple_space)
+f = File(f'{folder}/theta_n.xml')
+f << theta_n
 problem.phi_n = Constant(0.1)
 answer = problem.solve_boundary().split()
 print('Boundary init problem is set. Working on setting optimization problem.')
 
 print('Launching iterations')
-problem.find_optimal_control(iterations=1 * 10 ** 3, _lambda=1000)
+iterator = problem.find_optimal_control(iterations=1 * 10 ** 2, _lambda=1000)
 
-print_3d_boundaries_on_cube(theta_n, name='theta_n', folder=folder)
-theta = problem.state.split()[0]
-theta_n_final = project(get_normal_derivative_3d(theta), problem.simple_space)
-theta_n_diff = project(abs(theta_n_final - theta_n) / abs(theta_n), problem.simple_space)
-print_3d_boundaries_on_cube(theta_n_diff, name='theta_n_diff_abs', folder='exp1')
-to_print = function2d_dumper(
-    lambda p: abs(theta_n_diff(Point(p[0], p[1], 1))),
-    folder=folder, name='theta_n_diff'
-)
-print_2d_isolines(to_print, 'theta_n_diff_iso', folder=folder, table=True)
-print_3d_boundaries_on_cube(theta_n_diff, name='theta_n_diff', folder=folder)
-print_3d_boundaries_on_cube(problem.phi_n, name='phi_n_final', folder=folder)
-print_2d(to_print, folder=folder, name='theta_n_diff', table=True)
-draw_simple_graphic(problem.quality_history, 'quality', folder=folder)
-f = File(f'{folder}/solution.xml')
+for i in range(9):
+    next(iterator)
+f = File(f'{folder}/solution_10.xml')
 f << problem.state
-print('ggwp all done!')
+for i in range(90):
+    next(iterator)
+f = File(f'{folder}/solution_100.xml')
+f << problem.state
+
+for i in range(101, 1001):
+    next(iterator)
+    if i % 100:
+        f = File(f'{folder}/solution_{i}.xml')
+        f << problem.state
+f = File(f'{folder}/solution_final.xml')
+f << problem.state

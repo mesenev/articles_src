@@ -59,7 +59,7 @@ def print_2d(v, name='function', folder='results', colormap=default_colormap, ta
     plt.savefig(f'{folder}/{name}.png')
 
 
-def print_2d_isolines(v, name='function', folder='results', precision=0.01, table=False):
+def print_2d_isolines(v, name='function', folder='results', precision=0.01, table=False, levels=None):
     if table:
         Z = v
     else:
@@ -81,13 +81,12 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
     #     0.9,
     # ]
     # a = ax.contour(Z, levels=levels, colors='k', linewidths=0.4, extent=[0, 100, 0, 100])
-    a = ax.contour(Z, colors='k', linewidths=0.4, extent=[0, 100, 0, 100])
-    fmt = {}
-    # for l in levels:
-    #     fmt[l] = str(l)[:4]
-
-    # ax.clabel(a, a.levels, fontsize=9, inline=True, fmt=fmt)
-    ax.clabel(a, a.levels, fontsize=9, inline=True)
+    if not levels:
+        a = ax.contour(Z, colors='k', linewidths=0.4, extent=[0, 100, 0, 100])
+        ax.clabel(a, a.levels, fontsize=9, inline=True)
+    if levels:
+        a = ax.contour(Z, colors='k', linewidths=0.4, extent=[0, 100, 0, 100], levels=levels)
+        ax.clabel(a, a.levels, fontsize=9, inline=True, fmt={_: str(_)[:4] for _ in levels})
     ax.set_aspect('equal')
     ax.axes.xaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
     ax.axes.yaxis.set_ticklabels(['0', '0.2', '0.4', '0.6', '0.8', '1'])
@@ -98,10 +97,10 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
     plt.legend([extra1, extra2], [extra1.get_label(), extra2.get_label()], prop={'size': 10})
 
     fig.savefig(f'{folder}/{name}_equal.png', bbox_inches='tight')
-    fig.savefig(f'{folder}/{name}_equal.eps', bbox_inches='tight')
+    fig.savefig(f'{folder}/{name}_equal.svg', bbox_inches='tight')
     ax.set_aspect('auto')
     fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
-    fig.savefig(f'{folder}/{name}_auto.eps', bbox_inches='tight')
+    fig.savefig(f'{folder}/{name}_auto.svg', bbox_inches='tight')
 
 
 def print_two_with_colorbar(v1, v2, name, folder='results'):

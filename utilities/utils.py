@@ -152,7 +152,6 @@ def normal_for_cube_mesh():
     nh = Function(V)
 
     solve(A, nh.vector(), L)
-    File("nh.xml") << nh
     return nh
 
 
