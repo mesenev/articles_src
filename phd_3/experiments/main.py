@@ -42,10 +42,11 @@ def experiment_1(folder='exp1'):
     )).solve_boundary()
     print_3d_boundaries_on_cube(new[0], name=f'theta_new', folder=folder)
     print_3d_boundaries_on_cube(new[1], name=f'psi_new', folder=folder)
-    # p = problem.find_optimal_control(iterations=100, _lambda=1)
-    # print_3d_boundaries_on_cube(answer[0], name=f'theta_end', folder=folder)
-    # print_3d_boundaries_on_cube(answer[1], name=f'psi_end', folder=folder)
-    # print_3d_boundaries_on_cube(problem.psi_n, name=f'psi_n', folder=folder)
+    p = problem.find_optimal_control(iterations=10 ** 3, _lambda=0.01)
+    answer = problem.solve_boundary()
+    print_3d_boundaries_on_cube(answer[0], name=f'theta_end', folder=folder)
+    print_3d_boundaries_on_cube(answer[1], name=f'psi_end', folder=folder)
+    print_3d_boundaries_on_cube(problem.psi_n, name=f'psi_n', folder=folder)
 
 
 if __name__ == "__main__":
