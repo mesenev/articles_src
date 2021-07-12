@@ -1,4 +1,4 @@
-from dolfin import Expression, Constant
+from dolfin import *
 from dolfin.cpp.log import set_log_active
 from dolfin.cpp.parameter import parameters
 
@@ -12,15 +12,18 @@ parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
 
 
-def make_pics(problem: Problem, name_modifier: str, folder: str):
-    # print_3d_boundaries_on_cube(problem.psi_n, name=f'{name_modifier}_control', folder=folder)
-    # print_3d_boundaries_single(problem.phi_n, name=f'{name_modifier}_control', folder=folder)
-    # print_3d_boundaries_on_cube(problem.state.split()[0], name=f'{name_modifier}_theta', folder=folder)
-    # print_3d_boundaries_single(problem.state.split()[0], name=f'{name_modifier}_theta', folder=folder)
-    # print_3d_boundaries_on_cube(problem.state.split()[1], name=f'{name_modifier}_phi', folder=folder)
-    # print_3d_boundaries_single(problem.state.split()[1], name=f'{name_modifier}_phi', folder=folder)
-    # print_3d_boundaries_on_cube(problem.target_diff(), name=f'diff_{name_modifier}_theta', folder=folder)
-    return 0
+class NormalDerivativeZ(UserExpression):
+    def __init__(self, func, vs, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.func = project(grad(func), vs)
+
+    def eval(self, value, x):
+        value[0] = self.func(x[0], x[1], 1)[-1]
+
+
+omega2d = UnitSquareMesh(50, 50)
+finite_element = FiniteElement("CG", omega2d.ufl_cell(), 1)
+square = FunctionSpace(omega2d, finite_element)
 
 
 def experiment_1(folder='exp1'):
@@ -42,14 +45,18 @@ def experiment_1(folder='exp1'):
     )).solve_boundary()
     print_3d_boundaries_on_cube(new[0], name=f'theta_new', folder=folder)
     print_3d_boundaries_on_cube(new[1], name=f'psi_new', folder=folder)
-    p = problem.find_optimal_control(iterations=10 ** 3, _lambda=0.01)
-    answer = problem.solve_boundary()
-    print_3d_boundaries_on_cube(answer[0], name=f'theta_end', folder=folder)
-    print_3d_boundaries_on_cube(answer[1], name=f'psi_end', folder=folder)
-    print_3d_boundaries_on_cube(problem.psi_n, name=f'psi_n', folder=folder)
+    problem.find_optimal_control(iterations=100, _lambda=0.01)
+    answer = problem.solve_boundary()[0]
+    f = File(f'{folder}/state_100.xml')
+    f << answer
+    problem.find_optimal_control(iterations=10000, _lambda=0.1)
+    answer = problem.solve_boundary()[0]
+    f = File(f'{folder}/state_1100.xml')
+    f << answer
+    # print_3d_boundaries_on_cube(answer[0], name=f'theta_end', folder=folder)
+    # print_3d_boundaries_on_cube(answer[1], name=f'psi_end', folder=folder)
+    # print_3d_boundaries_on_cube(problem.psi_n, name=f'psi_n_end', folder=folder)
 
 
 if __name__ == "__main__":
     experiment_1()
-    # experiment_2()
-    # experiment_3()

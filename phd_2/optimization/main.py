@@ -9,6 +9,8 @@ parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
 
 
+
+
 def make_pics(problem: SolveBoundary, name_modifier: str, folder: str):
     print_3d_boundaries_on_cube(problem.phi_n, name=f'{name_modifier}_control', folder=folder)
     print_3d_boundaries_single(problem.phi_n, name=f'{name_modifier}_control', folder=folder)
