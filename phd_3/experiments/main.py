@@ -47,6 +47,7 @@ def experiment_1(folder='exp1'):
     # print_3d_boundaries_on_cube(answer[1], name=f'psi_end', folder=folder)
     # print_3d_boundaries_on_cube(problem.psi_n, name=f'psi_n', folder=folder)
 
+
 if __name__ == "__main__":
     experiment_1()
     # experiment_2()
