@@ -16,7 +16,7 @@ class Problem:
         self.p1, self.p2 = None, None
         self.control = default_values.init_control
         self.ds = default_values.dss
-        self._lambda = 1
+        self.lambda_ = 1
         self.quality_history = list()
         self.psi_n = self.def_values.psi_n
 
@@ -82,42 +82,31 @@ class Problem:
         return p1, p2
 
     def recalculate_control(self):
-        global control_temp
         new_control = interpolate(
             Expression(
                 'u - lm * (eps * u - p_2)',
                 element=self.def_values.simple_space.ufl_element(),
-                u=self.psi_n, lm=self._lambda,
+                u=self.psi_n, lm=self.lambda_,
                 p_2=self.p2, eps=self.def_values.epsilon
             ), self.def_values.simple_space
         )
         self.psi_n = new_control
-        control_temp = new_control
         return new_control
 
     def quality(self, add_to_story=True):
         quality = assemble(
             0.5 * (self.theta - self.def_values.theta_b) ** 2 * self.ds(NEWMAN)
-            # + self.epsilon * 0.5 * self.phi_n ** 2 * ds(self.omega)
         )
         if add_to_story:
             self.quality_history.append(quality)
         return quality
 
-    def find_optimal_control(self, iterations=10 ** 2, _lambda=None, _lambda_diff=0):
-        if _lambda:
-            self._lambda = _lambda
-
-        for i in range(iterations):
-            self._lambda += _lambda_diff
-
+    def find_optimal_control(self, lambda_=None):
+        if lambda_:
+            self.lambda_ = lambda_
+        while True:
             self.solve_boundary()
             self.quality()
             self.solve_conjugate()
             self.recalculate_control()
-            diff = self.quality_history[-2] - self.quality_history[-1] if len(self.quality_history) > 1 else 0
-            print(f'Iteration {i},\tquality: {self.quality_history[-1]},\t{diff}')
-            if diff < 0:
-                print('warning')
-                # self._lambda /= 10
-        return self.recalculate_control()
+            yield

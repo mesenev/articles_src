@@ -10,17 +10,14 @@ from dolfin.cpp.mesh import SubDomain
 
 class DirichletBoundary(SubDomain):
     def inside(self, x, on_boundary):
-        answer = abs(x[0] - 1.0) < DOLFIN_EPS or \
-                 abs(x[1] - 1.0) < DOLFIN_EPS or \
-                 abs(x[2] - 1.0) < DOLFIN_EPS
+        answer = x[0] < DOLFIN_EPS or abs(x[0] - 1.0) < DOLFIN_EPS or \
+            x[1] < DOLFIN_EPS or abs(x[1] - 1.0) < DOLFIN_EPS
         return answer and on_boundary
 
 
 class NewmanBoundary(SubDomain):
-    def inside(self, x, on_boundary):
-        answer = x[0] < DOLFIN_EPS or \
-                 x[1] < DOLFIN_EPS or \
-                 x[2] < DOLFIN_EPS
+    def inside(self, x, on_boundary, **kwargs):
+        answer = x[2] < DOLFIN_EPS or abs(x[2] - 1.0) < DOLFIN_EPS
         return answer and on_boundary
 
 
