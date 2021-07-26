@@ -1,15 +1,32 @@
-Модель теплопереноса в $\Omega$ с границей $\Gamma = \partial \Omega$:
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+
+Стационарный радиационный и диффузионный теплообмен в ограниченной области
+$\Omega \subset \mathbb{R}^3$ с границей $\Gamma = \partial \Omega$ моделируется в рамках  $P_1$--приближения для уравнения
+переноса излучения следующей системой эллиптических уравнений~\cite{Pinnau07, AMC-13, Kovt14-1}:
 \begin{equation}
-    \label{model}
+    \label{eq:model}
     - a \Delta\theta + b\kappa_a(|\theta|\theta^3- \varphi)=0,   \quad
     - \alpha \Delta \varphi + \kappa_a(\varphi-|\theta|\theta^3)=0,\; x\in\Omega.
 \end{equation}
-Для постановки задачи разобьём границу на две области:
+Здесь $\theta$ -- нормализованная температура, $\varphi$ -- нормализованная интенсивность излучения,
+усредненная по всем направлениям.
+Положительные физические параметры $a$, $b$, $\kappa_a$ и $\alpha$, описывающие
+свойства среды, определяются стандартным образом~\cite{Kovt14-1}.
+Подробный теоретический и численный анализ различных постановок краевых и обратных задач,
+а также задач управления для уравнений радиационного теплообмена
+в рамках $P_1$--приближения для уравнения переноса излучения представлен в~\cite{Pinnau07}--\cite{CMMP20}.
+Отметим также серьезный анализ интересных краевых задач, связанных с радиационным теплообменом,
+представленный в~\cite{Amosov05}--\cite{Amosov20}.
+
+Для постановки граничных условий нам потребуется разбить границу области на два участка
 $\Gamma \coloneqq \partial \Omega =\overline{\Gamma}_1 \cup \overline{\Gamma}_2$,
 где части границы не имеют пересечений.
+
 Определим следующие функции
 \begin{equation}
-    \label{boundary}
+    \label{eq:boundary}
     \begin{aligned}
         \Gamma_1 :\; &\partial_n \theta = q_b,\; \theta = \theta_b, \\
         &\alpha\partial_n\varphi + \gamma (\varphi - \theta_b ^4 ) = 0, \\
@@ -18,39 +35,52 @@ $\Gamma \coloneqq \partial \Omega =\overline{\Gamma}_1 \cup \overline{\Gamma}_2$
 \end{equation}
 Для постановки задачи введём следующее обозначение:
 \[
-    r \coloneqq \alpha \partial_n \varphi \text{ на }\Gamma_2
+    r \coloneqq \alpha \partial_n \varphi \text{ на }\Gamma_2, \\
+    \tilde{r} \coloneqq \alpha \partial_n \varphi \text{ на }\Gamma_1.
 \]
 Обратная задача состоит в отыскании тройки функций $r \in  \Gamma_1, \{\theta, \varphi\} \in \Omega $
-удовлетворяющих условиям~\eqref{model}--\eqref{boundary}, а также дополнительному условию
+удовлетворяющих условиям~\eqref{eq:model}--\eqref{eq:boundary}, а также дополнительному условию
 на участке границы $\Gamma_2$:
 \begin{equation}
-    \label{boundary-extra}
+    \label{eq:boundary-extra}
     \theta = \theta_b \text{ на } \Gamma_2.
 \end{equation}
-Сформулированная обратная задача~\eqref{model}--\eqref{boundary-extra} сводится к экстремальной задаче,
+Сформулированная обратная задача~\eqref{eq:model}--\eqref{eq:boundary-extra} сводится к экстремальной задаче,
 состоящей в минимизации функционала
 \begin{equation}
-    \label{cost}
+    \label{eq:cost}
     J(\theta) = \frac{1}{2}\int\limits_\Gamma (\theta - \theta_b)^{2} d\Gamma \rightarrow \inf
 \end{equation}
-на решениях краевой задачи~\eqref{model}--\eqref{boundary}.
+на решениях краевой задачи~\eqref{eq:model}--\eqref{eq:boundary}.
 
 
-Другим подходом может быть сведение исходной задачи к поиску некоторой
+Другим интересным подходом может быть сведение исходной задачи к поиску некоторой
 переменной $\psi = a\theta + \alpha b \varphi$:
 \begin{equation}
     \label{eq:equation}
-    -a \Delta \theta + g (\theta) = \frac{\kappa}{\alpha}\psi, \quad
+    - a \Delta \theta + g (\theta) = \frac{\kappa}{\alpha}\psi, \quad
     \Delta \psi = 0.
 \end{equation}
-С граничными условиями для $\theta$ из~\eqref{boundary}, дополненными следующими условиями для
+С граничными условиями для $\theta$ из~\eqref{eq:boundary}, дополненными следующими условиями для
 $\psi$:
 \begin{equation}
     \label{eq:boundary-2}
     \begin{aligned}
-        \Gamma_1 &: \; \alpha \partial_n \psi + \gamma \psi = \alpha b \gamma \theta_b^4 + \alpha a \theta_b + \gamma a q_b = r, \\
+        \Gamma_1 &: \; \alpha \partial_n \psi + \gamma \psi = \alpha b \gamma \theta_b^4
+        + \alpha a \theta_b + \gamma a q_b = r, \\
         \Gamma_2 &: \; \partial_n \psi = u.
     \end{aligned}
 \end{equation}
 Здесь $g(\theta) = b \kappa|\theta|\theta^3 + \frac{a\kappa}{\alpha}\theta$.
 Функция $u$, в свою очередь неизвеста и играет роль управления.
+
+В таком случае полученные далее дифференциальные уравнения являются независимыми и
+могут считаться последовательно,
+что отличается от классического подхода и может иметь высокий исследовательский потенциал.
+
+Статья организована следующим образом.
+В разд \. 2 вводятся необходимые пространства и операторы, приводится формализация задачи оптимального управления.
+Априорные оценки решения задачи (1),(4), на основе которых доказана разрешимость
+указанной краевой задачи и задачи оптимального управления (1),(4),(5), получены в разд\. 3.
+В разд\. 4 представлен алгоритм решения задачи управления, работа которого
+проиллюстрирована численными примерами.
