@@ -1,7 +1,4 @@
-\usepackage{amsmath}
-\usepackage{mathtools}
-\usepackage{amsfonts}
-
+\section{Введение}\label{sec:intro}
 Стационарный радиационный и диффузионный теплообмен в ограниченной области
 $\Omega \subset \mathbb{R}^3$ с границей $\Gamma = \partial \Omega$ моделируется в рамках  $P_1$--приближения для уравнения
 переноса излучения следующей системой эллиптических уравнений~\cite{Pinnau07, AMC-13, Kovt14-1}:
@@ -28,16 +25,18 @@ $\Gamma \coloneqq \partial \Omega =\overline{\Gamma}_1 \cup \overline{\Gamma}_2$
 \begin{equation}
     \label{eq:boundary}
     \begin{aligned}
-        \Gamma_1 :\; &\partial_n \theta = q_b,\; \theta = \theta_b, \\
+        \Gamma_1 :\; &\partial_n \theta = q_b, \; \theta = \theta_b, \\
         &\alpha\partial_n\varphi + \gamma (\varphi - \theta_b ^4 ) = 0, \\
         \Gamma_2 :\; & \partial_n \theta = q_b.
     \end{aligned}
 \end{equation}
-Для постановки задачи введём следующее обозначение:
+Далее введём следующее обозначение:
+
 \[
     r \coloneqq \alpha \partial_n \varphi \text{ на }\Gamma_2, \\
     \tilde{r} \coloneqq \alpha \partial_n \varphi \text{ на }\Gamma_1.
 \]
+
 Обратная задача состоит в отыскании тройки функций $r \in  \Gamma_1, \{\theta, \varphi\} \in \Omega $
 удовлетворяющих условиям~\eqref{eq:model}--\eqref{eq:boundary}, а также дополнительному условию
 на участке границы $\Gamma_2$:
@@ -45,7 +44,7 @@ $\Gamma \coloneqq \partial \Omega =\overline{\Gamma}_1 \cup \overline{\Gamma}_2$
     \label{eq:boundary-extra}
     \theta = \theta_b \text{ на } \Gamma_2.
 \end{equation}
-Сформулированная обратная задача~\eqref{eq:model}--\eqref{eq:boundary-extra} сводится к экстремальной задаче,
+Обратная задача~\eqref{eq:model}--\eqref{eq:boundary-extra} сводится к экстремальной задаче,
 состоящей в минимизации функционала
 \begin{equation}
     \label{eq:cost}
@@ -54,15 +53,15 @@ $\Gamma \coloneqq \partial \Omega =\overline{\Gamma}_1 \cup \overline{\Gamma}_2$
 на решениях краевой задачи~\eqref{eq:model}--\eqref{eq:boundary}.
 
 
-Другим интересным подходом может быть сведение исходной задачи к поиску некоторой
+Альтернативным подходом может быть сведение исходной задачи к поиску некоторой
 переменной $\psi = a\theta + \alpha b \varphi$:
 \begin{equation}
     \label{eq:equation}
     - a \Delta \theta + g (\theta) = \frac{\kappa}{\alpha}\psi, \quad
     \Delta \psi = 0.
 \end{equation}
-С граничными условиями для $\theta$ из~\eqref{eq:boundary}, дополненными следующими условиями для
-$\psi$:
+С граничными условиями для температурного поля $\theta$ из~\eqref{eq:boundary},
+дополненными следующими условиями для переменной $\psi$:
 \begin{equation}
     \label{eq:boundary-2}
     \begin{aligned}
@@ -72,15 +71,16 @@ $\psi$:
     \end{aligned}
 \end{equation}
 Здесь $g(\theta) = b \kappa|\theta|\theta^3 + \frac{a\kappa}{\alpha}\theta$.
-Функция $u$, в свою очередь неизвеста и играет роль управления.
+Функция $u$, в свою очередь неизвестна и играет роль управления.
 
 В таком случае полученные далее дифференциальные уравнения являются независимыми и
 могут считаться последовательно,
 что отличается от классического подхода и может иметь высокий исследовательский потенциал.
 
 Статья организована следующим образом.
-В разд \. 2 вводятся необходимые пространства и операторы, приводится формализация задачи оптимального управления.
-Априорные оценки решения задачи (1),(4), на основе которых доказана разрешимость
+В разд \. 2 вводятся необходимые пространства и операторы,
+а также формальная постановка задачи оптимального управления.
+Априорные оценки решения задачи \eqref{eq:model}--\eqref{eq:boundary-2}, на основе которых доказана разрешимость
 указанной краевой задачи и задачи оптимального управления (1),(4),(5), получены в разд\. 3.
-В разд\. 4 представлен алгоритм решения задачи управления, работа которого
+В разд \. 4 представлен алгоритм решения задачи управления, работа которого
 проиллюстрирована численными примерами.

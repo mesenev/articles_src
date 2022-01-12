@@ -45,5 +45,5 @@ def experiment_1(folder='exp1'):
             )
 
 
-# if __name__ == "__main__":
-    # experiment_1()
+if __name__ == "__main__":
+    experiment_1()
