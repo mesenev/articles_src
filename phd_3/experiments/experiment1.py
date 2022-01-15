@@ -30,7 +30,7 @@ f << problem.theta
 def experiment_1(folder='exp1'):
     clear_dir(folder)
     iterator = problem.find_optimal_control(0.2)
-    for i in range(10001):
+    for i in range(100):
         next(iterator)
         #
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
@@ -43,6 +43,8 @@ def experiment_1(folder='exp1'):
             print_3d_boundaries_on_cube(
                 problem.theta, name=f'theta_{i}', folder='exp1/'
             )
+        with open(f'{folder}/quality.txt', 'w') as f:
+            print(*problem.quality_history, file=f)
 
 
 if __name__ == "__main__":

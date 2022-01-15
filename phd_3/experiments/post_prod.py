@@ -1,9 +1,11 @@
-from dolfin import *
 from os import listdir
 from os.path import isfile, join
-from utilities import print_2d_isolines, print_2d
+
+from dolfin import *
+
 from default_values import DefaultValues3D
 from experiment1 import problem
+from utilities import print_2d_isolines, print_2d, draw_simple_graphic
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
@@ -35,7 +37,7 @@ for i in xml_files:
     theta = Function(DefaultValues3D.simple_space, folder + i)
     theta_n_final = project(NormalDerivativeZ(theta), square)
     theta_n = problem.def_values.theta_n
-    theta_n_diff = project(abs(theta_n_final - theta_n)/abs(theta_n), square)
+    theta_n_diff = project(abs(theta_n_final - theta_n) / abs(theta_n), square)
     # to_print = function2d_dumper(
     #     lambda p: abs(theta_n_diff(Point(p[0], p[1], 1))),
     #     folder='scratch', name=target
@@ -46,3 +48,7 @@ for i in xml_files:
         # levels=[0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.01, 0.05, 0.1]
     )
     print_2d(theta_n_diff, name=target + '_square', folder=folder, )
+
+with open('exp1/quality.txt', 'r') as f:
+    data = list(map(float, f.read().split()))
+draw_simple_graphic(data, name='quality', folder='exp1')

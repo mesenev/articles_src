@@ -43,7 +43,8 @@ class Problem:
                          + a * ka / alpha * inner(theta, v) * dx
 
         theta_src = ka / alpha * inner(psi, v) * dx \
-                    + (a * theta_n + theta_b) * v * ds(DIRICHLET) + a * theta_n * v * ds(NEWMAN)
+                    + (a * theta_n + theta_b) * v * ds(DIRICHLET) \
+                    + a * theta_n * v * ds(NEWMAN)
 
         solve(
             theta_equation - theta_src == 0, theta, bc,
