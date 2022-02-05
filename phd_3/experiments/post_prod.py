@@ -10,7 +10,7 @@ from utilities import print_2d_isolines, print_2d, draw_simple_graphic
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
 
-folder = 'exp1/'
+folder = 'exp1'
 set_log_active(False)
 omega2d = UnitSquareMesh(50, 50)
 finite_element = FiniteElement("CG", omega2d.ufl_cell(), 1)
@@ -34,7 +34,7 @@ xml_files = [f for f in listdir(folder) if isfile(join(folder, f)) and f.split('
 for i in xml_files:
     print(i)
     target = i.split('.')[0]
-    theta = Function(DefaultValues3D.simple_space, folder + i)
+    theta = Function(DefaultValues3D.simple_space, f'{folder}/{i}')
     theta_n_final = project(NormalDerivativeZ(theta), square)
     theta_n = problem.def_values.theta_n
     theta_n_diff = project(abs(theta_n_final - theta_n) / abs(theta_n), square)

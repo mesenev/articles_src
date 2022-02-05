@@ -18,17 +18,18 @@ default_values = DefaultValues3D(
 )
 
 problem = Problem(default_values=default_values)
-problem.solve_boundary()
-print_3d_boundaries_on_cube(
-    problem.theta, name='theta_init', folder='exp1/'
-)
-problem.quality()
-f = File('exp1/solution_0.xml')
-f << problem.theta
 
 
 def experiment_1(folder='exp1'):
     clear_dir(folder)
+    problem.solve_boundary()
+    print_3d_boundaries_on_cube(
+        problem.theta, name='theta_init', folder='exp1'
+    )
+    problem.quality()
+    f = File('exp1/solution_0.xml')
+    f << problem.theta
+
     iterator = problem.find_optimal_control(0.2)
     for i in range(100):
         next(iterator)
@@ -48,4 +49,5 @@ def experiment_1(folder='exp1'):
 
 
 if __name__ == "__main__":
+
     experiment_1()

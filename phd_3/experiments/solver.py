@@ -40,7 +40,8 @@ class Problem:
 
         theta_equation = a * inner(grad(theta), grad(v)) * dx \
                          + b * ka * inner(theta ** 4, v) * dx \
-                         + a * ka / alpha * inner(theta, v) * dx
+                         + a * ka / alpha * inner(theta, v) * dx \
+                         + inner(theta, v) * ds(DIRICHLET)
 
         theta_src = ka / alpha * inner(psi, v) * dx \
                     + (a * theta_n + theta_b) * v * ds(DIRICHLET) \
