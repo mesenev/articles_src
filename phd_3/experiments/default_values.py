@@ -11,7 +11,7 @@ from dolfin.cpp.mesh import SubDomain
 class DirichletBoundary(SubDomain):
     def inside(self, x, on_boundary):
         answer = x[0] < DOLFIN_EPS or abs(x[0] - 1.0) < DOLFIN_EPS or \
-            x[1] < DOLFIN_EPS or abs(x[1] - 1.0) < DOLFIN_EPS
+                 x[1] < DOLFIN_EPS or abs(x[1] - 1.0) < DOLFIN_EPS
         return answer and on_boundary
 
 
@@ -22,7 +22,7 @@ class NewmanBoundary(SubDomain):
 
 
 class DefaultValues3D:
-    omega = UnitCubeMesh(7, 7, 7)
+    omega = UnitCubeMesh(*([25] * 3))
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
     DirichletBoundary().mark(sub_domains, 1)
