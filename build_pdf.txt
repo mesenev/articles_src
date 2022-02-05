@@ -1,1 +1,0 @@
-latexmk -bibtex -aux-directory=AuxDirectory --output-directory=PDF -pdf abstract.tex
