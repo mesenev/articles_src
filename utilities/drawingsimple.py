@@ -19,6 +19,7 @@ def draw_simple_graphic(data, name, logarithmic=False, folder='results', x_label
     plt.legend([extra1, extra2], [extra1.get_label(), extra2.get_label()], prop={'size': 10})
     plt.grid(True)
     plt.savefig(f'{folder}/{name}.eps')
+    plt.savefig(f'{folder}/{name}.svg')
     plt.close()
     return
 
