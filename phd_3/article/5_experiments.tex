@@ -43,17 +43,25 @@ $J_\lambda(\theta_k, u_k) - J_\lambda(\theta_{k+1}, u_{k+1}) < \delta$, где $
 
 \textbf{Пример 1.}
 Приведем примеры расчетов для куба
-$\Omega = {(x, y, z), 0 \leq x,y,z \leq l}$.
+\[
+    \Omega = {(x, y, z), 0 \leq x,y,z \leq l}.
+\]
+Границу куба разобьём на два участка:
+\[
+    \Gamma_1 = {(x, y, z), 0 \leq x,y, \leq l, z \in {0, 1}}, \;
+    \Gamma_2 = \partial \Omega \setminus \Gamma_1.
+\]
+
 Будем считать, что $l=1~\text{см}$, $a = 0.006[\text{см}^2/\text{c}]$,
 $b=0.025[\text{см}/\text{с}]$,
 $\kappa_a=1[\text{см}^{-1}]$, $\alpha = 0.(3)[\text{см}]$.
 Указанные параметры соответствуют стеклу~\cite{Grenkin5}.
-Параметр регуляризации $\lambda=10^{-12}.$
+Параметр регуляризации $\lambda=10^{-12}.$ $\Gamma_1$
 
 Пусть граничные данные имеют следующий вид:
 \begin{gather*}
-    \theta_n = 0.5 \quad
-    \theta_b = 0.1 + z/2 \quad
+    q_b = 0.5, \quad
+    \theta_b = 0.1 + z/2, \quad
     \psi_0 = 0.
 \end{gather*}
 Применяя алгоритм градиентного спуска
@@ -62,7 +70,7 @@ $\{\theta_\lambda,\varphi_\lambda,u_\lambda\}$ задачи (CP)\@.
 Для демонстрации того, что алгоритм находит приближенное решение задачи с данными
 Коши для температуры, важно сравнить значения $\partial_n\theta_\lambda$ на $\Gamma$ с $q_b.$
 
-На рисунке~\ref{fig1:img_test_1} представлены изолинии модуля относительной разности
+На рисунке~\ref{fig:img_test_1} представлены изолинии модуля относительной разности
 $|\partial_n\theta_\lambda-\theta_n|/\ \theta_n$
 на грани куба в плоскости $z=l$, где
 $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$,
@@ -74,14 +82,14 @@ $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$,
     \centering
     \subfloat[$|\partial_n \theta_\lambda - \theta_n|/\ \theta_n$]
     {
-        \label{fig1:img_test_1}
+        \label{fig:img_test_1}
         \includegraphics[width=.49\linewidth]{img/exp1_iso}
     }
-    \subfloat[Изменение функционала в зависимости от числа итераций]
+    \subfloat[Изменение функционала по итерациям]
     {
-        \label{fig1:quality}
+        \label{fig:quality_1}
         \includegraphics[width=.49\linewidth]{img/exp1_quality}
     }
     \caption{Результаты первого эксперимента}
-    \label{fig1}
+    \label{fig:1}
 \end{figure}
