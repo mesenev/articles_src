@@ -21,7 +21,7 @@ class DirichletBoundary2D(SubDomain):
 
 class NewmanBoundary2D(SubDomain):
     def inside(self, x, on_boundary, **kwargs):
-        answer = ((x[0] - 0.5) ** 2 + (x[1] - 0.5) ** 2) ** 1 / 2
+        answer = abs(((x[0] - 0.5) ** 2 + (x[1] - 0.5) ** 2) ** 1 / 2 - 0.2) < DOLFIN_EPS
         return answer and on_boundary
 
 
