@@ -29,7 +29,7 @@ class Problem:
                                     self.def_values.gamma, self.def_values.r
         theta_n, psi_n = self.def_values.theta_n, self.psi_n
         theta_b = self.def_values.theta_b
-        bc = DirichletBC(self.def_values.simple_space, theta_b, DirichletBoundary())
+        bc = DirichletBC(self.def_values.simple_space, theta_b, self.def_values.dirichlet_boundary)
         psi = TrialFunction(self.def_values.simple_space)
 
         psi_equation = alpha * inner(grad(psi), grad(v)) * dx + gamma * v * psi * ds(DIRICHLET)

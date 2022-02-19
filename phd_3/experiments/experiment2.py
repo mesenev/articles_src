@@ -64,6 +64,7 @@ class DefaultValues2D:
         for key, val in kwargs.items():
             setattr(self, key, val)
         self.recalculate_r()
+        self.dirichlet_boundary = DirichletBoundary2D()
 
     def recalculate_r(self):
         self.r = project(

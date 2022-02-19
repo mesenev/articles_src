@@ -1,8 +1,7 @@
 docker run --rm \
 --env PYTHONPATH=/source \
---workdir /source/phd_3/experiments \
--p 127.0.0.1:8888:8888 \
+-p 0.0.0.0:8888:8888 \
 -it \
--v $(pwd):/source \
+-v $(pwd):/home/fenics \
 quay.io/fenicsproject/stable:current \
-'jupyter-notebook --ip=0.0.0.0'
+'jupyter-notebook --ip=0.0.0.0 --NotebookApp.token=""'
