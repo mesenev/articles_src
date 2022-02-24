@@ -1,31 +1,26 @@
 \section{Формализация задачи управления}\label{sec:formalization}
-Будем далее считать, что $\Omega \subset R^3$ - ограниченная строго липшицева область,
-граница $\Gamma \equiv \partial \Omega$ состоит из конечного числа гладких кусков.
-Будем предполагать, что для области $\Omega$ справедливы свойства 1, 2 из~\cite{}.
+Будем далее считать, что $\Omega \subset \mathbb{R}^3$ - ограниченная липшицева область.
 Через $L^p, \; 1 \leq p \leq \infty$ обозначим пространство Лебега, через $H^s$ - пространство Соболева $W^s_2$.
-$H^s_0(\Omega)$ есть замыкание $C^\infty_0(\Omega)$ по норме пространства $H^s(\Omega)$.
-Далее через обозначим скалярное произведение и норму в $L^2(\Omega)$
+Далее обозначим скалярное произведение и норму в $L^2(\Omega)$
 \[
     (f, g) = \int_\Omega f(x)g(x)dx, \; \| f \| = (f, f).
 \]
-Пусть $V = H^2_0(\Omega)$.
-Условия на область $\Omega$ позволяют выбрать скалярное произведение в V в виде
-$[u, v] = (\nabla u, \nabla v), \| f \|_V = \| \nabla f \|$.
-Через $U$ обозначаем пространство $L^2(\Gamma)$ с нормой
-$\|u\|_\Gamma=\left(\int_\Gamma u^2 d\Gamma\right)^{1/2}.$
+Пусть $V = H^1(\Omega)$.
+Через $U$ обозначим пространство $L^2(\Gamma)$ с нормой
+$\|u\|_{U} = \left(\int_{\Gamma_2} u^2 d\Gamma\right)^{1/2}.$
 
 Будем предполагать, что \\
 $(i) \;\; a, b,\alpha,\kappa_a, s, \lambda = \textrm{Const} > 0,$ \\
-$(ii) \;\, \theta_b, g, u \in U.$
+$(ii) \;\, \theta_b, q_b \in U$.
 
-Определим операторы $A_1\colon V \to V'$, $A_2\colon U \to V'$, используя
+Определим операторы $A_1\colon V \to V'$, $A_2\colon V \to V'$, используя
 следующие равенства, справедливые для любых $y,z \in V$, $w\in U$:
 \[
     (A_1 y,z) = a(\nabla y, \nabla z) + s\int_{\Gamma_1} yz d\Gamma, \,
     (A_2 y, z) = \alpha (\nabla y, \nabla z) + \gamma \int_{\Gamma_1} yz d\Gamma.
 \]
-\textit{Слабым решением} задачи~\eqref{eq:model-psi}--\eqref{eq:boundary-psi-2} будем называть
-пару $\theta, \psi \in V$ если
+\textit{Слабым решением} задачи~\eqref{eq:model-psi},\eqref{eq:boundary-psi-2},\eqref{eq:boundary-psi-3}
+будем называть пару $\theta, \psi \in V$ если
 \begin{equation}
     \label{eq:weak}
     A_1\theta  + g(\theta) = \frac{\kappa}{\alpha} \psi + f_1, \quad
@@ -33,9 +28,9 @@ $(ii) \;\, \theta_b, g, u \in U.$
 \end{equation}
 
 Здесь
-$(f_1, v) = \int_{\Gamma_1} (a q_b + \theta_b)d\Gamma + \int_{\Gamma_2} a q_b d\Gamma$,\\
-$(f_2, v) = \int_{\Gamma_1} r v d\Gamma$,\\
+$(f_1, v) = \int_{\Gamma_1} (a q_b + s \theta_b) v d\Gamma + \int_{\Gamma_2} a q_b v d\Gamma
+= B_1(a q_b + s \theta_b) + B_2(a q_b)$,\\
+$(f_2, v) = \int_{\Gamma_1} r v d\Gamma = B_1 r$,\\
 $(B_1 h,v) = \int_{\Gamma_1} h v d\Gamma$,\\
-$(B_2 u, v) = \int_{\Gamma_2} u v d\Gamma$,\\
-$g(\theta) = b\kappa_a \theta^3 |\theta| + \frac{a\kappa_a}{\alpha}\theta$.
+$(B_2 u, v) = \int_{\Gamma_2} u v d\Gamma$.
 
