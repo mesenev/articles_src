@@ -1,12 +1,14 @@
+# noinspection PyUnresolvedReferences
+from dolfin import dx, ds
 from dolfin import *
 from mshr import *
 import matplotlib.pyplot as plt
-from dolfin.cpp.log import set_log_active
 from dolfin.cpp.parameter import parameters
 
-from default_values import DefaultValues3D
 from solver import Problem
-from utilities import clear_dir, print_3d_boundaries_on_cube
+from utilities import print_3d_boundaries_on_cube
+
+set_log_active(False)
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
@@ -14,14 +16,17 @@ parameters["form_compiler"]["cpp_optimize"] = True
 
 class DirichletBoundary2D(SubDomain):
     def inside(self, x, on_boundary):
-        answer = x[0] < DOLFIN_EPS or abs(x[0] - 1.0) < DOLFIN_EPS or \
-                 x[1] < DOLFIN_EPS or abs(x[1] - 1.0) < DOLFIN_EPS
+        top = abs(x[0] - 1) < DOLFIN_EPS
+        bottom = x[0] < DOLFIN_EPS
+        right = abs(x[1] - 1) < DOLFIN_EPS
+        left = x[1] < DOLFIN_EPS
+        answer = top or bottom or right or left
         return answer and on_boundary
 
 
 class NewmanBoundary2D(SubDomain):
     def inside(self, x, on_boundary, **kwargs):
-        answer = abs(((x[0] - 0.5) ** 2 + (x[1] - 0.5) ** 2) ** 1 / 2 - 0.2) < DOLFIN_EPS
+        answer = 0.1 < x[0] < 0.9 and 0.1 < x[1] < 0.9
         return answer and on_boundary
 
 
@@ -76,17 +81,18 @@ class DefaultValues2D:
             ),
             self.simple_space)
 
+
 def experiment_2(folder='exp2'):
     problem.solve_boundary()
     # print_3d_boundaries_on_cube(
     #     problem.theta, name='theta_init', folder='exp2'
     # )
     problem.quality()
-    f = File('exp2/solution_0.xml')
+    f = File(f'{folder}/solution_0.xml')
     f << problem.theta
 
     iterator = problem.find_optimal_control(0.2)
-    for i in range(10 ** 5):
+    for i in range(10 ** 1):
         next(iterator)
         #
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
@@ -103,20 +109,35 @@ def experiment_2(folder='exp2'):
             print(*problem.quality_history, file=f)
 
 
-
 if __name__ == "__main__":
-    parameters["form_compiler"]["optimize"] = True
-    parameters["form_compiler"]["cpp_optimize"] = True
-
+    folder = 'exp2'
     default_values = DefaultValues2D(
-        theta_n=Constant(0.5),
-        theta_b=Expression('0.1 + x[1] / 2', degree=2),
-        psi_n_init=Constant(0)
+        theta_n=Constant(0.2),
+        theta_b=Expression('0.2 + x[1] / 2', degree=2),
+        psi_n_init=Expression('-0.4 + x[1] / 2', degree=2),
     )
 
     problem = Problem(default_values=default_values)
+    problem.solve_boundary()
 
-    clear_dir('exp2')
-    experiment_2()
-    f = File(f'exp2/solution_final.xml')
+    c = plot(problem.theta)
+    plt.colorbar(c)
+    plt.savefig(f'{folder}/theta_init.png')
+    plot(problem.psi)
+    plt.colorbar(c)
+    plt.savefig(f'{folder}/psi_init.png')
+    iterator = problem.find_optimal_control(2)
+    next(iterator)
+    for i in range(10 ** 3):
+        next(iterator)
+        _diff = problem.quality_history[-2] - problem.quality_history[-1]
+        print(f'Iteration {i},\tquality: {problem.quality_history[-1]},\t{_diff}')
+
+    f = File(f'{folder}/theta_end.xml')
     f << problem.theta
+    f = File(f'{folder}/psi_end.xml')
+    f << problem.psi
+    f = File(f'{folder}/control_end.xml')
+    f << problem.psi_n
+    with open(f'{folder}/quality.txt', 'w') as f:
+        print(*problem.quality_history, file=f)
