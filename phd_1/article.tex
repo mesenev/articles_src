@@ -16,7 +16,7 @@
     inverse problem is proved and an optimality system is obtained. An algorithm for solving
     a problem is presented, the effectiveness of which is illustrated by numerical examples.
     \keywords{Radiative heat transfer equations, quasi-solution of the inverse problem,
-    gradient descent method.}
+        gradient descent method.}
 
     \UDC{517.95}
     \AMS{35K55, 35Q79}
@@ -26,9 +26,9 @@
     \title{Граничная обратная задача для уравнений сложного теплообмена}
 
     \author{П.\,Р.~Месенев}{Дальневосточный федеральный университет, 690950,
-    г.~Владивосток, ул.~Суханова,~8;}{mesenev.pr@gmail.com}
+        г.~Владивосток, ул.~Суханова,~8;}{mesenev.pr@gmail.com}
     \author{А.\,Ю.~Чеботарев}{Институт прикладной математики ДВО РАН, 690041,
-    Владивосток, ул. Радио, 7}{cheb@iam.dvo.ru}
+        Владивосток, ул. Радио, 7}{cheb@iam.dvo.ru}
 
     \makeface
 
@@ -40,7 +40,7 @@
 
 
     \keywords{уравнения радиационного теплообмена,
-    квазирешение обратной задачи, метод градиентного спуска.}
+        квазирешение обратной задачи, метод градиентного спуска.}
 
 
     \section{Введение}
@@ -301,18 +301,18 @@
 
     Вычислим решение прямой задачи \eqref{initial}--\eqref{initial-boundary} для этих случаев. Полученное температурное поле на участке наблюдения $\Gamma_2$ выберем в качестве $\theta_0$. Далее, применяя предложенный алгоритм находим квазирешение обратной задачи \eqref{initial}--\eqref{theta_gamma}. Эффективность алгоритма, а также значение $u_0$ в первом и втором случаях иллюстрируются рис. \ref{control}. На рис. \ref{cost} показана динамика функционала качества по итерациям.
 
-    {\bf Замечание.} В предложенных примерах потребовалось $2*10^6$ итераций для нахождения квазирешения $u$. В то же время температурное поле на участке наблюдения $\Gamma_2$ становится близким к $\theta_0$ уже на $10^2$ итерации. Также наблюдается существенное падение скорости уменьшения функционала качества с каждой итерацией после того, как среднее значение найденной функции контроля становится близко к тестовой функции.
+        {\bf Замечание.} В предложенных примерах потребовалось $2*10^6$ итераций для нахождения квазирешения $u$. В то же время температурное поле на участке наблюдения $\Gamma_2$ становится близким к $\theta_0$ уже на $10^2$ итерации. Также наблюдается существенное падение скорости уменьшения функционала качества с каждой итерацией после того, как среднее значение найденной функции контроля становится близко к тестовой функции.
     \begin{figure}[H]
         \centering
         \subfloat[Первый эксперимент]
         {
-        \label{fig1:exp1}
-        \includegraphics[width=.51\linewidth]{1.eps}
+            \label{fig1:exp1}
+            \includegraphics[width=.51\linewidth]{1.eps}
         }
         \subfloat[Второй эксперимент]
         {
-        \label{fig1:exp2}
-        \includegraphics[width=.51\linewidth]{2.eps}
+            \label{fig1:exp2}
+            \includegraphics[width=.51\linewidth]{2.eps}
         }
         \caption{Тестовая функция $u$, начальная $u_0$, найденная функция $u_{end}.$}
         \label{control}
@@ -322,13 +322,13 @@
         \centering
         \subfloat[Первый эксперимент]
         {
-        \label{fig2:exp1}
-        \includegraphics[width=.51\linewidth]{3.eps}
+            \label{fig2:exp1}
+            \includegraphics[width=.51\linewidth]{3.eps}
         }
         \subfloat[Второй эксперимент]
         {
-        \label{fig2:exp2}
-        \includegraphics[width=.51\linewidth]{4.eps}
+            \label{fig2:exp2}
+            \includegraphics[width=.51\linewidth]{4.eps}
         }
         \caption{Динамика функции $\hat{J}(u)$ по итерациям.}
         \label{cost}

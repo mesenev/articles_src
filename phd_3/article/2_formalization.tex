@@ -7,9 +7,9 @@
 \]
 Пусть $V = H^1(\Omega)$.
 Через $U$ обозначим пространство $L^2(\Gamma)$ с нормой
-$\|u\|_{U} = \left(\int_{\Gamma_2} u^2 d\Gamma\right)^{1/2}.$
+$\|u\|_{U} = \left(\int_{\Gamma_2} u^2 d\Gamma\right)^{1/2}$.
 
-Будем предполагать, что \\
+Будем предполагать, что\\
 $(i) \;\; a, b,\alpha,\kappa_a, s, \lambda = \textrm{Const} > 0,$ \\
 $(ii) \;\, \theta_b, q_b \in U$.
 
@@ -23,14 +23,16 @@ $(ii) \;\, \theta_b, q_b \in U$.
 будем называть пару $\theta, \psi \in V$ если
 \begin{equation}
     \label{eq:weak}
-    A_1\theta  + g(\theta) = \frac{\kappa}{\alpha} \psi + f_1, \quad
+    A_1\theta  + g\left( \theta \right) = \frac{\kappa}{\alpha} \psi + f_1, \quad
     A_2\psi = f_2 + B_2 u.
 \end{equation}
 
 Здесь
-$(f_1, v) = \int_{\Gamma_1} (a q_b + s \theta_b) v d\Gamma + \int_{\Gamma_2} a q_b v d\Gamma
-= B_1(a q_b + s \theta_b) + B_2(a q_b)$,\\
-$(f_2, v) = \int_{\Gamma_1} r v d\Gamma = B_1 r$,\\
-$(B_1 h,v) = \int_{\Gamma_1} h v d\Gamma$,\\
-$(B_2 u, v) = \int_{\Gamma_2} u v d\Gamma$.
+\begin{align*}
+ & (f_1, v) = \int_{\Gamma_1} (q_b + s \theta_b) v d\Gamma + \int_{\Gamma_2} q_b v d\Gamma, \\
+ & (f_2, v) = \int_{\Gamma_1} r v d\Gamma, \\
+ & (B_1 h, v) = \int_{\Gamma_1} h v d\Gamma, \\
+ & (B_2 u, v) = \int_{\Gamma_2} u v d\Gamma.
+\end{align*}.
+Таким образом получается $f_1 = B_1 (q_b + s \theta_b) + B_2 q_b$, $f_2 = B_1 r$
 
