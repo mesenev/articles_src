@@ -3,6 +3,7 @@ from dolfin import *
 from dolfin import dx, ds
 
 from default_values import DefaultValues3D, DirichletBoundary
+from phd_3.experiments.experiment2 import DefaultValues2D
 
 DIRICHLET = 1
 NEWMAN = 2
@@ -10,7 +11,7 @@ NEWMAN = 2
 
 class Problem:
 
-    def __init__(self, default_values: DefaultValues3D):
+    def __init__(self, default_values: (DefaultValues3D, DefaultValues2D)):
         self.def_values = default_values
         self.theta, self.psi = None, None
         self.p1, self.p2 = None, None

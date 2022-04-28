@@ -52,8 +52,7 @@ if __name__ == "__main__":
     try:
         experiment_1()
     except KeyboardInterrupt:
-        print('Keyboard interaction signal. Wrapping out.')
-        pass
+        print('Keyboard interruption signal. Wrapping out.')
     finally:
         f = File(f'exp1/solution_final.xml')
         f << problem.theta
