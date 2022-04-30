@@ -25,9 +25,9 @@ class NewmanBoundary(SubDomain):
 
 
 class DefaultValues3D:
-    domain = Box(Point(0., 0.), Point(1., 1., 1)) - \
-             Sphere(Point(0.5, 0.5, 0.5), .2)
-    omega = generate_mesh(domain, 100)
+    domain = Box(Point(0, 0, 0), Point(1, 1, 1)) - \
+             Sphere(Point(0.5, 0.5, 0.5), .25)
+    omega = generate_mesh(domain, 10)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
     DirichletBoundary().mark(sub_domains, DIRICHLET)
@@ -89,7 +89,7 @@ default_values = DefaultValues3D(
 problem = Problem(default_values=default_values)
 
 
-def experiment_3(folder='exp1'):
+def experiment_3(folder='exp3'):
     problem.solve_boundary()
     print_3d_boundaries_on_cube(
         problem.theta, name='theta_init', folder='exp1'
