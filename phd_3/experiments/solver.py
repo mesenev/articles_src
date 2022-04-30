@@ -2,8 +2,7 @@ from dolfin import *
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 
-from default_values import DefaultValues3D, DirichletBoundary
-from phd_3.experiments.experiment2 import DefaultValues2D
+from default_values import DefaultValues3D, DefaultValues2D
 
 DIRICHLET = 1
 NEWMAN = 2
