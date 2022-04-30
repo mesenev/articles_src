@@ -1,9 +1,10 @@
 docker run --rm \
---env PYTHONPATH=/source \
+--env PYTHONPATH=/source:/source/phd_3/experiments \
+-v $(pwd):/source \
+--workdir /source/phd_3/experiments \
 -p 127.0.0.1:8888:8888 \
 -it \
--v $(pwd):/home/fenics \
 quay.io/fenicsproject/stable:current \
-'jupyter-notebook --ip=0.0.0.0 --NotebookApp.token="tokentoken"'
+'jupyter-notebook --ip=0.0.0.0 --NotebookApp.token="tokentoken" & /bin/bash'
 
 #--network host \     # gethostbyname failed
