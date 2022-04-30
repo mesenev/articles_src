@@ -1,13 +1,9 @@
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 from dolfin import *
-from dolfin.cpp.log import set_log_active
-from dolfin.cpp.parameter import parameters
-from mshr import Sphere, Box
+from mshr import Sphere, Box, generate_mesh
 
-from default_values import DefaultValues3D
-from solver import Problem
-from utilities import clear_dir, print_3d_boundaries_on_cube
+from phd_3.experiments.consts import DIRICHLET, NEWMAN
 
 
 class DirichletBoundary(SubDomain):
@@ -23,12 +19,13 @@ class NewmanBoundary(SubDomain):
 
 
 class DefaultValues3D:
-    domain = Box(Point(0., 0.), Point(1., 1.)) - \
-             Sphere(Point(0.5, 0.5), .2)
+    domain = Box(Point(0., 0.), Point(1., 1., 1)) - \
+             Sphere(Point(0.5, 0.5, 0.5), .2)
+    omega = generate_mesh(domain, 100)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
-    DirichletBoundary().mark(sub_domains, 1)
-    NewmanBoundary().mark(sub_domains, 2)
+    DirichletBoundary().mark(sub_domains, DIRICHLET)
+    NewmanBoundary().mark(sub_domains, NEWMAN)
     dss = ds(subdomain_data=sub_domains, domain=omega)
     omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("CG", omega.ufl_cell(), 1)

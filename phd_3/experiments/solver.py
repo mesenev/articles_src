@@ -3,9 +3,7 @@ from dolfin import *
 from dolfin import dx, ds
 
 from default_values import DefaultValues3D, DefaultValues2D
-
-DIRICHLET = 1
-NEWMAN = 2
+from phd_3.experiments.consts import DIRICHLET, NEWMAN
 
 
 class Problem:
