@@ -22,7 +22,7 @@ for i in xml_files:
     c = plot(theta)
     plt.colorbar(c)
     plt.savefig(f'{folder}/{i.split(".")[0]}.eps')
-    plt.savefig(f'{folder}/{i.split(".")[0]}.png')
+    plt.savefig(f'{folder}/{i.split(".")[0]}.svg')
     plt.close()
 
 # with open('exp2/quality.txt', 'r') as f:

@@ -2,13 +2,12 @@ from dolfin import *
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 
-from default_values import DefaultValues3D, DefaultValues2D
 from phd_3.experiments.consts import DIRICHLET, NEWMAN
 
 
 class Problem:
 
-    def __init__(self, default_values: (DefaultValues3D, DefaultValues2D)):
+    def __init__(self, default_values):
         self.def_values = default_values
         self.theta, self.psi = None, None
         self.p1, self.p2 = None, None

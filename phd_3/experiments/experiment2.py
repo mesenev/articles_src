@@ -26,7 +26,6 @@ def experiment_2(folder='exp2'):
     iterator = problem.find_optimal_control(0.2)
     for i in range(10 ** 1):
         next(iterator)
-        #
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
         print(f'Iteration {i},\tquality: {problem.quality_history[-1]},\t{_diff}')
         if not i % 100:
