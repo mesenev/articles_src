@@ -1,7 +1,8 @@
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
-from dolfin import *
+# noinspection PyUnresolvedReferences
 from mshr import Sphere, Box, generate_mesh
+from dolfin import *
 
 from phd_3.experiments.consts import DIRICHLET, NEWMAN
 from dolfin import *
@@ -13,13 +14,15 @@ from utilities import clear_dir, print_3d_boundaries_on_cube
 
 
 class DirichletBoundary(SubDomain):
-    def inside(self, x, on_boundary):
-        sides = list((abs(x[i] - 1) < DOLFIN_EPS, x[i] < DOLFIN_EPS) for i in range(3))
+    def inside(self, *args, **kwargs):
+        x, on_boundary = args[:2]
+        sides = list(abs(x[i] - 1) < DOLFIN_EPS for i in range(3)) + list(x[i] < DOLFIN_EPS for i in range(3))
         return any(sides) and on_boundary
 
 
 class NewmanBoundary(SubDomain):
-    def inside(self, x, on_boundary, **kwargs):
+    def inside(self, *args, **kwargs):
+        x, on_boundary = args[:2]
         answer = 0.1 < x[0] < 0.9 and 0.1 < x[1] < 0.9 and 0.1 < x[2] < 0.9
         return answer and on_boundary
 
@@ -27,7 +30,7 @@ class NewmanBoundary(SubDomain):
 class DefaultValues3D:
     domain = Box(Point(0, 0, 0), Point(1, 1, 1)) - \
              Sphere(Point(0.5, 0.5, 0.5), .25)
-    omega = generate_mesh(domain, 10)
+    omega = generate_mesh(domain, 5)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
     DirichletBoundary().mark(sub_domains, DIRICHLET)
