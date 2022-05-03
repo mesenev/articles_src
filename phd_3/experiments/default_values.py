@@ -1,7 +1,6 @@
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 from dolfin import *
-from mshr import Circle
 from mshr import *
 from dolfin.cpp.common import DOLFIN_EPS
 from dolfin.cpp.mesh import SubDomain

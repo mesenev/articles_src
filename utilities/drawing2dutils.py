@@ -98,7 +98,7 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
 
     # fig.savefig(f'{folder}/{name}_equal.png', bbox_inches='tight')
     # fig.savefig(f'{folder}/{name}_equal.eps', bbox_inches='tight')
-    ax.set_aspect('auto')
+    ax.set_aspect('auto')  #  or 'equal'
     # fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
     fig.savefig(f'{folder}/{name}_auto.eps', bbox_inches='tight')
     fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
