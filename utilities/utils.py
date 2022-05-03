@@ -69,6 +69,18 @@ class Normal(UserExpression, ABC):
         return (2,) if self.dimension == 2 else (3,)
 
 
+class NormalDerivativeZ(UserExpression):
+    def __init__(self, func, vector_space, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.func = project(grad(func), vector_space)
+
+    def eval(self, value, x):
+        value[0] = self.func(x[0], x[1], 1)[2]
+
+    def __floordiv__(self, other):
+        pass
+
+
 def get_facet_normal(bmesh):
     # https://bitbucket.org/fenics-project/dolfin/issues/53/dirichlet-boundary-conditions-of-the-form
     """Manually calculate FacetNormal function"""
@@ -134,6 +146,8 @@ def get_normal_derivative(function):
     function = interpolate(function, f)
     V = VectorFunctionSpace(mesh, "CG", 1)
     return project(inner(normal, project(grad(project(function, f)), V)), f)
+
+
 # normal_derivative_for_square_mesh()
 
 

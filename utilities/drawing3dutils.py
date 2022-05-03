@@ -38,7 +38,7 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
     cset = [[], [], []]
     mn = min(left_vals.min(), top_vals.min(), right_vals.min())
     mx = max(left_vals.max(), top_vals.max(), right_vals.max())
-    if colorbar_scalable and mn != mx:
+    if colorbar_scalable and abs(mn - mx) > 0.01:
         levels = linspace(mn, mx, 17)
     else:
         levels = linspace(0, 1, 17)
