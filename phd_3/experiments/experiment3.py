@@ -1,6 +1,7 @@
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 # noinspection PyUnresolvedReferences
+from matplotlib import tri
 from mshr import Sphere, Box, generate_mesh
 
 from phd_3.experiments.consts import DIRICHLET, NEWMAN
@@ -8,9 +9,14 @@ from dolfin import *
 from dolfin.cpp.log import set_log_active
 from dolfin.cpp.parameter import parameters
 
+from os import listdir
+from os.path import isfile, join
+from utilities import print_2d_isolines, print_2d, draw_simple_graphic, print_3d_boundaries_on_cube, clear_dir, \
+    NormalDerivativeZ
 from phd_3.experiments.meshes.meshgen import CUBE_CIRCLE
 from solver import Problem
-from utilities import clear_dir, print_3d_boundaries_on_cube
+import matplotlib.pyplot as plt
+from mshr import Rectangle, Circle
 
 set_log_active(False)
 
@@ -30,6 +36,20 @@ class NewmanBoundary(SubDomain):
         x, on_boundary = args[:2]
         answer = 0.1 < x[0] < 0.9 and 0.1 < x[1] < 0.9 and 0.1 < x[2] < 0.9
         return answer and on_boundary
+
+
+class Wrapper(UserExpression):
+    def __floordiv__(self, other):
+        pass
+
+    point = lambda _: Point(_[0], _[1], 0.5)
+
+    def __init__(self, func, *args, **kwargs):
+        self.ggwp = func
+        super().__init__(*args, **kwargs)
+
+    def eval(self, value, x):
+        value[0] = self.ggwp(self.point(x))
 
 
 class DefaultValues3D:
@@ -86,20 +106,23 @@ class BoundaryExpression(UserExpression):
         pass
 
     def eval(self, value, x):
-        value[0] = 0.15 if x[1] < 0.5 else 0.85
+        value[0] = 0.25
+        # if x[0] < DOLFIN_EPS or x[1] < DOLFIN_EPS or x[2] < DOLFIN_EPS:
+        #     value[0] = 0.75
 
 
 default_values = DefaultValues3D(
-    theta_n=Constant(0.5),
+    theta_n=Constant(1),
     theta_b=BoundaryExpression(),
     psi_n_init=Constant(0)
 )
 
 problem = Problem(default_values=default_values)
+problem.solve_boundary()
+folder = 'exp3'
 
 
 def experiment_3(folder='exp3'):
-    problem.solve_boundary()
     # print_3d_boundaries_on_cube(
     #     problem.theta, name='theta_init', folder=folder
     # )
@@ -107,8 +130,8 @@ def experiment_3(folder='exp3'):
     File(f'{folder}/mesh.xml') << default_values.omega
     File(f'{folder}/solution_0.xml') << problem.theta
 
-    iterator = problem.find_optimal_control(2)
-    for i in range(10):
+    iterator = problem.find_optimal_control(4)
+    for i in range(10 ** 3 + 1):
         next(iterator)
         #
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
@@ -121,12 +144,63 @@ def experiment_3(folder='exp3'):
             # print_3d_boundaries_on_cube(
             #     problem.theta, name=f'theta_{i}', folder=folder
             # )
-            break
         with open(f'{folder}/quality.txt', 'w') as f:
             print(*problem.quality_history, file=f)
 
 
-folder = 'exp3'
+def post_prod():
+    with open(f'{folder}/quality.txt', 'r') as f:
+        data = list(map(float, f.read().split()))
+    draw_simple_graphic(data, name='quality', folder=folder)
+
+    omega2d = UnitSquareMesh(50, 50)
+    square = FunctionSpace(omega2d, FiniteElement("CG", omega2d.ufl_cell(), 1))
+    xml_files = [f for f in listdir(folder) if isfile(join(folder, f)) and f.split('.')[1] == 'xml']
+    omega_circle = generate_mesh(Rectangle(Point(0., 0.), Point(1., 1.)) - Circle(Point(0.5, 0.5), .25), 100)
+    f_space = FunctionSpace(omega_circle, FiniteElement("CG", omega_circle.ufl_cell(), 1))
+    t = Function(f_space)
+    triangulation = tri.Triangulation(
+        *omega_circle.coordinates().reshape((-1, 2)).T,
+        triangles=omega_circle.cells()
+    )
+
+    for file_name in filter(lambda x: x.split('.')[0] != 'mesh', xml_files):
+        print(file_name)
+        target = file_name.split('.')[0]
+        theta = Function(problem.theta.function_space(), f'{folder}/{file_name}')
+        theta_n_final = project(NormalDerivativeZ(theta, default_values.vector_space), square)
+        theta_n = problem.def_values.theta_n
+        theta_n_diff = project(abs(theta_n_final - theta_n) / abs(theta_n), square)
+        print_2d_isolines(theta_n_diff, name=target + '_iso', folder=folder, )
+        print_2d(theta_n_diff, name=target + '_square', folder=folder, )
+        print_3d_boundaries_on_cube(theta, folder=folder, name='3d')
+        wrapped_theta = Wrapper(theta, element=f_space.ufl_element())
+        for slice in [
+            ('x', lambda _: Point(0.5, _[0], _[1])),
+            ('y', lambda _: Point(_[0], 0.5, _[1])),
+            ('z', lambda _: Point(_[0], _[1], 0.5)),
+        ]:
+            wrapped_theta.point = slice[1]
+            t.interpolate(wrapped_theta)
+            z = t.compute_vertex_values(omega_circle)
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            ax.set_aspect('equal')
+            plt.tricontour(
+                triangulation, z, colors='k', linewidths=0.4,
+                extent=[0, 100, 0, 100]
+            )
+
+            plt.savefig(f'{folder}/{file_name}_plot{slice[0]}.svg')
+            plt.tricontourf(
+                triangulation, z, linewidths=0.4,
+                # levels=list(0.1 + 0.01 * i for i in range(100)),
+                extent=[0, 100, 0, 100]
+            )
+            plt.colorbar()
+            plt.savefig(f'{folder}/{file_name}_plotf{slice[0]}.svg')
+
+
 if __name__ == "__main__":
     clear_dir(folder)
     try:
@@ -136,6 +210,7 @@ if __name__ == "__main__":
     finally:
         f = File(f'{folder}/solution_final.xml')
         f << problem.theta
-        # print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder=folder)
+        print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder=folder)
 
-    theta = Function(problem.theta.function_space(), f'{folder}/solution_final.xml')
+    post_prod()
+    # theta = Function(problem.theta.function_space(), f'{folder}/solution_final.xml')

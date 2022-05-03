@@ -1,6 +1,6 @@
 from os import listdir
 from os.path import isfile, join
-from mshr import *
+from mshr import (Rectangle, Circle, generate_mesh)
 from dolfin import *
 import matplotlib.pyplot as plt
 
@@ -9,8 +9,8 @@ parameters["form_compiler"]["cpp_optimize"] = True
 
 folder = 'exp2'
 set_log_active(False)
-domain = Rectangle(dolfin.Point(0., 0.), dolfin.Point(1., 1.)) - \
-         Circle(dolfin.Point(0.5, 0.5), .2)
+domain = Rectangle(Point(0., 0.), Point(1., 1.)) - \
+         Circle(Point(0.5, 0.5), .2)
 omega2d = generate_mesh(domain, 100)
 finite_element = FiniteElement("CG", omega2d.ufl_cell(), 1)
 square = FunctionSpace(omega2d, finite_element)

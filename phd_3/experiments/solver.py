@@ -21,9 +21,11 @@ class Problem:
         v = self.def_values.v
         ds = self.ds
         theta = self.def_values.theta
-        a, b, ka, alpha, gamma, r = self.def_values.a, self.def_values.b, \
-                                    self.def_values.ka, self.def_values.alpha, \
-                                    self.def_values.gamma, self.def_values.r
+        a, b, ka, alpha, gamma, r = (
+            self.def_values.a, self.def_values.b,
+            self.def_values.ka, self.def_values.alpha,
+            self.def_values.gamma, self.def_values.r
+        )
         theta_n, psi_n = self.def_values.theta_n, self.psi_n
         theta_b = self.def_values.theta_b
         bc = DirichletBC(self.def_values.simple_space, theta_b, self.def_values.dirichlet_boundary)
@@ -35,14 +37,18 @@ class Problem:
         psi = Function(self.def_values.simple_space)
         solve(psi_equation == psi_src, psi)
 
-        theta_equation = a * inner(grad(theta), grad(v)) * dx \
-                         + b * ka * inner(theta ** 4, v) * dx \
-                         + a * ka / alpha * inner(theta, v) * dx \
-                         + inner(theta, v) * ds(DIRICHLET)
+        theta_equation = (
+                a * inner(grad(theta), grad(v)) * dx
+                + b * ka * inner(theta ** 4, v) * dx
+                + a * ka / alpha * inner(theta, v) * dx
+                + inner(theta, v) * ds(DIRICHLET)
+        )
 
-        theta_src = ka / alpha * inner(psi, v) * dx \
-                    + (a * theta_n + theta_b) * v * ds(DIRICHLET) \
-                    + a * theta_n * v * ds(NEWMAN)
+        theta_src = (
+                ka / alpha * inner(psi, v) * dx
+                + (theta_n + theta_b) * v * ds(DIRICHLET)
+                + theta_n * v * ds(NEWMAN)
+        )
 
         solve(
             theta_equation - theta_src == 0, theta, bc,
@@ -56,16 +62,20 @@ class Problem:
         theta = self.theta
         v = self.def_values.v
         ds = self.ds
-        a, b, ka, alpha, gamma, r = self.def_values.a, self.def_values.b, \
-                                    self.def_values.ka, self.def_values.alpha, \
-                                    self.def_values.gamma, self.def_values.r
+        a, b, ka, alpha, gamma, r = (
+            self.def_values.a, self.def_values.b,
+            self.def_values.ka, self.def_values.alpha,
+            self.def_values.gamma, self.def_values.r
+        )
         theta_b = self.def_values.theta_b
 
         p1, p2 = TrialFunction(self.def_values.simple_space), TrialFunction(self.def_values.simple_space)
 
-        p1_equation = a * inner(grad(p1), grad(v)) * dx \
-                      + inner(p1, v) * ds(DIRICHLET) + \
-                      + ka * inner((4 * b * theta + a / alpha) * p1, v) * dx
+        p1_equation = (
+                a * inner(grad(p1), grad(v)) * dx
+                + inner(p1, v) * ds(DIRICHLET) +
+                + ka * inner((4 * b * theta + a / alpha) * p1, v) * dx
+        )
         p1_src = - inner(theta - theta_b, v) * ds(NEWMAN)
 
         p1 = Function(self.def_values.simple_space)
