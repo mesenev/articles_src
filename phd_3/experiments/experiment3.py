@@ -8,6 +8,7 @@ from dolfin import *
 from dolfin.cpp.log import set_log_active
 from dolfin.cpp.parameter import parameters
 
+from phd_3.experiments.meshes.meshgen import CUBE_CIRCLE
 from solver import Problem
 from utilities import clear_dir, print_3d_boundaries_on_cube
 
@@ -15,6 +16,7 @@ set_log_active(False)
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
+
 
 class DirichletBoundary(SubDomain):
     def inside(self, *args, **kwargs):
@@ -31,9 +33,7 @@ class NewmanBoundary(SubDomain):
 
 
 class DefaultValues3D:
-    domain = Box(Point(0, 0, 0), Point(1, 1, 1)) - \
-             Sphere(Point(0.5, 0.5, 0.5), .25)
-    omega = generate_mesh(domain, 12)
+    omega = Mesh(CUBE_CIRCLE)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
     DirichletBoundary().mark(sub_domains, DIRICHLET)
@@ -82,6 +82,9 @@ class DefaultValues3D:
 
 
 class BoundaryExpression(UserExpression):
+    def __floordiv__(self, other):
+        pass
+
     def eval(self, value, x):
         value[0] = 0.15 if x[1] < 0.5 else 0.85
 
@@ -101,8 +104,8 @@ def experiment_3(folder='exp3'):
     #     problem.theta, name='theta_init', folder=folder
     # )
     problem.quality()
-    f = File(f'{folder}/solution_0.xml')
-    f << problem.theta
+    File(f'{folder}/mesh.xml') << default_values.omega
+    File(f'{folder}/solution_0.xml') << problem.theta
 
     iterator = problem.find_optimal_control(2)
     for i in range(10):
