@@ -5,8 +5,11 @@ def cube_circle_gen():
     filename = CUBE_CIRCLE.split('/')[1]
     from mshr import Sphere, Box, generate_mesh
     from dolfin import Point, File, Mesh
-    domain = Box(Point(0, 0, 0), Point(1, 1, 1)) - Sphere(Point(0.5, 0.5, 0.5), .25)
-    File(filename) << generate_mesh(domain, 36)
+    domain = (
+            Box(Point(0, 0, 0), Point(1, 1, 1))
+            - Sphere(Point(0.5, 0.5, 0.5), .15)
+    )
+    File(filename) << generate_mesh(domain, 30)
     omega = Mesh(filename)
     return
 

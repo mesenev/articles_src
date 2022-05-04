@@ -4,7 +4,7 @@ from dolfin import *
 
 from phd_2.optimization.solver import SolveOptimization
 from utilities import print_2d_isolines, get_normal_derivative_3d, print_3d_boundaries_on_cube, function2d_dumper, \
-    print_2d
+    print_2d, NormalDerivativeZ
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
@@ -13,16 +13,6 @@ omega2d = UnitSquareMesh(50, 50)
 finite_element = FiniteElement("CG", omega2d.ufl_cell(), 1)
 square = FunctionSpace(omega2d, finite_element)
 problem = SolveOptimization()
-
-
-class NormalDerivativeZ(UserExpression, ABC):
-    def __init__(self, func, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.func = project(grad(func), problem.vector_space)
-
-    def eval(self, value, x):
-        value[0] = self.func(x[0], x[1], 1)[-1]
-
 
 problem._r = Constant(0.5)
 problem.phi_n = Constant(0.7)
@@ -50,5 +40,5 @@ for i in [
         # table=True,
         # levels=[0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.01, 0.05, 0.1]
     )
-    print_2d(theta_n_diff, name=target + '_square', folder='scratch',)
+    print_2d(theta_n_diff, name=target + '_square', folder='scratch', )
     # print_3d_boundaries_on_cube(theta_n_diff, name=target + '_abs', folder='scratch')

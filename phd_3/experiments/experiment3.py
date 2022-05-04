@@ -14,26 +14,26 @@ from os.path import isfile, join
 from utilities import print_2d_isolines, print_2d, draw_simple_graphic, print_3d_boundaries_on_cube, clear_dir, \
     NormalDerivativeZ
 from phd_3.experiments.meshes.meshgen import CUBE_CIRCLE
-from solver import Problem
+from phd_3.experiments.solver import Problem
 import matplotlib.pyplot as plt
 from mshr import Rectangle, Circle
 
-set_log_active(False)
+# set_log_active(False)
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
 
 
-class DirichletBoundary(SubDomain):
+class OutsideCubeBoundary(SubDomain):
     def inside(self, *args, **kwargs):
         x, on_boundary = args[:2]
         sides = list(abs(x[i] - 1) < DOLFIN_EPS for i in range(3)) + list(x[i] < DOLFIN_EPS for i in range(3))
         return any(sides) and on_boundary
 
 
-class NewmanBoundary(SubDomain):
-    def inside(self, *args, **kwargs):
-        x, on_boundary = args[:2]
+class InsideCircleBoundary(SubDomain):
+    def inside(self, x, on_boundary, *args, **kwargs):
+        # return on_boundary
         answer = 0.1 < x[0] < 0.9 and 0.1 < x[1] < 0.9 and 0.1 < x[2] < 0.9
         return answer and on_boundary
 
@@ -56,8 +56,12 @@ class DefaultValues3D:
     omega = Mesh(CUBE_CIRCLE)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
-    DirichletBoundary().mark(sub_domains, DIRICHLET)
-    NewmanBoundary().mark(sub_domains, NEWMAN)
+    a = list()
+    OutsideCubeBoundary().mark(sub_domains, DIRICHLET)
+    a += [len(list(filter(lambda x: x == 1, sub_domains.array())))]
+    InsideCircleBoundary().mark(sub_domains, NEWMAN)
+    a.append(len(list(filter(lambda x: x == 1, sub_domains.array()))))
+    a.append(len(list(filter(lambda x: x == 2, sub_domains.array()))))
     dss = ds(subdomain_data=sub_domains, domain=omega)
     omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("CG", omega.ufl_cell(), 1)
@@ -89,7 +93,7 @@ class DefaultValues3D:
         for key, val in kwargs.items():
             setattr(self, key, val)
         self.recalculate_r()
-        self.dirichlet_boundary = DirichletBoundary()
+        self.dirichlet_boundary = OutsideCubeBoundary()
 
     def recalculate_r(self):
         self.r = project(
@@ -122,7 +126,7 @@ problem.solve_boundary()
 folder = 'exp3'
 
 
-def experiment_3(folder='exp3'):
+def experiment_3():
     # print_3d_boundaries_on_cube(
     #     problem.theta, name='theta_init', folder=folder
     # )
@@ -130,7 +134,7 @@ def experiment_3(folder='exp3'):
     File(f'{folder}/mesh.xml') << default_values.omega
     File(f'{folder}/solution_0.xml') << problem.theta
 
-    iterator = problem.find_optimal_control(4)
+    iterator = problem.find_optimal_control(2)
     for i in range(10 ** 3 + 1):
         next(iterator)
         #
@@ -164,12 +168,14 @@ def post_prod():
         triangles=omega_circle.cells()
     )
 
-    for file_name in filter(lambda x: x.split('.')[0] != 'mesh', xml_files):
+    for file_name in filter(lambda x: x.split('.')[0] == 'solution_final', xml_files):
         print(file_name)
         target = file_name.split('.')[0]
         theta = Function(problem.theta.function_space(), f'{folder}/{file_name}')
         theta_n_final = project(NormalDerivativeZ(theta, default_values.vector_space), square)
         theta_n = problem.def_values.theta_n
+        print_2d_isolines(theta_n_final, name='deriv_n_theta_iso', folder=folder, )
+        print_2d_isolines(theta_n, name='theta_n_iso', folder=folder, )
         theta_n_diff = project(abs(theta_n_final - theta_n) / abs(theta_n), square)
         print_2d_isolines(theta_n_diff, name=target + '_iso', folder=folder, )
         print_2d(theta_n_diff, name=target + '_square', folder=folder, )
@@ -204,7 +210,7 @@ def post_prod():
 if __name__ == "__main__":
     clear_dir(folder)
     try:
-        experiment_3(folder)
+        experiment_3()
     except KeyboardInterrupt:
         print('Keyboard interruption signal. Wrapping out.')
     finally:
@@ -213,4 +219,3 @@ if __name__ == "__main__":
         print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder=folder)
 
     post_prod()
-    # theta = Function(problem.theta.function_space(), f'{folder}/solution_final.xml')

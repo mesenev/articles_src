@@ -44,13 +44,14 @@ def print_2d(v, name='function', folder='results', colormap=default_colormap, ta
     else:
         c = plt.imshow(v, cmap=colormap)
     try:
-        mx, mn = v.max(), v.min()
-        ticks = [mn] + [mn + (mx - mn) / 4 * i for i in range(1, 4)] + [mx]
+        mx, mn = v.vector().max(), v.vector().min()
+        ticks = [mn] + [mn + (mx - mn) / 10 * i for i in range(1, 10)] + [mx]
         plt.colorbar(
             c, ticks=ticks, extend='both', extendfrac='auto',
             spacing='uniform', orientation='vertical'
         )
-    except:
+    except Exception as e:
+        print(e)
         plt.colorbar(c)
     # c.axes.set_xticks([-1, 89])
     # c.axes.set_yticks([0])

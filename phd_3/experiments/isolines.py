@@ -5,7 +5,7 @@ import matplotlib.tri as tri
 from experiment3 import *
 from dolfin import *
 from mshr import *
-from mshr.cpp import Rectangle, generate_mesh
+from mshr.cpp import Rectangle, Circle, generate_mesh
 
 from utilities import print_3d_boundaries_on_cube
 

@@ -4,7 +4,7 @@ from dolfin import dx, ds
 from matplotlib import tri
 from mshr import Sphere, Box, generate_mesh
 
-from phd_3.experiments.consts import DIRICHLET, NEWMAN
+from consts import DIRICHLET, NEWMAN
 from dolfin import *
 from dolfin.cpp.log import set_log_active
 from dolfin.cpp.parameter import parameters
@@ -13,7 +13,7 @@ from os import listdir
 from os.path import isfile, join
 from utilities import print_2d_isolines, print_2d, draw_simple_graphic, print_3d_boundaries_on_cube, clear_dir, \
     NormalDerivativeZ
-from phd_3.experiments.meshes.meshgen import CUBE_CIRCLE
+from meshes.meshgen import CUBE_CIRCLE
 from solver import Problem
 import matplotlib.pyplot as plt
 from mshr import Rectangle, Circle
