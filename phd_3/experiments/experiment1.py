@@ -1,4 +1,3 @@
-
 from dolfin import *
 from dolfin.cpp.log import set_log_active
 from dolfin.cpp.parameter import parameters
@@ -20,8 +19,10 @@ default_values = DefaultValues3D(
 
 problem = Problem(default_values=default_values)
 problem.solve_boundary()
+folder = 'exp1'
 
-def experiment_1(folder='exp1'):
+
+def experiment_1():
     print_3d_boundaries_on_cube(
         problem.theta, name='theta_init', folder='exp1'
     )
@@ -29,8 +30,8 @@ def experiment_1(folder='exp1'):
     f = File('exp1/solution_0.xml')
     f << problem.theta
 
-    iterator = problem.find_optimal_control(5)
-    for i in range(10 ** 3):
+    iterator = problem.find_optimal_control(10)
+    for i in range(10 ** 3 + 1):
         next(iterator)
         #
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
