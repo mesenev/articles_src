@@ -135,7 +135,7 @@ def experiment_3():
     File(f'{folder}/solution_0.xml') << problem.theta
 
     iterator = problem.find_optimal_control(2)
-    for i in range(10 ** 3 + 1):
+    for i in range(10 ** 5 + 1):
         next(iterator)
         #
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
@@ -168,7 +168,7 @@ def post_prod():
         triangles=omega_circle.cells()
     )
 
-    for file_name in filter(lambda x: x.split('.')[0] == 'solution_final', xml_files):
+    for file_name in filter(lambda x: x.split('.')[0] != 'mesh', xml_files):
         print(file_name)
         target = file_name.split('.')[0]
         theta = Function(problem.theta.function_space(), f'{folder}/{file_name}')
@@ -208,14 +208,14 @@ def post_prod():
 
 
 if __name__ == "__main__":
-    clear_dir(folder)
-    try:
-        experiment_3()
-    except KeyboardInterrupt:
-        print('Keyboard interruption signal. Wrapping out.')
-    finally:
-        f = File(f'{folder}/solution_final.xml')
-        f << problem.theta
-        print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder=folder)
+    # clear_dir(folder)
+    # try:
+    #     experiment_3()
+    # except KeyboardInterrupt:
+    #     print('Keyboard interruption signal. Wrapping out.')
+    # finally:
+    #     f = File(f'{folder}/solution_final.xml')
+    #     f << problem.theta
+    #     print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder=folder)
 
     post_prod()

@@ -6,6 +6,8 @@ from dolfin.cpp.common import DOLFIN_EPS
 from dolfin.cpp.mesh import SubDomain
 from mshr.cpp import Rectangle, generate_mesh
 
+from phd_3.experiments.consts import NEWMAN, DIRICHLET
+
 
 class DirichletBoundary(SubDomain):
     def inside(self, x, on_boundary):
@@ -30,8 +32,8 @@ class DefaultValues3D:
     omega = UnitCubeMesh(*([25] * 3))
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
-    DirichletBoundary().mark(sub_domains, 1)
-    NewmanBoundary().mark(sub_domains, 2)
+    DirichletBoundary().mark(sub_domains, DIRICHLET)
+    NewmanBoundary().mark(sub_domains, NEWMAN)
     dss = ds(subdomain_data=sub_domains, domain=omega)
     omega_b = BoundaryMesh(omega, 'exterior')
     finite_element = FiniteElement("CG", omega.ufl_cell(), 1)
@@ -68,7 +70,8 @@ class DefaultValues3D:
     def recalculate_r(self):
         self.r = project(
             Expression(
-                'alpha * b * gamma * pow(theta_b, 4) + alpha * a * theta_b + gamma * a * theta_n', degree=3,
+                'alpha * b * gamma * pow(theta_b, 4) + alpha'
+                '* a * theta_b + gamma * a * theta_n', degree=3,
                 a=self.a, alpha=self.alpha, b=self.b, gamma=self.gamma,
                 theta_b=self.theta_b, theta_n=self.theta_n
             ),

@@ -81,6 +81,18 @@ class NormalDerivativeZ(UserExpression):
         pass
 
 
+class NormalDerivativeZ_0(UserExpression):
+    def __init__(self, func, vector_space, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.func = project(grad(func), vector_space)
+
+    def eval(self, value, x):
+        value[0] = self.func(x[0], x[1], 0)[2]
+
+    def __floordiv__(self, other):
+        pass
+
+
 def get_facet_normal(bmesh):
     # https://bitbucket.org/fenics-project/dolfin/issues/53/dirichlet-boundary-conditions-of-the-form
     """Manually calculate FacetNormal function"""

@@ -30,10 +30,10 @@ def experiment_1():
     f = File('exp1/solution_0.xml')
     f << problem.theta
 
-    iterator = problem.find_optimal_control(10)
+    iterator = problem.find_optimal_control(0.2)
     for i in range(10 ** 3 + 1):
         next(iterator)
-        #
+
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
         print(f'Iteration {i},\tquality: {problem.quality_history[-1]},\t{_diff}')
         if not i % 100:
@@ -49,7 +49,7 @@ def experiment_1():
 
 
 if __name__ == "__main__":
-    clear_dir('exp1')
+    clear_dir(folder)
     try:
         experiment_1()
     except KeyboardInterrupt:
@@ -57,4 +57,4 @@ if __name__ == "__main__":
     finally:
         f = File(f'exp1/solution_final.xml')
         f << problem.theta
-        print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder='exp1')
+        print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder=folder)
