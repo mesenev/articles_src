@@ -1,34 +1,15 @@
-from os import listdir
-from os.path import isfile, join
-from matplotlib import pyplot as plt
-import matplotlib.tri as tri
 from experiment3 import *
 from dolfin import *
 from mshr import *
 from mshr.cpp import Rectangle, Circle, generate_mesh
 
-from utilities import print_3d_boundaries_on_cube
+from utilities import print_3d_boundaries_on_cube, Wrapper
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
 
 folder = 'exp3'
 set_log_active(False)
-
-
-class Wrapper(UserExpression):
-    def __floordiv__(self, other):
-        pass
-
-    point = lambda _: Point(_[0], _[1], 0.5)
-
-    def __init__(self, func, *args, **kwargs):
-        self.ggwp = func
-        super().__init__(*args, **kwargs)
-
-    def eval(self, value, x):
-        value[0] = self.ggwp(self.point(x))
-
 
 domain = Rectangle(dolfin.Point(0., 0.), dolfin.Point(1., 1.)) - \
          Circle(dolfin.Point(0.5, 0.5), .25)

@@ -6,7 +6,7 @@ from abc import ABC
 from os import mkdir
 
 from dolfin import *
-from dolfin import ds
+from dolfin import ds, UserExpression, Point
 # noinspection PyUnresolvedReferences
 from mpl_toolkits.mplot3d import Axes3D
 from numpy import cross, sqrt, newaxis, vectorize
@@ -190,3 +190,17 @@ def get_normal_derivative_3d(function, f_space, v_space):
     normal = normal_function[0]
     function = interpolate(function, f_space)
     return project(inner(normal, project(grad(function), v_space)), f_space)
+
+
+class Wrapper(UserExpression):
+    def __floordiv__(self, other):
+        pass
+
+    point = lambda _, __: Point(0.5, _, __)
+
+    def __init__(self, func, *args, **kwargs):
+        self.ggwp = func
+        super().__init__(*args, **kwargs)
+
+    def eval(self, value, x):
+        value[0] = self.ggwp(self.point(x))
