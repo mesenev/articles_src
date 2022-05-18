@@ -2,21 +2,20 @@
 from dolfin import dx, ds
 # noinspection PyUnresolvedReferences
 from matplotlib import tri
-from mshr import Sphere, Box, generate_mesh
+# noinspection PyUnresolvedReferences
+from mshr import Sphere, Box, generate_mesh, Rectangle, Circle
 
 from phd_3.experiments.consts import DIRICHLET, NEWMAN
 from dolfin import *
-from dolfin.cpp.log import set_log_active
 from dolfin.cpp.parameter import parameters
 
 from os import listdir
 from os.path import isfile, join
 from utilities import print_2d_isolines, print_2d, draw_simple_graphic, print_3d_boundaries_on_cube, clear_dir, \
-    NormalDerivativeZ
+    NormalDerivativeZ, Wrapper
 from phd_3.experiments.meshes.meshgen import CUBE_CIRCLE
 from phd_3.experiments.solver import Problem
 import matplotlib.pyplot as plt
-from mshr import Rectangle, Circle
 
 # set_log_active(False)
 
@@ -36,20 +35,6 @@ class InsideCircleBoundary(SubDomain):
         # return on_boundary
         answer = 0.1 < x[0] < 0.9 and 0.1 < x[1] < 0.9 and 0.1 < x[2] < 0.9
         return answer and on_boundary
-
-
-class Wrapper(UserExpression):
-    def __floordiv__(self, other):
-        pass
-
-    point = lambda _: Point(_[0], _[1], 0.5)
-
-    def __init__(self, func, *args, **kwargs):
-        self.ggwp = func
-        super().__init__(*args, **kwargs)
-
-    def eval(self, value, x):
-        value[0] = self.ggwp(self.point(x))
 
 
 class DefaultValues3D:
@@ -127,9 +112,6 @@ folder = 'exp3'
 
 
 def experiment_3():
-    # print_3d_boundaries_on_cube(
-    #     problem.theta, name='theta_init', folder=folder
-    # )
     problem.quality()
     File(f'{folder}/mesh.xml') << default_values.omega
     File(f'{folder}/solution_0.xml') << problem.theta
@@ -180,7 +162,7 @@ def post_prod():
         print_2d_isolines(theta_n_diff, name=target + '_iso', folder=folder, )
         print_2d(theta_n_diff, name=target + '_square', folder=folder, )
         print_3d_boundaries_on_cube(theta, folder=folder, name='3d')
-        wrapped_theta = Wrapper(theta, element=f_space.ufl_element())
+        wrapped_theta = Wrapper(lambda x: Point(0.5, x[0], x[1]), theta, element=f_space.ufl_element())
         for slice in [
             ('x', lambda _: Point(0.5, _[0], _[1])),
             ('y', lambda _: Point(_[0], 0.5, _[1])),

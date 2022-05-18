@@ -48,14 +48,14 @@ class DefaultValues3D:
     state = Function(state_space)
     theta, psi = Function(simple_space), Function(simple_space)
 
-    def __init__(self, theta_n, theta_b, psi_n_init, **kwargs):
+    def __init__(self, q_b, theta_b, psi_n_init, **kwargs):
         self.a = 0.6
         self.alpha = 0.333
         self.ka = 1
         self.b = 0.025
         self.beta = 1
         self.gamma = 1
-        self.theta_n = theta_n
+        self.q_b = q_b
         self.psi_n = psi_n_init
         self.theta_b = theta_b
         self.r = None
@@ -71,9 +71,9 @@ class DefaultValues3D:
         self.r = project(
             Expression(
                 'alpha * b * gamma * pow(theta_b, 4) + alpha'
-                '* a * theta_b + gamma * a * theta_n', degree=3,
+                '* a * theta_b + gamma * a * q_b', degree=3,
                 a=self.a, alpha=self.alpha, b=self.b, gamma=self.gamma,
-                theta_b=self.theta_b, theta_n=self.theta_n
+                theta_b=self.theta_b, q_b=self.q_b
             ),
             self.simple_space)
 
@@ -110,14 +110,14 @@ class DefaultValues2D:
     state = Function(state_space)
     theta, psi = Function(simple_space), Function(simple_space)
 
-    def __init__(self, theta_n, theta_b, psi_n_init, **kwargs):
+    def __init__(self, q_b, theta_b, psi_n_init, **kwargs):
         self.a = 0.6
         self.alpha = 0.333
         self.ka = 1
         self.b = 0.025
         self.beta = 1
         self.gamma = 1
-        self.theta_n = theta_n
+        self.q_b = q_b
         self.psi_n = psi_n_init
         self.theta_b = theta_b
         self.r = None
@@ -133,9 +133,9 @@ class DefaultValues2D:
         self.r = project(
             Expression(
                 'alpha * b * gamma * pow(theta_b, 4) '
-                '+ alpha * a * theta_b + gamma * a * theta_n', degree=2,
+                '+ alpha * a * theta_b + gamma * a * q_b', degree=2,
                 a=self.a, alpha=self.alpha, b=self.b, gamma=self.gamma,
-                theta_b=self.theta_b, theta_n=self.theta_n
+                theta_b=self.theta_b, q_b=self.q_b
             ),
             self.simple_space)
 

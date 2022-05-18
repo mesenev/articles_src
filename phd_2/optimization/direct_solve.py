@@ -3,7 +3,7 @@ from dolfin import dx, ds
 from dolfin import *
 
 from default_values import DefaultValues3D
-from solver import SolveBoundary
+from phd_2.optimization.solver import SolveBoundary
 
 
 class DirectSolve(DefaultValues3D):

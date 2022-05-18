@@ -87,7 +87,7 @@ class NormalDerivativeZ_0(UserExpression):
         self.func = project(grad(func), vector_space)
 
     def eval(self, value, x):
-        value[0] = self.func(x[0], x[1], 0)[2]
+        value[0] = -self.func(x[0], x[1], 0)[2]
 
     def __floordiv__(self, other):
         pass
@@ -142,7 +142,7 @@ def normal_for_square_mesh():
     nh = Function(V)
 
     solve(A, nh.vector(), L)
-    File("nh.xml") << nh
+    # File("nh.xml") << nh
     return nh
 
 
@@ -196,11 +196,10 @@ class Wrapper(UserExpression):
     def __floordiv__(self, other):
         pass
 
-    point = lambda _, __: Point(0.5, _, __)
-
-    def __init__(self, func, *args, **kwargs):
+    def __init__(self, lmbd, func, *args, **kwargs):
         self.ggwp = func
+        self.wrap = lmbd
         super().__init__(*args, **kwargs)
 
     def eval(self, value, x):
-        value[0] = self.ggwp(self.point(x))
+        value[0] = self.ggwp(self.wrap(x))

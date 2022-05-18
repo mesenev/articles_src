@@ -57,15 +57,14 @@ class DefaultValues3D:
             setattr(self, key, val)
 
     def recalculate_r(self):
-        # self._r = interpolate(
-        #     Expression(
-        #         'a * (theta_n + theta_b)',
-        #         degree=3,
-        #         a=self.a, theta_n=self.theta_n,
-        #         beta=self.beta, theta_b=self.theta_b
-        #     ),
-        #     self.simple_space)
-        pass
+        self._r = project(
+            Expression(
+                'a * (theta_n + theta_b)',
+                degree=3,
+                a=self.a, theta_n=self.theta_n,
+                beta=self.beta, theta_b=self.theta_b
+            ),
+            self.simple_space)
 
 
 _n_3d = FacetNormal(DefaultValues3D.omega)
