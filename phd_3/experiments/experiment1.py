@@ -38,12 +38,7 @@ default_values = DefaultValues3D(
 problem = Problem(default_values=default_values)
 problem.solve_boundary()
 folder = 'exp1'
-print_3d_boundaries_on_cube(q_b, name='q_b', folder=folder)
-print_3d_boundaries_on_cube(gamma, name='gamma', folder=folder)
-print_3d_boundaries_on_cube(theta_init, name='theta_init', folder=folder)
-print_3d_boundaries_on_cube(phi, name='phi', folder=folder)
-print_3d_boundaries_on_cube(phi_n, name='phi_n', folder=folder)
-exit()
+
 
 
 def experiment_1():

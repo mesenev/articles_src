@@ -18,7 +18,7 @@ class DirichletBoundary(SubDomain):
 
 class NewmanBoundary(SubDomain):
     def inside(self, x, on_boundary, **kwargs):
-        answer = x[2] < DOLFIN_EPS or abs(x[2] - 1.0) < DOLFIN_EPS
+        answer = abs(x[2] - 1.0) < DOLFIN_EPS
         return answer and on_boundary
 
 
@@ -71,7 +71,7 @@ class DefaultValues3D:
         self.r = project(
             Expression(
                 'alpha * b * gamma * pow(theta_b, 4) + alpha'
-                '* a * theta_b + gamma * a * q_b', degree=3,
+                '* a * theta_b * gamma + gamma * alpha * q_b', degree=3,
                 a=self.a, alpha=self.alpha, b=self.b, gamma=self.gamma,
                 theta_b=self.theta_b, q_b=self.q_b
             ),
