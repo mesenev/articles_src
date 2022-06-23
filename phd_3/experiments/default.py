@@ -1,13 +1,8 @@
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 from dolfin import *
-from mshr import *
-from dolfin.cpp.common import DOLFIN_EPS
-from dolfin.cpp.mesh import SubDomain
-from mshr.cpp import Rectangle, generate_mesh
 
-from phd_3.experiments.consts import NEWMAN, DIRICHLET
-from utilities import print_3d_boundaries_on_cube, get_normal_derivative_3d, Wrapper, print_2d, NormalDerivativeZ
+from utilities import print_3d_boundaries_on_cube, get_normal_derivative_3d
 
 default_values = dict(
     a=0.333,
@@ -71,7 +66,7 @@ def solve_direct():
     solve(
         theta_equation + phi_equation - theta_src - phi_src == 0, state,
         form_compiler_parameters={"optimize": True, 'quadrature_degree': 3},
-        solver_parameters={"newton_solver": {"linear_solver": "mumps"}}
+        solver_parameters={"newton_solver": {"linear_solver": "gmres"}}
     )
     File(f'{default_values["folder"]}/state.xml') << state
 

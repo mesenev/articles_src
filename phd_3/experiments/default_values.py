@@ -1,7 +1,7 @@
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
 from dolfin import *
-from mshr import *
+from mshr import Circle
 from dolfin.cpp.common import DOLFIN_EPS
 from dolfin.cpp.mesh import SubDomain
 from mshr.cpp import Rectangle, generate_mesh
@@ -61,7 +61,6 @@ class DefaultValues3D:
         self.r = None
         self.lmbd = 1
         self.epsilon = 0.1 ** 10
-        self.init_control = Constant(0.2)
         for key, val in kwargs.items():
             setattr(self, key, val)
         self.recalculate_r()
@@ -89,8 +88,8 @@ class DirichletBoundary2D(SubDomain):
 
 
 class DefaultValues2D:
-    domain = Rectangle(dolfin.Point(0., 0.), dolfin.Point(1., 1.)) - \
-             Circle(dolfin.Point(0.5, 0.5), .2)
+    domain = Rectangle(Point(0., 0.), Point(1., 1.)) - \
+             Circle(Point(0.5, 0.5), .2)
     omega = generate_mesh(domain, 100)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)

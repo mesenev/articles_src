@@ -61,20 +61,19 @@ class DefaultValues3D:
     state = Function(state_space)
     theta, psi = Function(simple_space), Function(simple_space)
 
-    def __init__(self, theta_n, theta_b, psi_n_init, **kwargs):
+    def __init__(self, q_b, theta_b, psi_n_init, **kwargs):
         self.a = 0.6
         self.alpha = 0.333
         self.ka = 1
         self.b = 0.025
         self.beta = 1
         self.gamma = 1
-        self.theta_n = theta_n
+        self.q_b = q_b
         self.psi_n = psi_n_init
         self.theta_b = theta_b
         self.r = None
         self.lmbd = 1
         self.epsilon = 0.1 ** 10
-        self.init_control = Constant(0.2)
         for key, val in kwargs.items():
             setattr(self, key, val)
         self.recalculate_r()
@@ -85,7 +84,7 @@ class DefaultValues3D:
             Expression(
                 'alpha * b * gamma * pow(theta_b, 4) + alpha * a * theta_b + gamma * a * theta_n', degree=3,
                 a=self.a, alpha=self.alpha, b=self.b, gamma=self.gamma,
-                theta_b=self.theta_b, theta_n=self.theta_n
+                theta_b=self.theta_b, theta_n=self.q_b
             ),
             self.simple_space)
 
@@ -96,14 +95,16 @@ class BoundaryExpression(UserExpression):
 
     def eval(self, value, x):
         value[0] = 0.25
-        # if x[0] < DOLFIN_EPS or x[1] < DOLFIN_EPS or x[2] < DOLFIN_EPS:
-        #     value[0] = 0.75
+        borders = [x[0], abs(x[0] - 1), x[1], abs(x[1] - 1), x[2], abs(x[2] - 1)]
+        if any(map(lambda _: _ < DOLFIN_EPS, borders)):
+            value[0] = -0.3
 
 
 default_values = DefaultValues3D(
-    theta_n=Constant(1),
-    theta_b=BoundaryExpression(),
-    psi_n_init=Constant(0)
+    theta_b=Constant(0.1),
+    q_b=BoundaryExpression(),
+    # q_b=Constant(0.1),
+    psi_n_init=Constant(0.3)
 )
 
 problem = Problem(default_values=default_values)
@@ -116,13 +117,13 @@ def experiment_3():
     File(f'{folder}/mesh.xml') << default_values.omega
     File(f'{folder}/solution_0.xml') << problem.theta
 
-    iterator = problem.find_optimal_control(2)
+    iterator = problem.find_optimal_control(0.2)
     for i in range(10 ** 5 + 1):
         next(iterator)
         #
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
         print(f'Iteration {i},\tquality: {problem.quality_history[-1]},\t{_diff}')
-        # if not i % 100:
+        # if not i % 1000:
         #     problem.lambda_ += 0.1
         if i in [50, 100, 1000, 5000, 10000]:
             f = File(f'{folder}/solution_{i}.xml')
@@ -190,14 +191,14 @@ def post_prod():
 
 
 if __name__ == "__main__":
-    # clear_dir(folder)
-    # try:
-    #     experiment_3()
-    # except KeyboardInterrupt:
-    #     print('Keyboard interruption signal. Wrapping out.')
-    # finally:
-    #     f = File(f'{folder}/solution_final.xml')
-    #     f << problem.theta
-    #     print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder=folder)
+    clear_dir(folder)
+    try:
+        experiment_3()
+    except KeyboardInterrupt:
+        print('Keyboard interruption signal. Wrapping out.')
+    finally:
+        f = File(f'{folder}/solution_final.xml')
+        f << problem.theta
+        print_3d_boundaries_on_cube(problem.theta, name=f'theta_final', folder=folder)
 
     post_prod()

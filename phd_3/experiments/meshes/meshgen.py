@@ -9,7 +9,7 @@ def cube_circle_gen():
             Box(Point(0, 0, 0), Point(1, 1, 1))
             - Sphere(Point(0.5, 0.5, 0.5), .15)
     )
-    File(filename) << generate_mesh(domain, 30)
+    File(filename) << generate_mesh(domain, 33)
     omega = Mesh(filename)
     return
 

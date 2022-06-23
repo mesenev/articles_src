@@ -11,7 +11,6 @@ class Problem:
         self.def_values = default_values
         self.theta, self.psi = None, None
         self.p1, self.p2 = None, None
-        self.control = default_values.init_control
         self.ds = default_values.dss
         self.lambda_ = 1
         self.quality_history = list()
@@ -51,7 +50,7 @@ class Problem:
         )
 
         solve(
-            theta_equation - theta_src == 0, theta, bc,
+            theta_equation - theta_src == 0, theta,
             form_compiler_parameters={"optimize": True, 'quadrature_degree': 3},
             solver_parameters={"newton_solver": {"maximum_iterations": 500}}
         )
