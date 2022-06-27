@@ -65,7 +65,6 @@ def draw_2d_complex(square, omega2d, function, filename):
     plt.savefig(f'{folder}/{filename}f.svg')
 
 
-
 def experiment_2(iterations=20):
     clear_dir(folder)
     c = plot(problem.theta)
