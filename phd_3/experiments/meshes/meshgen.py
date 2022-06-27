@@ -1,4 +1,5 @@
 CUBE_CIRCLE = 'meshes/cube-circle-12.xml'
+SQUARE_CIRCLE = 'meshes/square-circle-12.xml'
 
 
 def cube_circle_gen():
@@ -14,5 +15,20 @@ def cube_circle_gen():
     return
 
 
+def square_circle_gen():
+    filename = SQUARE_CIRCLE.split('/')[1]
+    from mshr import Rectangle, Circle, generate_mesh
+    from dolfin import Point, File, Mesh
+    domain = (
+            Rectangle(Point(0., 0.), Point(1., 1.)) -
+            Circle(Point(0.5, 0.5), .2)
+    )
+    File(filename) << generate_mesh(domain, 200)
+    omega = Mesh(filename)
+    return
+
+
 if __name__ == '__main__':
-    cube_circle_gen()
+    # cube_circle_gen()
+    # square_circle_gen()
+    exit(0)

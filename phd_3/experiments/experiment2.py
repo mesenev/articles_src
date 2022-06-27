@@ -24,7 +24,7 @@ def experiment_2(folder='exp2'):
     f << problem.theta
 
     iterator = problem.find_optimal_control(0.2)
-    for i in range(10 ** 1):
+    for i in range(10 ** 1 + 1):
         next(iterator)
         _diff = problem.quality_history[-2] - problem.quality_history[-1]
         print(f'Iteration {i},\tquality: {problem.quality_history[-1]},\t{_diff}')
@@ -43,7 +43,7 @@ def experiment_2(folder='exp2'):
 if __name__ == "__main__":
     folder = 'exp2'
     default_values = DefaultValues2D(
-        theta_n=Constant(0.2),
+        q_b=Constant(0.2),
         theta_b=Expression('0.2 + x[1] / 2', degree=2),
         psi_n_init=Expression('-0.4 + x[1] / 2', degree=2),
     )
@@ -59,11 +59,15 @@ if __name__ == "__main__":
     plt.savefig(f'{folder}/psi_init.png')
     iterator = problem.find_optimal_control(2)
     next(iterator)
-    for i in range(10 ** 3):
-        next(iterator)
-        _diff = problem.quality_history[-2] - problem.quality_history[-1]
-        print(f'Iteration {i},\tquality: {problem.quality_history[-1]},\t{_diff}')
-
+    try:
+        for i in range(10 ** 3):
+            next(iterator)
+            _diff = problem.quality_history[-2] - problem.quality_history[-1]
+            print(f'Iteration {i},\tquality: {problem.quality_history[-1]},\t{_diff}')
+    except Exception as e:
+        print('interrupted', e)
+    finally:
+        pass
     f = File(f'{folder}/theta_end.xml')
     f << problem.theta
     f = File(f'{folder}/psi_end.xml')
@@ -72,3 +76,5 @@ if __name__ == "__main__":
     f << problem.psi_n
     with open(f'{folder}/quality.txt', 'w') as f:
         print(*problem.quality_history, file=f)
+
+

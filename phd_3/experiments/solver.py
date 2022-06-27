@@ -6,8 +6,8 @@ from phd_3.experiments.consts import DIRICHLET, NEWMAN
 
 solver_params = {"newton_solver": {
     "maximum_iterations": 50,
-    "relative_tolerance": 1e-4,
-    "absolute_tolerance": 1e-5,
+    # "relative_tolerance": 1e-4,
+    # "absolute_tolerance": 1e-5,
 }}
 
 

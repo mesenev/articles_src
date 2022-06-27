@@ -7,6 +7,7 @@ from dolfin.cpp.mesh import SubDomain
 from mshr.cpp import Rectangle, generate_mesh
 
 from phd_3.experiments.consts import NEWMAN, DIRICHLET
+from phd_3.experiments.meshes.meshgen import SQUARE_CIRCLE
 
 
 class DirichletBoundary(SubDomain):
@@ -88,9 +89,7 @@ class DirichletBoundary2D(SubDomain):
 
 
 class DefaultValues2D:
-    domain = Rectangle(Point(0., 0.), Point(1., 1.)) - \
-             Circle(Point(0.5, 0.5), .2)
-    omega = generate_mesh(domain, 100)
+    omega = Mesh(SQUARE_CIRCLE)
     sub_domains = MeshFunction("size_t", omega, omega.topology().dim() - 1)
     sub_domains.set_all(0)
     DirichletBoundary2D().mark(sub_domains, 1)

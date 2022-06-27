@@ -6,11 +6,12 @@ from matplotlib import tri
 from dolfin import *
 from matplotlib import pyplot as plt
 
+from phd_3.experiments.default_values import DefaultValues2D
+from phd_3.experiments.solver import Problem
 from utilities import Wrapper, NormalDerivativeZ, NormalDerivativeZ_0
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
-parameters["linear_algebra_backend"] = 'mumps'
 
 
 def fmt(x):
@@ -18,18 +19,25 @@ def fmt(x):
     return s
 
 
-folder = 'exp1'
+folder = 'exp2'
 set_log_active(False)
+default_values = DefaultValues2D(
+    q_b=Constant(0.2),
+    theta_b=Expression('0.2 + x[1] / 2', degree=2),
+    psi_n_init=Expression('-0.4 + x[1] / 2', degree=2),
+)
 
-omega2d = UnitSquareMesh(50, 50)
-square = FunctionSpace(omega2d, FiniteElement("CG", omega2d.ufl_cell(), 1))
-xml_files = [f for f in listdir(folder) if isfile(join(folder, f)) and f.split('.')[1] == 'xml']
+problem = Problem(default_values=default_values)
+problem.solve_boundary()
+omega2d = problem.def_values.omega
+# xml_files = [f for f in listdir(folder) if isfile(join(folder, f)) and f.split('.')[1] == 'xml']
 triangulation = tri.Triangulation(
     *omega2d.coordinates().reshape((-1, 2)).T,
     triangles=omega2d.cells()
 )
-for file_name in filter(lambda x: x.split('.')[0] == 'solution_final', xml_files):
-    theta = Function(problem.theta.function_space(), f'{folder}/{file_name}')
+square = problem.def_values.simple_space
+# for file_name in filter(lambda x: x.split('.')[0] == 'theta_end', xml_files):
+#     theta = Function(problem.theta.function_space(), f'{folder}/{file_name}')
     # theta_n = problem.def_values.theta_n / problem.def_values.a
     # theta_z = project(abs(NormalDerivativeZ(theta, problem.def_values.vector_space) - theta_n), square)
     # theta_z0 = project(abs(NormalDerivativeZ_0(theta, problem.def_values.vector_space) - theta_n), square)
@@ -54,7 +62,7 @@ for file_name in filter(lambda x: x.split('.')[0] == 'solution_final', xml_files
         # )
         # plt.colorbar()
         # plt.savefig(f'{folder}/plotf{name}_contour.svg')
-filename = 'solution_final.xml'
+filename = 'theta_end.xml'
 theta = Function(problem.theta.function_space(), f'{folder}/{filename}')
 for slice in [
     ('x', lambda _: Point(0.5, _[0], _[1])),
@@ -82,7 +90,7 @@ for slice in [
     plt.colorbar()
     plt.savefig(f'{folder}/{filename}_plotf{slice[0]}.svg')
 
-
+exit(0)
 
 
 # noinspection PyUnresolvedReferences
@@ -91,7 +99,6 @@ from dolfin import dx, ds
 from matplotlib.patches import Circle as pltCircle
 # noinspection PyUnresolvedReferences
 from matplotlib import tri
-from mshr import Sphere, Box, generate_mesh
 
 from consts import DIRICHLET, NEWMAN
 from dolfin import *
@@ -107,13 +114,14 @@ from utilities import print_2d_isolines, print_2d, draw_simple_graphic, print_3d
 from meshes.meshgen import CUBE_CIRCLE
 from solver import Problem
 import matplotlib.pyplot as plt
+# noinspection PyUnresolvedReferences
 from mshr import Rectangle, Circle
 
-folder = 'exp1'
-default_values = DefaultValues3D(
-    theta_n=Constant(1),
-    theta_b=BoundaryExpression(),
-    psi_n_init=Constant(0)
+folder = 'exp2'
+default_values = DefaultValues2D(
+    q_b=Constant(0.2),
+    theta_b=Expression('0.2 + x[1] / 2', degree=2),
+    psi_n_init=Expression('-0.4 + x[1] / 2', degree=2),
 )
 
 problem = Problem(default_values=default_values)
@@ -174,4 +182,4 @@ def post_prod():
         plt.colorbar()
         plt.savefig(f'{folder}/{file_name}_plotf{slice[0]}.svg')
 
-post_prod()
+# post_prod()
