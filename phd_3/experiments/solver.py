@@ -4,6 +4,12 @@ from dolfin import dx, ds
 
 from phd_3.experiments.consts import DIRICHLET, NEWMAN
 
+solver_params = {"newton_solver": {
+    "maximum_iterations": 50,
+    "relative_tolerance": 1e-4,
+    "absolute_tolerance": 1e-5,
+}}
+
 
 class Problem:
 
@@ -52,7 +58,7 @@ class Problem:
         solve(
             theta_equation - theta_src == 0, theta,
             form_compiler_parameters={"optimize": True, 'quadrature_degree': 3},
-            solver_parameters={"newton_solver": {"maximum_iterations": 500}}
+            solver_parameters=solver_params
         )
         self.theta, self.psi = theta, psi
         return theta, psi

@@ -11,6 +11,8 @@ from dolfin.cpp.parameter import parameters
 
 from os import listdir
 from os.path import isfile, join
+
+from phd_3.experiments.default import der
 from utilities import print_2d_isolines, print_2d, draw_simple_graphic, print_3d_boundaries_on_cube, clear_dir, \
     NormalDerivativeZ, Wrapper
 from phd_3.experiments.meshes.meshgen import CUBE_CIRCLE
@@ -94,17 +96,17 @@ class BoundaryExpression(UserExpression):
         pass
 
     def eval(self, value, x):
-        value[0] = 0.25
+        value[0] = -0.3
         borders = [x[0], abs(x[0] - 1), x[1], abs(x[1] - 1), x[2], abs(x[2] - 1)]
         if any(map(lambda _: _ < DOLFIN_EPS, borders)):
-            value[0] = -0.3
+            value[0] = 0.25
 
 
 default_values = DefaultValues3D(
     theta_b=Constant(0.1),
     q_b=BoundaryExpression(),
-    # q_b=Constant(0.1),
-    psi_n_init=Constant(0.3)
+    # q_b=Constant(0.001),
+    psi_n_init=Constant(0.5)
 )
 
 problem = Problem(default_values=default_values)
@@ -156,12 +158,7 @@ def post_prod():
         target = file_name.split('.')[0]
         theta = Function(problem.theta.function_space(), f'{folder}/{file_name}')
         theta_n_final = project(NormalDerivativeZ(theta, default_values.vector_space), square)
-        theta_n = problem.def_values.theta_n
         print_2d_isolines(theta_n_final, name='deriv_n_theta_iso', folder=folder, )
-        print_2d_isolines(theta_n, name='theta_n_iso', folder=folder, )
-        theta_n_diff = project(abs(theta_n_final - theta_n) / abs(theta_n), square)
-        print_2d_isolines(theta_n_diff, name=target + '_iso', folder=folder, )
-        print_2d(theta_n_diff, name=target + '_square', folder=folder, )
         print_3d_boundaries_on_cube(theta, folder=folder, name='3d')
         wrapped_theta = Wrapper(lambda x: Point(0.5, x[0], x[1]), theta, element=f_space.ufl_element())
         for slice in [
@@ -194,7 +191,7 @@ if __name__ == "__main__":
     clear_dir(folder)
     try:
         experiment_3()
-    except KeyboardInterrupt:
+    except:
         print('Keyboard interruption signal. Wrapping out.')
     finally:
         f = File(f'{folder}/solution_final.xml')
