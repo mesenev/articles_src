@@ -1,6 +1,3 @@
-from os import listdir
-from os.path import isfile, join
-
 from experiment1 import problem
 from matplotlib import tri
 from dolfin import *
@@ -19,14 +16,6 @@ def fmt(x):
     return s
 
 
-folder = 'exp2'
-set_log_active(False)
-default_values = DefaultValues2D(
-    q_b=Constant(0.2),
-    theta_b=Expression('0.2 + x[1] / 2', degree=2),
-    psi_n_init=Expression('-0.4 + x[1] / 2', degree=2),
-)
-
 problem = Problem(default_values=default_values)
 problem.solve_boundary()
 omega2d = problem.def_values.omega
@@ -38,30 +27,30 @@ triangulation = tri.Triangulation(
 square = problem.def_values.simple_space
 # for file_name in filter(lambda x: x.split('.')[0] == 'theta_end', xml_files):
 #     theta = Function(problem.theta.function_space(), f'{folder}/{file_name}')
-    # theta_n = problem.def_values.theta_n / problem.def_values.a
-    # theta_z = project(abs(NormalDerivativeZ(theta, problem.def_values.vector_space) - theta_n), square)
-    # theta_z0 = project(abs(NormalDerivativeZ_0(theta, problem.def_values.vector_space) - theta_n), square)
+# theta_n = problem.def_values.theta_n / problem.def_values.a
+# theta_z = project(abs(NormalDerivativeZ(theta, problem.def_values.vector_space) - theta_n), square)
+# theta_z0 = project(abs(NormalDerivativeZ_0(theta, problem.def_values.vector_space) - theta_n), square)
 
-    # for name, t in [('up', theta_z), ('down', theta_z0)]:
-    #     z = t.compute_vertex_values(omega2d)
-    #     fig = plt.figure()
-    #     ax = fig.add_subplot(111)
-    #     ax.set_aspect('equal')
-    #
-    #     cs = ax.tricontour(
-    #         triangulation, z, colors='k', linewidths=0.4,
-    #         extent=[0, 100, 0, 100]
-    #     )
-    #
-    #     ax.clabel(cs, cs.levels, inline=True, fmt=fmt, fontsize=7)
-    #     plt.savefig(f'{folder}/plot{name}_contour.svg')
-    #     plt.tricontourf(
-    #         triangulation, z, linewidths=0.4,
-            # levels=list(0.1 + 0.01 * i for i in range(100)),
-            # extent=[0, 100, 0, 100]
-        # )
-        # plt.colorbar()
-        # plt.savefig(f'{folder}/plotf{name}_contour.svg')
+# for name, t in [('up', theta_z), ('down', theta_z0)]:
+#     z = t.compute_vertex_values(omega2d)
+#     fig = plt.figure()
+#     ax = fig.add_subplot(111)
+#     ax.set_aspect('equal')
+#
+#     cs = ax.tricontour(
+#         triangulation, z, colors='k', linewidths=0.4,
+#         extent=[0, 100, 0, 100]
+#     )
+#
+#     ax.clabel(cs, cs.levels, inline=True, fmt=fmt, fontsize=7)
+#     plt.savefig(f'{folder}/plot{name}_contour.svg')
+#     plt.tricontourf(
+#         triangulation, z, linewidths=0.4,
+# levels=list(0.1 + 0.01 * i for i in range(100)),
+# extent=[0, 100, 0, 100]
+# )
+# plt.colorbar()
+# plt.savefig(f'{folder}/plotf{name}_contour.svg')
 filename = 'theta_end.xml'
 theta = Function(problem.theta.function_space(), f'{folder}/{filename}')
 for slice in [
@@ -91,7 +80,6 @@ for slice in [
     plt.savefig(f'{folder}/{filename}_plotf{slice[0]}.svg')
 
 exit(0)
-
 
 # noinspection PyUnresolvedReferences
 
@@ -172,7 +160,7 @@ def post_prod():
         )
         ax.clabel(cs, cs.levels, inline=True, fmt=fmt, fontsize=7)
         ax.add_patch(pltCircle((0.5, 0.5), 0.25, edgecolor='black',
-                 facecolor='white', linewidth=0.5))
+                               facecolor='white', linewidth=0.5))
         plt.savefig(f'{folder}/{file_name}_plot{slice[0]}.svg')
         plt.tricontourf(
             triangulation, z, linewidths=0.4,

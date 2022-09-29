@@ -157,5 +157,6 @@ def print_3d_boundaries_separate(v, name='solution', folder='results'):
         # Colorbar
         plt.colorbar(SC, cax=color_axis)
         plt.savefig('{}/{}_{}.eps'.format(folder, name, action[1]), bbox_inches='tight')
+        plt.savefig('{}/{}_{}.svg'.format(folder, name, action[1]), bbox_inches='tight')
         plt.gcf().clear()
     return

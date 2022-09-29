@@ -25,7 +25,7 @@
 \usepackage{caption}
 \usepackage{textcomp}
 \captionsetup[figure]{labelsep=period}
-
+\renewcommand*{\phi}{\varphi}
 
 \begin{document}
     \def\figurename{Фиг.}
@@ -303,13 +303,16 @@
     оператора ограничений $F(y, u)$, где $y=\{\theta,\psi\}\in V\times V$,
     совпадает с пространством $V'\times V'.$  Последнее означает, что
     линейная система
-    $$
-    A_1\xi+g'(\theta)\xi-\frac{\kappa_a}{\alpha}\eta=q_1,\quad
-    A_2\eta=q_2
-    $$
-    разрешима для всех $\theta\in V$, $q_1,q_2\in V'.$ Здесь
-    $g'(\theta)=4b\kappa_a|\theta|^3+\frac{\kappa_a}{\alpha}.$
-    Из второго уравнения получаем $\eta=A_2^{-1}q_2.$ Разрешимость первого уравнения при известном $\eta\in V$ очевидным образом следует из леммы Лакса--Мильграма. Отметим, что справедливость остальных условий принципа Лагранжа также очевидна.
+    \[
+        A_1\xi+g'(\theta)\xi-\frac{\kappa_a}{\alpha}\eta=q_1,\quad
+        A_2\eta=q_2
+    \]
+    разрешима для всех $\theta\in V$, $q_1,q_2\in V'$.
+    Здесь $g'(\theta)=4b\kappa_a|\theta|^3+\frac{\kappa_a}{\alpha}$.
+    Из второго уравнения получаем $\eta=A_2^{-1}q_2$.
+    Разрешимость первого уравнения при известном $\eta\in V$ очевидным образом следует из
+    леммы Лакса--Мильграма.
+    Отметим, что справедливость остальных условий принципа Лагранжа также очевидна.
 
     Функция Лагранжа задачи $(P_\lambda)$
     имеет вид
@@ -320,8 +323,8 @@
     \]
     где $p=\{p_1,p_2\}\in V\times V$ -- сопряженное состояние.
 
-    Пусть $\{\hat{\theta}, \hat{\varphi}, \hat{u} \}$ -- решение задачи
-    $(P_\lambda)$. Вычислив производные Гато функции Лагранжа по $\theta,\,\psi$ и $u$, получаем
+    Пусть $\{\hat{\theta}, \hat{\varphi}, \hat{u} \}$ -- решение задачи $(P_\lambda)$.
+    Вычислив производные Гато функции Лагранжа по $\theta,\,\psi$ и $u$, получаем
     в силу принципа Лагранжа~\cite[Теорема 1.5]{10} следующие равенства
     $\forall v\in V,\, w\in U$
     \begin{equation}
@@ -398,14 +401,14 @@
     Умножим равенство \eqref{IP1} на $\alpha$, \eqref{IP2} на $\alpha b$
     и сложим равенства. Тогда, полагая $\psi=a\theta+\alpha b\varphi$,
     $u=\alpha bq+\alpha q_b|_{\Gamma_2}$, получаем
-    $$
-    \alpha(\nabla\psi,\nabla v)+\int\limits_{\Gamma_1}\gamma\psi vd\Gamma =
-    \int\limits_{\Gamma_1}r vd\Gamma +\int\limits_{\Gamma_2}u vd\Gamma.
-    $$
+    \[
+        \alpha(\nabla\psi,\nabla v)+\int\limits_{\Gamma_1}\gamma\psi vd\Gamma =
+        \int\limits_{\Gamma_1}r vd\Gamma +\int\limits_{\Gamma_2}u vd\Gamma.
+    \]
     Здесь $r=\alpha b \gamma \theta_b^4+ \alpha q_b + a \gamma \theta_b.$
     Поэтому $A_2\psi=f_2+B_2u.$
 
-    Из \eqref{IP1}, с учетом условия $\theta|_{\Gamma_1}=\theta_b$ выводим равенство $A_1\theta +g(\theta)=\frac{\kappa_a}{\alpha}\psi+f_1.$
+    Из~\eqref{IP1}, с учетом условия $\theta|_{\Gamma_1}=\theta_b$ выводим равенство $A_1\theta +g(\theta)=\frac{\kappa_a}{\alpha}\psi+f_1.$
     Таким образом, тройка $\{\theta, \psi, u\} \in V \times V \times U$ является допустимой для задачи $(P_\lambda)$ и следовательно
     \[
         J_\lambda(\theta_\lambda, u_\lambda) = \frac{1}{2}\|\theta_\lambda -\theta_b\|^2_{L^2(\Gamma_1)}
@@ -499,10 +502,10 @@
         \Gamma_2 = \partial \Omega \setminus \hat{\Gamma_1}.
     \]
     Будем считать, что
-    $l=1~\text{см}$,
+    $l = 1~\text{см}$,
     $a = 0.6[\text{см}^2/\text{c}]$,
-    $b=0.025[\text{см}/\text{с}]$,
-    $\kappa_a=1[\text{см}^{-1}]$,
+    $b = 0.025[\text{см}/\text{с}]$,
+    $\kappa_a = 1[\text{см}^{-1}]$,
     $\alpha = 0.(3)[\text{см}]$.
     Указанные параметры соответствуют стеклу~\cite{Grenkin5}.
     Параметр регуляризации $\lambda=10^{-12}$.
@@ -510,75 +513,69 @@
     Пусть граничные данные $q_b$ и $\theta_b$ в~\eqref{bc1},\eqref{bc2} имеют вид:
     \begin{gather*}
         q_b = 0.5, \quad
-        \theta_b = 0.1 + z/2.
+        \theta_b = 0.1 + z/2
     \end{gather*}
-    А также начальное управление $u_0 = 0$.
+    на все границе, а также начальное управление $u_0 = 0$.
     Используя предложенный алгоритм~\ref{alg:algorithm} решим задачу оптимального управления.
 
     \begin{figure}[H]
         \centering
-        \subfloat[$|\partial_n \theta_\lambda - q_n|/\ q_n$]
+        \subfloat[$\theta|_{z=1} $]
         {
-            \label{fig:img_test_1}
-            \includegraphics[width=.49\linewidth]{img/exp1_iso}
+            \label{fig:1_theta}
+            \includegraphics[width=.5\linewidth]{img/1_theta}
         }
-        \subfloat[Изменение функционала качества по итерациям]
+        \subfloat[$\phi|_{z=1} $]
         {
-            \label{fig:quality_1}
-            \includegraphics[width=.49\linewidth]{img/exp1_quality}
+            \label{fig:1_phi}
+            \includegraphics[width=.5\linewidth]{img/1_phi}
         }
         \caption{Результаты первого эксперимента}
         \label{fig:1}
     \end{figure}
 
-    \begin{figure}[H]
-        \centering
-        \subfloat[$\theta|_{x=0.5}$]
-        {
-            \label{fig:img_slice_1}
-            \includegraphics{img/exp1_slice}
-        }
-        \label{fig:2}
-    \end{figure}
-
-    На фиг.~\ref{fig:img_test_1}, \ref{fig:quality_1} представлены модуль относительного
-    отклонения $\partial_n\theta_\lambda$ от $q_b$ на грани куба в плоскости $z=l$,
-    где $\partial_n\theta_\lambda=\partial\theta_\lambda/\partial z$ и динамика целевого функционала, определяющего норму
-    разности $\|\theta_\lambda -\theta_b\|^2_\Gamma$.
-    На остальных гранях куба значения относительного отклонения имеют тот же порядок малости.
-    На фиг.~\ref{fig:img_slice_1} представлено значение температурного поля в плоскости $x=0.5$.
+    На фиг.~\ref{fig:1_theta}, \ref{fig:1_phi} представлены полученные решения $\theta$ и $\phi$.
+    Начальное значение функционала качества равно $~0.025$ и
+    через сотню итераций становится равным $~5.e-05$.
 
     \textbf{Пример 2.}
-    Рассмотрим единичный куб $C = \{(x, y, z), 0 \leq x,y,z \leq l\}$ с
-    шарообразной полостью с центром $b_0 =\{0.5, 0.5, 0.5\}$
-    $B = \{r, \| r - b_0 \| \leq 0.15 \}$.
-    Рассматриваемая область $\Omega = C \setminus B$.
+    Рассмотрим двумерный случай: имеется квадрат $S = \{(x, y), 0 \leq x,y,z \leq 1~\text{см.}\}$ с
+    круговой полостью $R$ с центром $b_0 =\{0.5, 0.5\}$
+    $R = \{r, \| r - b_0 \| \leq 0.15~\text{см.} \}$.
+    Рассматриваемая область $\Omega = S \setminus R$.
     $\Gamma \equiv \partial \Omega = \partial C \cup \partial B$ при чём
     \[
-        \Gamma_1 = \partial B,
-        \Gamma_2 = \partial C.
+        \Gamma_2 = \partial R,
+        \Gamma_1 = \partial S \setminus \Gamma_2.
     \]
     Параметры среды возьмём из примера 1.
     Граничные данные $q_b$ и $\theta_b$ положим равными
     \begin{gather*}
-        q_b = 1, \quad
-        \theta_b = 0.25.
+        \theta_b = 0.5, \\
+        q_b =
+        \begin{cases}
+            0.2, & \text{если } x \in \Gamma_1 \\
+            -0.2, & \text{если } x \in \Gamma_2.
+        \end{cases}
     \end{gather*}
     \begin{figure}[H]
         \centering
-        \subfloat[$|\partial_n \theta_\lambda - q_n|/\ q_n$]
+        \subfloat[$\theta$]
         {
-            \label{fig:img_slice_2}
-            \includegraphics[width=.5\linewidth]{img/exp3_slice}
+            \label{fig:2_theta}
+            \includegraphics[width=.5\linewidth]{img/2_theta}
         }
-        \subfloat[Изменение функционала качества по итерациям]
+        \subfloat[$\phi$]
         {
-            \label{fig:img_quality_2}
-            \includegraphics[width=.5\linewidth]{img/exp3_quality}
+            \label{fig:2_phi}
+            \includegraphics[width=.5\linewidth]{img/2_phi}
         }
-        \caption{Результаты первого эксперимента}
-        \label{fig:3}
+        \caption{Результаты второго эксперимента}
+        \label{fig:2}
     \end{figure}
+    Начальное значение функционала качества $~0.045$.
+    После тридцати итераций $~6.2-05$.
+
 
     Представленные численные примеры демонстрируют,
     что предложенный алгоритм успешно справляется
