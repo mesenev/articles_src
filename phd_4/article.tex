@@ -1,0 +1,216 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mhchem}
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan,}
+\urlstyle{same}
+\usepackage{bbold}
+
+\title{Penalty method to solve an optimal control problem for a qasilinear parabolic equation }
+
+
+\author{(c) A. Yu. Chebotarev ${ }^{1,2}$, N. M. $\operatorname{Park}^{2,3}$, P. R. Mesenev, ${ }^{2}$ A. E. Kovtanyuk ${ }^{2,4}$}
+\date{}
+
+
+\begin{document}
+\maketitle
+$\mathrm{UDC} \quad 517.95$
+
+
+\begin{abstract}
+An optimal control problem for a quasilinear parabolic equation simulating the radiative and conductive heat transfer in a bounded three-dimensional domain under constraints on the solution in a given subdomain is considered. The solvability of the optomal control problem is proved. An algorithm for solving the problem, based on the penalty method, is proposed.
+\end{abstract}
+
+Key words: Non-linear PDE system, radiative heat transfer, optimal control, penalty method
+
+DOI: \href{https://doi.org/10.47910/FEMJ2022XX}{https://doi.org/10.47910/FEMJ2022XX}
+
+\section{Introduction}
+The procedure of endovenous laser ablation (EVLA) is safe and sufficiently effective in the treatment of varicose veins. During EVLA, a laser optical fiber is inserted into the damaged vein. Then the laser radiation is transmitted through the fiber which at this time is pulled out of the vein. The end of the optical fiber is usually covered with a carbonized layer (optical fiber tip). The carbonized layer divides the laser energy into the fiber tip heating and radiation. The heat from the fiber tip is transmitted through the blood and surrounding tissue by the conductive heat transfer. The heat exchange is significantly increased by the flow of bubbles formed at the heated fiber tip. The radiation entering the blood and surrounding tissue is partially absorbed with the release of heat. As a result, the generated thermal energy causes significant heating of the vein which leads to its obliteration.
+
+Mathematical modeling of radiation and thermal processes arising during EVLA is important to determine optimal parameters of radiation that provide a sufficiently high
+
+${ }^{1}$ Institute for Applied Mathematics, Far Eastern Branch, Russian Academy of Sciences, Russia, 690041, Vladivostok, Radio st., 7.
+
+${ }^{2}$ Far Eastern Federal University, Center for Research and Education in Mathematics, Russia, 690950, Vladivostok, Sukhanova str., 8.
+
+${ }^{3}$ Amur State University, Russia, 675027, Blagoveshchensk, Amur region, Ignatyevskoye Shosse, 21.
+
+${ }^{4}$ Technical University of Munich, Germany, 85748, München, Boltzmann str., 3. E-mail: \href{mailto:chebotarev.ayu@dvfu.ru}{chebotarev.ayu@dvfu.ru} (A. Yu. Chebotarev), \href{mailto:pak.nm@dvfu.ru}{pak.nm@dvfu.ru} (N. M. Park), \href{mailto:mesenev_pr@dvfu.ru}{mesenev\_pr@dvfu.ru} (P.R. Mesenev), \href{mailto:kovtanyuk.ae@dvfu.ru}{kovtanyuk.ae@dvfu.ru} (A. E. Kovtanyuk). temperature inside the vein for successful obliteration, on the other hand, the generated temperature field should be relatively safe for the live tissue surrounding the vein.
+
+Mathematical model of EVLA takes into account the conductive heat transfer, as well as the radiation transfer and absorption with heat release. The flow of bubbles formed at the heated fiber tip makes a significant contribution to the temperature distribution in the model domain. In [1], based on the evaluation of experimental data, the heat transfer by the flow of bubbles is modeled using a piecewise constant thermal conductivity coefficient which depends on temperature as follows: when the temperature at some point reaches $95^{\circ} \mathrm{C}$, the coefficient of thermal conductivity increases 200 times.
+
+Optimal control problems for the mathematical model of EVLA are studied in [2,3]. In [2] an optimal control problem of EVLA is posed, which consists in approximation of a given temperature profile at a certain point of the model domain. In [3], the similar as in [2] optimal control problem is studied. Here, the objective functional is taken such that its minimization allows one to reach the given temperature distribution in different parts of the model domain. This makes it possible to provide a sufficiently high temperature inside the vein for its successful obliteration and a safe temperature in the perivenous tissue. The unique solvability of the initial-boundary value problem is proved, on the basis of which the solvability of the optimal control problem is shown. An algorithm for finding a solution of the optimal control problem is proposed. Its efficiency is illustrated by a numerical example.
+
+In the current work, an optimal control problem for the model of endovenous laser ablation in a bounded three-dimensional domain $\Omega$ with reflecting boundary $\Gamma=\partial \Omega$ is considered. The problem is to minimize the functional
+$$
+J(\theta)=\int_{G_{d}}\left(\left.\theta\right|_{t=T}-\theta_{d}\right)^{2} d x \rightarrow \inf
+$$
+on solutions of the initial-boundary value problem:
+$$
+\begin{gathered}
+\sigma \partial \theta / \partial t-\operatorname{div}(k(\theta) \nabla \theta)-\beta \varphi=u_{1} \chi, \quad-\operatorname{div}(\alpha \nabla \varphi)+\beta \varphi=u_{2} \chi, \quad x \in \Omega, \quad 0<t<T, \\
+k(\theta) \partial_{n} \theta+\left.\gamma\left(\theta-\theta_{b}\right)\right|_{\Gamma}=0, \quad \alpha \partial_{n} \varphi+\left.0.5 \varphi\right|_{\Gamma}=0,\left.\quad \theta\right|_{t=0}=\theta_{0} .
+\end{gathered}
+$$
+In this case, the following restrictions are set:
+$$
+u_{1,2} \geq 0, \quad u_{1}+u_{2} \leq P,\left.\quad \theta\right|_{G_{b}} \leq \theta_{*} .
+$$
+Here, $\theta$ is the temperature, $\varphi$ the radiation intensity averaged over all directions, $\alpha$ the diffusion coefficient for optical radiation, $\mu_{a}$ the absorption coefficient, $k(\theta)$ the coefficient of thermal conductivity, $\sigma(x, t)$ the product of the specific heat capacity and the volume density, $u_{1}$ describes the power of the source spending on heating the fiber tip, $u_{2}$ is the power of the source spending on radiation, $\chi$ is equal to the characteristic function of the part of the medium in which the fiber tip is located divided by the volume of the fiber tip. The functions $\theta_{b}, \theta_{0}$ define the boundary and initial temperature distributions. We denote by $\partial_{n}$ the derivative in the direction of the outward normal $\mathbf{n}$ to the boundary $\Gamma$. It is required to provide the closeness of the temperature distribution to a desired temperature field $\theta_{d}$ at the final time $t=T$ in the $G_{d}$ subdomain, while the temperature in the subdomain $G_{b}$ does not exceed a constant critical value $\theta_{*}$.
+
+\section{Formalization of the optimal control problem}
+In what follows, we assume that $\Omega$ is a Lipschitz bounded domain, $\Gamma=\partial \Omega, Q=\Omega \times(0, T)$, $\Sigma=\Gamma \times(0, T)$. We denote by $L^{p}, 1 \leq p \leq \infty$, the Lebesgue space and by $H^{1}$ the Sobolev space $W_{2}^{1}$. The space $L^{p}(0, T ; X)$ (respectively, $C([0, T] ; X)$ ) consists of $p$-integrable on $(0, T)$ (respectively, continuous on $[0, T])$ functions with values in a Banach space $X$. Denote $H=L^{2}(\Omega), V=H^{1}(\Omega)$, and $V^{\prime}$ the dual of $V$. Then we identify $H$ with its dual space $H^{\prime}$ such that $V \subset H=H^{\prime} \subset V^{\prime}$, and denote by $\|\cdot\|$ the norm in $H$, and by $(h, v)$ the value of functional $h \in V^{\prime}$ on the element $v \in V$ coinciding with the inner product in $H$ if $h \in H$.
+
+Let the following conditions hold:
+
+(i) $0<\sigma_{0} \leq \sigma \leq \sigma_{1}, \quad|\partial \sigma / \partial t| \leq \sigma_{2}, \quad \sigma_{j}=$ Const.
+
+(ii) $0<k_{0} \leq k(s) \leq k_{1}, \quad\left|k^{\prime}(s)\right| \leq k_{2}, s \in \mathbb{R}, k_{j}=$ Const.
+
+(iii) $\theta_{0} \in H, \gamma \in L^{\infty}(\Gamma), \gamma \geq \gamma_{0}=$ Const $>0, \quad \theta_{b} \in L^{\infty}(\Sigma), \quad \theta_{d} \in G_{d}$.
+
+(iv) $0<\alpha_{0} \leq \alpha(x) \leq \alpha_{1}, \quad 0<\beta_{0} \leq \beta(x) \leq \beta_{1}, \quad x \in \Omega$
+
+We define a nonlinear operator $A: V \rightarrow V^{\prime}$ and linear operator $B: V \rightarrow V^{\prime}$ using the following equality valid for any $\theta, v, \varphi, w \in V$ :
+$$
+(A(\theta), v)=(k(\theta) \nabla \theta, \nabla v)+\int_{\Gamma} \gamma \theta v d \Gamma=(\nabla h(\theta), \nabla v)+\int_{\Gamma} \gamma \theta v d \Gamma,
+$$
+where
+$$
+h(s)=\int_{0}^{s} k(r) d r ; \quad(B \varphi, w)=(\alpha \nabla \varphi, \nabla w)+(\beta \varphi, w)+\frac{1}{2} \int_{\Gamma} \varphi w d \Gamma
+$$
+Further, by the following bilinear form, we define the inner product in $V$ :
+$$
+(u, v)_{V}=(\nabla u, \nabla v)+\int_{\Gamma} u v d \Gamma .
+$$
+The corresponding norm is equivalent to the standard norm of the space $V$.
+
+Definition 1. Let $u_{1,2} \in L^{2}(0, T)$. The pair $\theta, \varphi \in L^{2}(0, T ; V)$ is a weak solution of the problem (1), (2) if $\sigma \theta^{\prime} \in L^{2}\left(0, T ; V^{\prime}\right)$ and
+$$
+\sigma \theta^{\prime}+A(\theta)-\beta \varphi=g+u_{1} \chi, \quad \theta(0)=\theta_{0}, \quad B \varphi=u_{2} \chi,
+$$
+where
+$$
+\theta^{\prime}=d \theta / d t, \quad g \in L^{\infty}\left(0, T ; V^{\prime}\right), \quad(g, v)=\int_{\Gamma} \gamma \theta_{b} v d \Gamma
+$$
+Remark 1. Since $(\sigma \theta)^{\prime}=\sigma \theta^{\prime}+\theta \partial \sigma / \partial t \in L^{2}\left(0, T ; V^{\prime}\right)$ and $\sigma \theta \in L^{2}(0, T ; V)$, then $\sigma \theta \in$ $C([0, T] ; H)$, and therefore the initial condition makes sense.
+
+It follows from the Lax-Milgram lemma that for any function $g \in H$ there is a unique solution of equation $B \varphi=g$. Moreover, the inverse operator $B^{-1}: H \rightarrow V$ is continuous. Therefore, we can exclude the radiation intensity $\varphi=u_{2} B^{-1} \chi$ and formulate the optimal control problem as follows. Problem (CP)
+$$
+\begin{gathered}
+J(\theta)=\int_{G_{d}}\left(\left.\theta\right|_{t=T}-\theta_{d}\right)^{2} d x \rightarrow \inf , \quad \sigma \theta^{\prime}+A(\theta)=g+u, \quad \theta(0)=\theta_{0}, \\
+\left.\theta\right|_{G_{b}} \leq \theta_{*}, \quad u \in U_{a d} .
+\end{gathered}
+$$
+Here,
+$$
+U_{a d}=\left\{u=u_{1} \chi+u_{2} \beta B^{-1} \chi: u_{1,2} \in L^{2}(0, T), u_{1,2} \geq 0, u_{1}+u_{2} \leq P\right\}
+$$
+
+\section{Preliminary results}
+In the article [5], the following result is obtained.
+
+Lemma 1. Let conditions (i) - (iv) hold and $u \in L^{2}\left(0, T ; V^{\prime}\right)$. Then there is a solution to the problem
+$$
+\sigma \theta^{\prime}+A(\theta)=g+u, \quad \theta(0)=\theta_{0},
+$$
+such that $\theta \in L^{\infty}(0, T ; H)$ and the following estimate is valid:
+$$
+\|\theta(t)\|^{2}+\|\theta\|_{L^{2}\left(0, T ; V^{\prime}\right)}^{2} \leq C\left(\left\|\theta_{0}\right\|^{2}+\|g+u\|_{L^{2}\left(0, T ; V^{\prime}\right)}^{2}\right),
+$$
+where $C>0$ does not depend on $\theta_{0}, g$, and $u$.
+
+Lemma 2. Let conditions (i) - (iv) hold, $u=0, \theta_{0} \leq \theta_{*}$ a.e. in $\Omega, \theta_{b} \leq \theta_{*}$ a.e. in $\Sigma$, and $\theta$ be a solution to the problem (4). Then $\theta \leq \theta_{*}$ a.e. in $\Omega \times(0, T)$.
+
+Proof. Multiplying in the sense of inner product in $H$ the first equation in (4) by $v=\max \left\{\theta-\theta_{*}, 0\right\} \in L^{2}(0, T ; V)$, we get
+$$
+\left(\sigma v^{\prime}, v\right)+(k(\theta) \nabla v, \nabla v)+\int_{\Gamma} \gamma \theta v d \Gamma=0 .
+$$
+Discarding the nonnegative second and third terms, we arrive at the estimate
+$$
+\frac{d}{d t}(\sigma v, v) \leq\left(\sigma_{t} v, v\right) \leq \sigma_{2}\|v\|^{2} .
+$$
+Integrating the last inequality with respect to time and taking into account that $\left.v\right|_{t=0}=0$, we obtain
+$$
+\sigma_{0}\|v(t)\|^{2} \leq(\sigma v(t), v(t)) \leq \sigma_{2} \int_{0}^{t}\|v(\tau)\|^{2} d \tau
+$$
+Based on the Gronwall lemma, we conclude that $v=0$ and therefore $\theta \leq \theta_{*}$ a.e. in $\Omega \times(0, T)$
+
+Lemmas 1 and 2 imply a non-empty set of admissible pairs of the Problem (CP) and the boundedness of a minimizing sequence of admissible pairs $\left\{\theta_{m}, u_{m}\right\} \in L^{2}(0, T ; V) \times$ $U_{a d}$ such that $J\left(\theta_{m}\right) \rightarrow j=\inf J$, where
+$$
+\sigma \theta_{m}^{\prime}+A\left(\theta_{m}\right)=g+u_{m}, \quad \theta_{m}(0)=\theta_{0},\left.\quad \theta_{m}\right|_{G_{b}} \leq \theta_{*} .
+$$
+Similarly [4], passing to the limit in system (5), it is possible to establish the solvability of the Problem (CP).
+
+Theorem 1. Let conditions (i) $-(i v)$ hold, $\theta_{0} \leq \theta_{*}$ a.e. in $\Omega, \theta_{b} \leq \theta_{*}$ a.e. in $\Sigma$. Then a solution of the Problem $(C P)$ exists.
+
+\section{Penalty problem}
+Let us consider the following optimal control problem with the parameter $\varepsilon>0$ whose solutions approximate the solution of the Problem (CP) as $\varepsilon \rightarrow+0$.
+
+Problem $\left(\mathrm{CP}_{\varepsilon}\right)$
+$$
+\begin{gathered}
+J_{\varepsilon}(\theta)=\int_{G_{d}}\left(\left.\theta\right|_{t=T}-\theta_{d}\right)^{2} d x+\frac{1}{\varepsilon} \int_{0}^{T} \int_{G_{b}} F(\theta) d x d t \rightarrow \inf \\
+\sigma \theta^{\prime}+A(\theta)=g+u, \quad \theta(0)=\theta_{0}, \quad u \in U_{a d}
+\end{gathered}
+$$
+Here,
+$$
+F(\theta)= \begin{cases}0, & \text { if } \theta \leq \theta_{*}, \\ \left(\theta-\theta_{*}\right)^{2}, & \text { if } \theta>\theta_{*}\end{cases}
+$$
+The estimates presented in Lemma 1 make it possible, similarly as in the proof of Theorem 1 , to prove the solvability of the problem with the penalty.
+
+Theorem 2. Let conditions (i)-(iv) hold. Then a solution of the problem $\left(C P_{\varepsilon}\right)$ exists.
+
+Consider the approximation properties of solutions to the problem with the penalty. Let $\left\{\theta_{\varepsilon}, u_{\varepsilon}\right\}$ be solutions to the Problem $\left(\mathrm{CP}_{\varepsilon}\right)$ and $\{\theta, u\}$ be a solution to the Problem (CP). Then,
+$$
+\sigma \theta_{\varepsilon}^{\prime}+A\left(\theta_{\varepsilon}\right)=g+u_{\varepsilon}, \quad \theta_{\varepsilon}(0)=\theta_{0} .
+$$
+Since $\left.\theta\right|_{G_{b}} \leq \theta_{*}$, the following inequalities are true:
+$$
+\int_{G_{d}}\left(\left.\theta_{\varepsilon}\right|_{t=T}-\theta_{d}\right)^{2} d x \leq J(\theta), \quad \int_{0}^{T} \int_{G_{b}} F\left(\theta_{\varepsilon}\right) d x d t \leq \varepsilon J(\theta) .
+$$
+From the estimates obtained, using if necessary subsequences as $\varepsilon \rightarrow+0$, similarly as in the proof of Theorem 1 , we can prove the existence of functions $\widehat{u} \in U_{a d}, \widehat{\theta} \in L^{2}(0, T ; V)$ such that
+
+$u_{\varepsilon} \rightarrow \widehat{u}$ weakly in $L^{2}(0, T ; H), \theta_{\varepsilon} \rightarrow \widehat{\theta}$ weakly in $L^{2}(0, T ; V)$, strongly in $L^{2}(0, T ; H)$;
+$$
+\int_{0}^{T} \int_{G_{b}} F\left(\theta_{\varepsilon}\right) d x d t \rightarrow \int_{0}^{T} \int_{G_{b}} F(\widehat{\theta}) d x d t \quad \text { and } \quad \int_{0}^{T} \int_{G_{b}} F\left(\theta_{\varepsilon}\right) d x d t \rightarrow 0, \text { as } \varepsilon \rightarrow+0
+$$
+Therefore, $F(\widehat{\theta})=0$ and $\left.\widehat{\theta}\right|_{G_{b}} \leq \theta_{*}$. Convergence results are sufficient to pass to the limit as $\varepsilon \rightarrow+0$ in the state system (6) and to prove that the limit pair $\{\widehat{\theta}, \widehat{u}\} \in$ $L^{2}(0, T ; V) \times U_{a d}$ is admissible to the problem (CP). Since the functional $J$ is weakly lower semicontinuous, that is
+$$
+j \leq J(\widehat{\theta}) \leq \liminf J\left(\theta_{\varepsilon}\right) \leq J(\theta)=j=\inf J
+$$
+then the pair $\{\widehat{\theta}, \widehat{u}\}$ is a solution to the problem $(\mathrm{CP})$. Theorem 3. Let conditions (i)-(iv) hold, $\theta_{0} \leq \theta_{*}$ a.e. in $\Omega, \theta_{b} \leq \theta_{*}$ a.e. in $\Sigma$. If $\left\{\theta_{\varepsilon}, u_{\varepsilon}\right\}$ are solutions to the problem $\left(C P_{\varepsilon}\right)$ for $\varepsilon>0$, then there is a sequence as $\varepsilon \rightarrow+0$ $u_{\varepsilon} \rightarrow \widehat{u}$ weakly in $L^{2}(0, T ; H), \quad \theta_{\varepsilon} \rightarrow \widehat{\theta}$ weakly in $L^{2}(0, T ; V)$, strongly in $L^{2}(0, T ; H)$, where $\{\widehat{\theta}, \widehat{u}\}$ is a solution to the problem $(C P)$.
+
+\section{References}
+[1] W. S. J. Malskat, A. A. Poluektova, C. W. M. Van der Geld, H. A. M. Neumann, R. A. Weiss, C. M. A. Bruijninckx, M. J. C. Van Gemert, "Endovenous laser ablation (EVLA): A review of mechanisms, modeling outcomes, and issues for debate", Lasers Med. Sci.., 29, (2014), $393-403$.
+
+[2] A. E. Kovtanyuk, A. Yu. Chebotarev, A. A. Astrakhantseva, A. A. Sushchenko, "Optimal control of endovenous laser ablation", Opt. Spectrosc., 128:8, (2020), 1508-1516.
+
+[3] A. E. Kovtanyuk, A. Yu. Chebotarev, A. A. Astrakhantseva, "Inverse extremum problem for a model of endovenous laser ablation", J. Inv. Ill-Posed Probl., 29:3, (2021), 467-476.
+
+[4] A. Chebotarev, A. Kovtanyuk, N. Park, P. Mesenev, "Optimal control with phase constraints for a quasilinear endovenous laser ablation model", Proceedings of the International Conference Days on Diffraction 2021, 2021, 103-108.
+
+[5] A. Kovtanyuk, A. Chebotarev, A. Degtyareva, N. Park, "Mathematical and computer modeling of endovenous laser treatment", CEUR Workshop Proceedings, 2837, (2021), 13-23.
+
+Received by the editors
+
+June 17, 2022 This work was supported by the Ministry of Education and Science of the Russian Federation (Project No. 122082400001-8 and Agreement No. 075-02-2022-880).
+
+Чеботарев А.Ю., Пак Н. М., Месенев П.Р., Ковтанюк А. Е. Метод штрафов решения задачи оптимального управления для квазилинейного параболического уравнения. Дальневосточный математический журнал. 2022. Т. 22. № 2. С. 1-6.
+
+\section{АННОТАЦИЯ}
+Рассмотрена задача оптимального управления для квазилинейного параболического уравнения, моделирующего радиационно-кондуктивный теплообмен в ограниченной трехмерной области, при ограничениях на решение в заданной подобласти. Доказана разрешимость задачи оптимального управления. Предложен алгоритм решения задачи, основанный на методе штрафных функций.
+
+Ключевые слова: полулинейные системы уравнений в частных производных, радиационный теплообмен, оптимальное управление, метод штрафов
+
+
+\end{document}
