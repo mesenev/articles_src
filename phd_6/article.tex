@@ -1,0 +1,167 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan,}
+\urlstyle{same}
+\usepackage{bbold}
+
+\title{Optimization method for solving the inverse problem of complex heat transfer }
+
+
+\author{(c) A. Yu. Chebotarev ${ }^{1,2}$, P. R. Mesenev ${ }^{2}$, A. E. Kovtanyuk ${ }^{2,3}$}
+\date{}
+
+
+\begin{document}
+\maketitle
+$\mathrm{UDC} \quad 517.95$
+
+MSC2020 35J60 + 35N25+80A23+80M50
+
+
+
+\begin{abstract}
+An optimization method for solving the inverse problem for stationary equations of complex heat transfer with an unspecified boundary condition for the radiation intensity on part of the boundary and an overdetermination condition on the other part of the boundary is proposed. An analysis of a boundary optimal control problem is presented and it is shown that the sequence of solutions of control problems converges to the solution of the inverse problem.
+\end{abstract}
+
+Key words: equations of radiative-conductive heat transfer, diffusion approximation, inverse problem, optimal control problem.
+
+DOI: \href{https://doi.org/10.47910/FEMJ2022XX}{https://doi.org/10.47910/FEMJ2022XX}
+
+\section{Inverse problem}
+In a Lipschitz bounded domain $\Omega \subset \mathbb{R}^{3}$ with the boundary $\Gamma:=\partial \Omega$, we consider the following system of non-linear equations [1]:
+$$
+-a \Delta \theta+b \kappa_{a}\left(|\theta| \theta^{3}-\varphi\right)=0, \quad-\alpha \Delta \varphi+\kappa_{a}\left(\varphi-|\theta| \theta^{3}\right)=0, x \in \Omega .
+$$
+Here, $\theta$ is the normalized temperature, $\varphi$ the normalized averaged intensity of radiation. Positive parameters $a, b, \kappa_{a}$, and $\alpha$ describing inner properties of the medium are given [1].
+
+Suppose that $\Gamma=\bar{\Gamma}_{1} \cup \bar{\Gamma}_{2}$ such that $\Gamma_{1} \cap \Gamma_{2}=\emptyset$. At the boundary $\Gamma$, we set the heat flow $q_{b}$,
+$$
+a \partial_{n} \theta=q_{b}, \quad x \in \Gamma .
+$$
+The boundary condition for the intensity of radiation at $\Gamma_{2}$ is not given. As an overtermination condition, at the boundary $\Gamma_{1}$, we set the following conditions:
+$$
+\alpha \partial_{n} \varphi+\gamma\left(\varphi-\theta_{b}^{4}\right)=0, \quad \theta=\theta_{b} \quad x \in \Gamma_{1} .
+$$
+${ }^{1}$ Institute for Applied Mathematics, Far Eastern Branch of the Russian Academy of Sciences, Russia, 690041, Vladivostok, Radio st., 7.
+
+${ }^{2}$ Far Eastern Federal University, Far Eastern Center for Research and Education in Mathematics, Russia, 690922, Vladivostok, Russky Island, Ajax Bay 10.
+
+${ }^{3}$ Amur State University, Russia, 675027, Blagoveshchensk, Amur region, Ignatyevskoye Shosse, 21. Technical University of Munich, Germany, 85748, Garching bei München, Boltzmann str., 3. E-mail: \href{mailto:chebotarev.ayu@dvfu.ru}{chebotarev.ayu@dvfu.ru} (A. Yu. Chebotarev), \href{mailto:mesenev_pr@dvfu.ru}{mesenev\_pr@dvfu.ru} (P. R. Mesenev), \href{mailto:kovtanyuk.ae@dvfu.ru}{kovtanyuk.ae@dvfu.ru} (A. E. Kovtanyuk). Here, $\partial_{n}$ denotes the derivative in the direction of the outward normal $\mathbf{n}$.
+
+The optimization method for solving the problem (1)-(3) is to consider the problem of boundary optimal control for an equivalent system of elliptic equations.
+
+Define a new unknown function $\psi=a \theta+\alpha b \varphi$. Adding the first equation in (1) with the second one multiplied by $b$, we conclude that $\psi$ is a harmonic function. Eliminating $\varphi$ from the first equation in (1) and using the boundary conditions (2) and (3), we obtain the boundary value problem
+$$
+\begin{gathered}
+\quad a \Delta \theta+g(\theta)=\frac{\kappa_{a}}{\alpha} \psi, \quad \Delta \psi=0, \quad x \in \Omega, \\
+a \partial_{n} \theta=q_{b}, \quad \text { on } \Gamma, \quad \alpha \partial_{n} \psi+\gamma \psi=r, \quad \theta=\theta_{b} \text { on } \Gamma_{1} .
+\end{gathered}
+$$
+Here, $g(\theta)=b \kappa_{a}|\theta| \theta^{3}+a \kappa_{a} \theta / \alpha, r=\alpha b \gamma \theta_{b}^{4}+\alpha q_{b}+a \gamma \theta_{b}$.
+
+The optimal control problem, which approximates the problem (4), (5), is to find a triple $\left\{\theta_{\lambda}, \psi_{\lambda}, u_{\lambda}\right\}$ such that
+$$
+\begin{gathered}
+J_{\lambda}(\theta, u)=\frac{1}{2} \int_{\Gamma_{1}}\left(\theta-\theta_{b}\right)^{2} d \Gamma+\frac{\lambda}{2} \int_{\Gamma_{2}} u^{2} d \Gamma \rightarrow \text { inf } \\
+-a \Delta \theta+g(\theta)=\frac{\kappa}{\alpha} \psi, \quad \Delta \psi=0, \quad x \in \Omega \\
+a \partial_{n} \theta+s \theta=q_{b}+s \theta_{b}, \quad \alpha \partial_{n} \psi+\gamma \psi=r \text { on } \Gamma_{1}, \quad a \partial_{n} \theta=q_{b}, \quad \alpha \partial_{n} \psi=u \text { on } \Gamma_{2} .
+\end{gathered}
+$$
+Here, $\lambda, s>0$ are regularizing parameters.
+
+\section{Solvability of the control problem}
+Let $U=L^{2}\left(\Gamma_{2}\right)$ is the space of controls, $H=L^{2}(\Omega), V=H^{1}(\Omega)=W_{2}^{1}(\Omega)$, and $V^{\prime}$ the dual of $V$. Then we identify $H$ with its dual space $H^{\prime}$ such that $V \subset H=H^{\prime} \subset V^{\prime}$, and denote by $\|\cdot\|$ the norm in $H$, and by $(f, v)$ the value of functional $f \in V^{\prime}$ on the element $v \in V$ coinciding with the inner product in $H$ if $f \in H$.
+
+Assume that the following conditions hold:
+
+(i) $a, b, \alpha, \kappa_{a}, \lambda, s=$ Const $>0$,
+
+(ii) $0<\gamma_{0} \leq \gamma \in L^{\infty}\left(\Gamma_{1}\right), \quad \theta_{b}, r \in L^{2}\left(\Gamma_{1}\right), \quad q_{b} \in L^{2}(\Gamma)$.
+
+Let $A_{1,2}: V \rightarrow V^{\prime}, B_{1}: L^{2}\left(\Gamma_{1}\right) \rightarrow V^{\prime}, B_{2}: U \rightarrow V^{\prime}$ such that for any $y, z \in V$, $f, v \in L^{2}\left(\Gamma_{1}\right)$, and $h, w \in U$
+$$
+\begin{gathered}
+\left(A_{1} y, z\right)=a(\nabla y, \nabla z)+s \int_{\Gamma_{1}} y z d \Gamma, \quad\left(A_{2} y, z\right)=\alpha(\nabla y, \nabla z)+\int_{\Gamma_{1}} \gamma y z d \Gamma, \\
+\left(B_{1} f, v\right)=\int_{\Gamma_{1}} f v d \Gamma, \quad\left(B_{2} h, w\right)=\int_{\Gamma_{2}} h w d \Gamma
+\end{gathered}
+$$
+A weak formulation of the boundary value problem, on the solutions of which the functional (1) is minimized, has the form:
+$$
+A_{1} \theta+g(\theta)=\frac{\kappa_{a}}{\alpha} \psi+f_{1}, \quad A_{2} \psi=f_{2}+B_{2} u
+$$
+where $f_{1}=B_{1}\left(q_{b}+s \theta_{b}\right)+B_{2} q_{b}$ and $f_{2}=B_{1} r$.
+
+Let us define the constraint operator $F(\theta, \psi, u): V \times V \times U \rightarrow V^{\prime} \times V^{\prime}$,
+$$
+F(\theta, \psi, u)=\left\{A_{1} \theta+g(\theta)-\frac{\kappa_{a}}{\alpha} \psi-f_{1}, A_{2} \psi-f_{2}-B_{2} u\right\}
+$$
+Problem $\left(P_{\lambda}\right)$. Find a triple $\left\{\theta_{\lambda}, \psi_{\lambda}, u_{\lambda}\right\} \in V \times V \times U$ such that
+$$
+J_{\lambda}(\theta, u)=\frac{1}{2}\left\|\theta-\theta_{b}\right\|_{L^{2}\left(\Gamma_{1}\right)}^{2}+\frac{\lambda}{2}\|u\|_{U}^{2} \rightarrow \inf , \quad F(\theta, \psi, u)=0 .
+$$
+Theorem 1. Let conditions (i), (ii) hold. Then there is at least one solution of the $\operatorname{problem}\left(P_{\lambda}\right)$
+
+\section{Optimality conditions}
+By the virtue of the Lagrange principle for smooth convex extremal problems [2], the nondegeneracy of the optimality conditions is guaranteed by the condition that the image of the derivative of the operator $F(y, u)$, where $y=\{\theta, \psi\} \in V \times V$, coincides with $V^{\prime} \times V^{\prime}$. This means that the system
+$$
+A_{1} \xi+g^{\prime}(\theta) \xi-\frac{\kappa_{a}}{\alpha} \eta=q_{1}, \quad A_{2} \eta=q_{2}
+$$
+is solvable for all $\theta \in V, q_{1}, q_{2} \in V^{\prime}$. Here, $g^{\prime}(\theta)=4 b \kappa_{a}|\theta|^{3}+\kappa_{a} / \alpha$. From the second equation we get $\eta=A_{2}^{-1} q_{2}$. The solvability of the first equation with known $\eta \in V$ obviously follows from the Lax-Milgram lemma. The validity of the remaining conditions of the Lagrange principle is obvious.
+
+The Lagrangian of the problem $\left(P_{\lambda}\right)$ has the form
+$$
+L\left(\theta, \psi, u, p_{1}, p_{2}\right)=J_{\lambda}(\theta, u)+\left(A_{1} \theta+g(\theta)-\frac{\kappa_{a}}{\alpha} \psi-f_{1}, p_{1}\right)+\left(A_{2} \psi-f_{2}-B_{2} u, p_{2}\right),
+$$
+where $p=\left\{p_{1}, p_{2}\right\} \in V \times V$ is a conjugate state.
+
+Let $\{\widehat{\theta}, \widehat{\varphi}, \widehat{u}\}$ be a solution of the problem $\left(P_{\lambda}\right)$. By the Lagrange principle $[2$, Th. 1.5], we obtain the following equalities $\forall v \in V, w \in U$ :
+$$
+\begin{gathered}
+\left(B_{1}\left(\widehat{\theta}-\theta_{b}\right), v\right)+\left(A_{1} v+g^{\prime}(\widehat{\theta}) v, p_{1}\right)=0,-\frac{\kappa_{a}}{\alpha}\left(v, p_{1}\right)+\left(A_{2} v, p_{2}\right)=0, \\
+\lambda\left(B_{2} \widehat{u}, w\right)-\left(B_{2} w, p_{2}\right)=0 .
+\end{gathered}
+$$
+From (9), (10), it follows equations for the conjugate state.
+
+Theorem 2. Let conditions (i), (ii) hold and $\{\widehat{\theta}, \widehat{\psi}, \widehat{u}\}$ be a solution of the problem $\left(P_{\lambda}\right)$, then there is a unique pair $\left\{p_{1}, p_{2}\right\} \in V \times V$ such that
+$$
+A_{1} p_{1}+g^{\prime}(\widehat{\theta}) p_{1}=-B_{1}\left(\widehat{\theta}-\theta_{b}\right), \quad A_{2} p_{2}=\frac{\kappa_{a}}{\alpha} p_{1}, \quad \lambda \widehat{u}=\left.p_{2}\right|_{\Gamma_{2}} .
+$$
+
+\section{Approximation of the inverse problem}
+Let us prove that if the pair $\{\theta, \varphi\} \in V \times V$ is a solution of the problem (1)-(3) and, moreover, $q=\left.a \partial_{n} \varphi\right|_{\Gamma_{2}} \in L^{2}\left(\Gamma_{2}\right)$, then solutions of the problem $\left(P_{\lambda}\right)$ as $\lambda \rightarrow+0$ approximate a solution of the problem (1)-(3). Note that the pair for all $v \in V$ satisfies the equalities
+$$
+\begin{gathered}
+a(\nabla \theta, \nabla v)+b \kappa_{a}\left(|\theta| \theta^{3}-\varphi, v\right)=\int_{\Gamma} q_{b} v d \Gamma, \\
+\alpha(\nabla \varphi, \nabla v)+\int_{\Gamma_{1}} \gamma \varphi v d \Gamma+\kappa_{a}\left(\varphi-|\theta| \theta^{3}, v\right)=\int_{\Gamma_{1}} \gamma \theta_{b}^{4} v d \Gamma+\int_{\Gamma_{2}} q v d \Gamma,
+\end{gathered}
+$$
+and wherein $\left.\theta\right|_{\Gamma_{1}}=\theta_{b}$.
+
+Theorem 3. Let conditions (i), (ii) hold and there is a solution of the problem (1)-(3) satisfying the equalities (12) and (13). If $\left\{\theta_{\lambda}, \psi_{\lambda}, u_{\lambda}\right\}$ is a solution of the problem $\left(P_{\lambda}\right)$ for $\lambda>0$, then there is a sequence $\lambda \rightarrow+0$ such that $\theta_{\lambda} \rightarrow \theta_{*},\left(\psi_{\lambda}-a \theta_{\lambda}\right) / \alpha b \rightarrow \varphi_{*}$ weakly in $V$, strongly in $H$, where $\theta_{*}, \varphi_{*}$ is a solution of the problem (1)-(3).
+
+\section{References}
+[1] A. E. Kovtanyuk, A. Yu. Chebotarev, N. D. Botkin, K.-H. Hoffmann, "The unique solvability of a complex 3D heat transfer problem", J. Math. Anal. Appl., 409, (2014), 808-815.
+
+[2] A. V. Fursikov, Optimal Control of Distributed Systems. Theory and Applications, American Math. Soc., 2000.
+
+Received by the editors June 29, 2022
+
+This work was supported by the Ministry of Education and Science of the Russian Federation (Project No. 122082400001-8 and Agreement No. 075-02-2022-880) and Russian Foundation for Basic Research (Project No. 20-01-00113 a).
+
+Чеботарев А. Ю.,, Месенев П. Р., Ковтанюо А. Е. Оптимизационный метод решения обратной задачи сложного теплообмена. Дальневосточный математический журнал. 2022. Т. 22. № 2. С. 1-4.
+
+\section{АННОТАЦИЯ}
+Предложен оптимизационный метод решения обратной задачи для стационарных уравнений сложного теплообмена с незаданным краевым условием для интенсивности излучения на части границы и условием переопределения на другой части границы. Представлен анализ задачи граничного оптимального управления и показано, что последовательность решений задач управления сходится к решению обратной задачи.
+
+Ключевые слова: уравнения радиационно-кондуктивного теплообмена, диффузионное приближение, обратная задача, задача оптимального управления.
+
+
+\end{document}
