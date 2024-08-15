@@ -6,4 +6,4 @@ font = {'family': 'sans-serif',
         'weight': 'ultralight',
         'size': 10,
         }
-default_colormap = cm.Greys
+default_colormap = cm.viridis

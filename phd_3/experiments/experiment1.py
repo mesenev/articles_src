@@ -81,15 +81,15 @@ def post_prod():
 
 
 if __name__ == "__main__":
-    # try:
-    #     experiment_1()
-    # except KeyboardInterrupt:
-    #     print('Keyboard interruption signal. Wrapping out.')
-    # finally:
-    #     File(f'{folder}/theta_end.xml') << problem.theta
-    #     File(f'{folder}/psi_end.xml') << problem.psi
-    #     File(f'{folder}/control_end.xml') << problem.psi_n
-    #     with open(f'{folder}/quality.txt', 'w') as f:
-    #         print(*problem.quality_history, file=f)
-    #     print_3d_boundaries_on_cube(problem.theta, name=f'theta_end', folder=folder)
-    post_prod()
+    try:
+        experiment_1()
+    except KeyboardInterrupt:
+        print('Keyboard interruption signal. Wrapping out.')
+    finally:
+        File(f'{folder}/theta_end.xml') << problem.theta
+        File(f'{folder}/psi_end.xml') << problem.psi
+        File(f'{folder}/control_end.xml') << problem.psi_n
+        with open(f'{folder}/quality.txt', 'w') as f:
+            print(*problem.quality_history, file=f)
+        print_3d_boundaries_on_cube(problem.theta, name=f'theta_end', folder=folder)
+    # post_prod()
