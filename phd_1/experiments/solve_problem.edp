@@ -159,8 +159,7 @@ problem CalcAdjoint([pone, ptwo], [v, w]) =
     + int2d(mainMesh)(ka * w * (ptwo - b * pone));
     //
 
-func int CountStateSimpleIteration()
-{
+func int CountStateSimpleIteration() {
     theta=0;
     phi=0;
     for (int i = 0; i <= numiter; i++) {
@@ -268,8 +267,7 @@ func real checkPrimalProblem(){
     return uoptimalconst;
 }
 
-func int SetAndSolveOptimizationProblem(real ustart)
-{
+func int SetAndSolveOptimizationProblem(real ustart) {
     ofstream control(outputfolder+"/control.txt");
     ofstream thetafile(outputfolder+"/theta.txt");
     control << "Optimal control: " << endl << uopt << endl;
@@ -326,9 +324,9 @@ func int SetAndSolveOptimizationProblem(real ustart)
         }
         cout << endl << i <<  endl;
         if(i%1000==0){
-		lambda = lambda + 10;
-		DIRECTOCCURACY = DIRECTOCCURACY/5;  
-	}
+		    lambda = lambda + 10;
+		    DIRECTOCCURACY = DIRECTOCCURACY/5;
+	    }
     }
 
     control << "Final control: " << endl << uwall << endl;
@@ -352,4 +350,4 @@ func int SetAndSolveOptimizationProblem(real ustart)
 SetAndSolveOptimizationProblem(0.01);
 
 
-cout<< endl << endl << " Number of fails:  " << primalSolveFails <<endl;
+cout << endl << endl << " Number of fails:  " << primalSolveFails <<endl;

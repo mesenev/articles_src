@@ -203,3 +203,6 @@ class Wrapper(UserExpression):
 
     def eval(self, value, x):
         value[0] = self.ggwp(self.wrap(x))
+
+    def vector(self):
+        return self.value

@@ -4,6 +4,7 @@ import json
 
 from dolfin import *
 from matplotlib import patches, pyplot as plt
+from matplotlib import cm
 
 from utilities.defaults import default_colormap
 from utilities.drawingsimple import print_simple_graphic
@@ -35,29 +36,30 @@ def print_2d_boundaries(v, name=None, folder='results', steps=10, terminal_only=
     return
 
 
-def print_2d(v, name='function', folder='results', colormap=default_colormap, table=False):
+def print_2d(v, name='function', folder='results', colormap='Grey', table=False):
     plt.figure()
     if not table:
-        mesh = UnitSquareMesh(100, 100)
+        mesh = UnitSquareMesh(50, 50)
         V = FunctionSpace(mesh, 'P', 1)
-        c = plot(interpolate(v, V), title="function", mode='color')
+        new_f = project(v,  V)
+        c = plot(new_f, mode='color')
     else:
-        c = plt.imshow(v, cmap=colormap)
+        c = plt.imshow(v, cmap=getattr(cm, colormap))
     try:
-        mx, mn = v.vector().max(), v.vector().min()
+        mx, mn = new_f.vector().max(), new_f.vector().min()
         ticks = [mn] + [mn + (mx - mn) / 10 * i for i in range(1, 10)] + [mx]
         plt.colorbar(
             c, ticks=ticks, extend='both', extendfrac='auto',
             spacing='uniform', orientation='vertical'
         )
     except Exception as e:
-        print(e)
+        print('Exception', e)
         plt.colorbar(c)
     # c.axes.set_xticks([-1, 89])
     # c.axes.set_yticks([0])
-    c.axes.yaxis.set_ticklabels(['1', ])
-    c.axes.xaxis.set_ticklabels(['0', '1'])
-    plt.savefig(f'{folder}/{name}.png')
+    plt.savefig(f'{folder}/{name}.svg', bbox_inches='tight')
+    plt.savefig(f'{folder}/{name}.eps', bbox_inches='tight')
+    plt.savefig(f'{folder}/{name}.png', bbox_inches='tight')
 
 
 def print_2d_isolines(v, name='function', folder='results', precision=0.01, table=False, levels=None):

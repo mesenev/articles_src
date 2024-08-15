@@ -56,5 +56,5 @@ a, b = split(state)
 a_eq = inner(grad(a), grad(v)) * dx + inner(a ** 4 - b, v) * dx
 b_eq = inner(grad(b), grad(h)) * dx + inner(b - a ** 4, h) * dx
 a_src = 0.3 * v * ds
-b_src = theta_n * h * ds
+b_src =  h * ds
 solve(a_eq + b_eq - a_src - b_src == 0, state)

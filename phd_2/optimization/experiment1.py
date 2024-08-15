@@ -1,6 +1,7 @@
 from phd_2.optimization.solver import SolveOptimization
 from utilities import *
 
+
 folder = 'exp1'
 clear_dir(folder)
 print('Experiment one in a run')

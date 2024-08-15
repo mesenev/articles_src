@@ -140,6 +140,4 @@ class DefaultValues2D:
 
 _n_3d = FacetNormal(DefaultValues3D.omega)
 
-
-def partial_n_3d(x):
-    return dot(_n_3d, grad(x))
+partial_n_3d = lambda x: dot(_n_3d, grad(x))

@@ -1,6 +1,6 @@
 # file should contain things for making pics from 2d functions
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
+from matplotlib import gridspec, cm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from utilities import default_colormap, mkdir
@@ -10,7 +10,7 @@ from numpy import meshgrid, linspace, array, random
 from utilities.defaults import font
 
 
-def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=default_colormap, colorbar_scalable=True):
+def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap='Grey', colorbar_scalable=True):
     """
     https://stackoverflow.com/questions/36046338/contourf-on-the-faces-of-a-matplotlib-cube
     :param v: function to draw
@@ -20,6 +20,7 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
     :param colorbar_scalable: should colorbar scale to actual values or equals to [0,1]
     :return: nothing. Just saves the picture
     """
+    cmap = getattr(cm, cmap)
     plt.close('all')
     fig = plt.figure()
     top = lambda x, y: abs(v(Point(x, y, 1)))
@@ -71,6 +72,7 @@ def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap=defau
     #              spacing='uniform',
     #              orientation='vertical')
     plt.savefig(f'{folder}/{name}.svg', bbox_inches='tight')
+    plt.savefig(f'{folder}/{name}.eps', bbox_inches='tight')
     # plt.savefig(f'{folder}/{name}.png', bbox_inches='tight')
 
 

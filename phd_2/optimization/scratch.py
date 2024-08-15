@@ -1,4 +1,3 @@
-from abc import ABC
 
 from dolfin import *
 
@@ -17,7 +16,7 @@ problem = SolveOptimization()
 problem._r = Constant(0.5)
 problem.phi_n = Constant(0.7)
 problem.solve_boundary()
-theta_n = project(NormalDerivativeZ(problem.state.split()[0]), square)
+theta_n = project(NormalDerivativeZ(problem.state.split()[2]), square)
 # exit(0)
 
 for i in [
