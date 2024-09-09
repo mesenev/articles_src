@@ -10,7 +10,7 @@ from numpy import meshgrid, linspace, array, random
 from utilities.defaults import font
 
 
-def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap='Grey', colorbar_scalable=True):
+def print_3d_boundaries_on_cube(v, name='solution', folder='results', cmap='Greys', colorbar_scalable=True):
     """
     https://stackoverflow.com/questions/36046338/contourf-on-the-faces-of-a-matplotlib-cube
     :param v: function to draw
