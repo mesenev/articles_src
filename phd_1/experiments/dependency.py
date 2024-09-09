@@ -26,7 +26,7 @@ beta = 1
 state = Function(state_space)
 theta, phi = split(state)
 
-theta_b = project(Expression('0.2 + x[1] / 2', degree=2), simple_space)
+theta_b = project(Expression('2 * x[1]', degree=2), simple_space)
 theta_b_4 = project(Expression('pow(t, 4)', degree=2, t=theta_b, ), simple_space)
 gamma = Constant(0.1)
 
@@ -50,19 +50,16 @@ def solve_boundary():
     return state.split()
 
 
-point = Point(0.5, 0.5, 0.5)
 
-theta_ans_gamma_dynamic = list()
-for i in range(100):
-    gamma = Constant(0.1 + 0.8 * (i / 100))
-    for j in range(100):
-        print(i, j)
-        beta = Constant(1 + 1 * (j / 100))
-        theta_ans, phi_ans = solve_boundary()
+gamma = Constant(0.1)
+theta_ans, _ = solve_boundary()
+print_2d_isolines(theta_ans, name='theta_1', folder='scratch', )
+print_2d_isolines(_, name='phi_1', folder='scratch', )
+gamma = Constant(1)
+theta_ans, _ = solve_boundary()
+print_2d_isolines(theta_ans, name='theta_2', folder='scratch', )
+print_2d_isolines(_, name='phi_2', folder='scratch', )
 
-        theta_ans_gamma_dynamic.append(
-            (0.1 + 0.8 * (i / 100), 1 + 1 * (j / 100), theta_ans(point))
-        )
 
-with open("scratch/theta_ans_gamma_dynamic.txt", "w") as file:
-    print(*theta_ans_gamma_dynamic, file=file)
+# Расклад такой -- при увеличении тетта_б мы можем повысить вклад гаммы в результирующее температурное поле
+# но при этом поле излучения улетает в космос. Что неприятно (или нет, не понятно)
