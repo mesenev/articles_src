@@ -23,12 +23,12 @@ def square_circle_gen():
             Rectangle(Point(0., 0.), Point(1., 1.)) -
             Circle(Point(0.5, 0.5), .2)
     )
-    File(filename) << generate_mesh(domain, 200)
+    File(filename) << generate_mesh(domain, 100)
     omega = Mesh(filename)
     return
 
 
 if __name__ == '__main__':
     # cube_circle_gen()
-    # square_circle_gen()
+    square_circle_gen()
     exit(0)
