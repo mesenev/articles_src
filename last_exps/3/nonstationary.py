@@ -3,7 +3,7 @@ from dolfin import *
 from dolfin import dx, ds
 
 from dolfin import dx, ds, assemble
-from utilities import clear_dir
+from utilities import clear_dir, print_two_with_colorbar
 
 from matplotlib import tri
 from dolfin import *
@@ -43,23 +43,45 @@ vector_space = VectorFunctionSpace(omega, 'CG', 1)
 v, h = TestFunctions(state_space)
 state = Function(state_space)
 theta, phi = split(state)
-sigma = Constant(0.99)
+
+
+def sigma_src(t):
+    tt = project(t, simple_space)
+
+    class Sigma(UserExpression):
+        def eval(self, values, x):
+            values[0] = 1 if tt(x) > 0.5 else 0.1
+
+    return project(Sigma(), simple_space)
+
 
 theta_b = project(Expression('0.2 + x[1] / 2', degree=2), simple_space)
-theta_b_4 = project(Expression('pow(t, 4)', degree=2, t=theta_b,), simple_space)
+theta_b_4 = project(Expression('pow(t, 4)', degree=2, t=theta_b, ), simple_space)
 theta_in = project(Expression('0.8 * cos(x[1]*10)', degree=2), simple_space)
+theta_f = project(Expression("sin(x[1]*10)*cos(x[0]*10)", degree=2), simple_space)
+phi_g = project(Expression("1 - x[1]", degree=2), simple_space)
 
-theta_equation = a * inner(grad(theta), grad(v)) * dx \
-                 + a * theta * v * ds + \
-                 + b * ka * inner(theta ** 4 - phi, v) * dx
-theta_src = inner(a * (theta_b + theta_n), v) * ds
+qwerty = sigma_src(theta)
+theta_equation = (
+        qwerty * inner(theta, v) * dx
+        + a * inner(grad(theta), grad(v)) * dx
+        + a * theta * v * ds
+        + b * ka * inner(theta ** 4 - phi, v) * dx
+)
+theta_src = inner(a * theta_b, v) * ds
 
 phi_equation = \
     alpha * inner(grad(phi), grad(h)) * dx \
     + alpha * phi * h * ds \
     + ka * inner(phi - theta ** 4, h) * dx
-phi_src = phi_n * h * ds
+phi_src = phi_g * h * ds
+
 solve(
     theta_equation + phi_equation - theta_src - phi_src == 0, state,
     form_compiler_parameters={"optimize": True, 'quadrature_degree': 3}
 )
+theta, phi = state.split()
+a = theta.vector()
+
+print_two_with_colorbar(theta, phi, "answer", folder="")
+pass

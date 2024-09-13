@@ -132,5 +132,7 @@ def print_two_with_colorbar(v1, v2, name, folder='results'):
     fig.subplots_adjust(right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
     fig.colorbar(im, cax=cbar_ax)
-
-    plt.savefig(f'{folder}/{name}.png')
+    if folder:
+        plt.savefig(f'{folder}/{name}.png')
+    else:
+        plt.savefig(f'{name}.png')
