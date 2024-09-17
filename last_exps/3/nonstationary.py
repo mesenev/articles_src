@@ -1,3 +1,5 @@
+'''Оценка влияния скачка коэфициента теплопроводности на тепловое излучение'''
+
 from dolfin import *
 # noinspection PyUnresolvedReferences
 from dolfin import dx, ds
@@ -14,6 +16,7 @@ from phd_3.experiments.solver import Problem
 
 from phd_3.experiments.consts import DIRICHLET, NEWMAN
 
+set_log_level(LogLevel.ERROR)
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
 solver_params = {"newton_solver": {
@@ -43,17 +46,7 @@ vector_space = VectorFunctionSpace(omega, 'CG', 1)
 v, h = TestFunctions(state_space)
 state = Function(state_space)
 theta, phi = split(state)
-
-
-def sigma_src(t):
-    tt = project(t, simple_space)
-
-    class Sigma(UserExpression):
-        def eval(self, values, x):
-            values[0] = 1 if tt(x) > 0.5 else 0.1
-
-    return project(Sigma(), simple_space)
-
+m_param = 10
 
 theta_b = project(Expression('0.2 + x[1] / 2', degree=2), simple_space)
 theta_b_4 = project(Expression('pow(t, 4)', degree=2, t=theta_b, ), simple_space)
@@ -61,9 +54,21 @@ theta_in = project(Expression('0.8 * cos(x[1]*10)', degree=2), simple_space)
 theta_f = project(Expression("sin(x[1]*10)*cos(x[0]*10)", degree=2), simple_space)
 phi_g = project(Expression("1 - x[1]", degree=2), simple_space)
 
-qwerty = sigma_src(theta)
+theta_prev = theta_in
+
+
+def sigma_src():
+    class Sigma(UserExpression):
+        def eval(self, values, x):
+            values[0] = m_param if theta_prev(x) > 0.1 else 0.1
+
+    return Sigma()
+
+
+qwerty = sigma_src()
+
 theta_equation = (
-        qwerty * inner(theta, v) * dx
+        qwerty * inner(theta - theta_prev, v) * dx
         + a * inner(grad(theta), grad(v)) * dx
         + a * theta * v * ds
         + b * ka * inner(theta ** 4 - phi, v) * dx
@@ -73,15 +78,20 @@ theta_src = inner(a * theta_b, v) * ds
 phi_equation = \
     alpha * inner(grad(phi), grad(h)) * dx \
     + alpha * phi * h * ds \
-    + ka * inner(phi - theta ** 4, h) * dx
+    + ka * inner(phi - theta_prev ** 4, h) * dx
 phi_src = phi_g * h * ds
 
-solve(
-    theta_equation + phi_equation - theta_src - phi_src == 0, state,
-    form_compiler_parameters={"optimize": True, 'quadrature_degree': 3}
-)
-theta, phi = state.split()
-a = theta.vector()
+for i in range(10):
+    solve(
+        theta_equation + phi_equation - theta_src - phi_src == 0, state,
+        form_compiler_parameters={"optimize": True, 'quadrature_degree': 3}
+    )
+    theta, phi = state.split()
+    a = phi.vector()
+    theta_prev.interpolate(theta)
+
+    # m_param += 10
+    print(a.min(), a.max())
 
 print_two_with_colorbar(theta, phi, "answer", folder="")
 pass
