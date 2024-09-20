@@ -4,6 +4,7 @@ from dolfin import dx, ds
 
 from phd_3.experiments.consts import DIRICHLET, NEWMAN
 
+
 solver_params = {"newton_solver": {
     "maximum_iterations": 50,
     # "relative_tolerance": 1e-4,

@@ -5,6 +5,7 @@ import json
 from dolfin import *
 from matplotlib import patches, pyplot as plt
 from matplotlib import cm
+from numpy import linspace
 
 from utilities.defaults import default_colormap
 from utilities.drawingsimple import print_simple_graphic
@@ -41,7 +42,7 @@ def print_2d(v, name='function', folder='results', colormap='Grey', table=False)
     if not table:
         mesh = UnitSquareMesh(50, 50)
         V = FunctionSpace(mesh, 'P', 1)
-        new_f = project(v,  V)
+        new_f = project(v, V)
         c = plot(new_f, mode='color')
     else:
         c = plt.imshow(v, cmap=getattr(cm, colormap))
@@ -101,7 +102,7 @@ def print_2d_isolines(v, name='function', folder='results', precision=0.01, tabl
 
     # fig.savefig(f'{folder}/{name}_equal.png', bbox_inches='tight')
     # fig.savefig(f'{folder}/{name}_equal.eps', bbox_inches='tight')
-    ax.set_aspect('auto')  #  or 'equal'
+    ax.set_aspect('auto')  # or 'equal'
     # fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
     fig.savefig(f'{folder}/{name}_auto.eps', bbox_inches='tight')
     fig.savefig(f'{folder}/{name}_auto.png', bbox_inches='tight')
@@ -126,13 +127,14 @@ def print_two_with_colorbar(v1, v2, name, folder='results'):
 
     fig, axes = plt.subplots(nrows=1, ncols=2)
     im = None
+    levels = linspace(0, 1, )
     for ax, f in zip(axes.flat, [A, B]):
-        im = ax.imshow(f)
+        im = ax.imshow(f, vmin=0, vmax=1)
 
     fig.subplots_adjust(right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    fig.colorbar(im, cax=cbar_ax)
-    if folder:
-        plt.savefig(f'{folder}/{name}.png')
-    else:
-        plt.savefig(f'{name}.png')
+    fig.colorbar(im, cax=cbar_ax, ticks=[0, 0.25, 0.5, 0.75, 1],
+                 spacing='uniform', orientation='vertical')
+    target = f'{folder}/{name}.png' if folder else f'{name}.png'
+    plt.savefig(target, bbox_inches='tight')
+    plt.close()
