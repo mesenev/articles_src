@@ -33,10 +33,16 @@ class Problem:
         )
         q_b, psi_n = self.def_values.q_b, self.psi_n
         theta_b = self.def_values.theta_b
-        bc = DirichletBC(self.def_values.simple_space, theta_b, self.def_values.dirichlet_boundary)
+        bc = DirichletBC(
+            self.def_values.simple_space,
+            theta_b, self.def_values.dirichlet_boundary
+        )
         psi = TrialFunction(self.def_values.simple_space)
 
-        psi_equation = alpha * inner(grad(psi), grad(v)) * dx + gamma * v * psi * ds(DIRICHLET)
+        psi_equation = (
+                alpha * inner(grad(psi), grad(v)) * dx
+                + gamma * v * psi * ds(DIRICHLET)
+        )
         psi_src = r * v * ds(DIRICHLET) + psi_n * v * ds(NEWMAN)
 
         psi = Function(self.def_values.simple_space)

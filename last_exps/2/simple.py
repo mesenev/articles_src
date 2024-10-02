@@ -8,6 +8,9 @@ for eps in range(9):
 with open('result.txt') as f:
     Y = list(abs(float(xx)) for xx in f.read().split())
 
-fig, ax = pyplot.subplots()
-f = ax.plot(X, Y)
-fig.savefig('deps.svg')
+pyplot.plot(X, Y)
+pyplot.xlabel(r"$\varepsilon$")
+pyplot.ylabel(r"$||\theta - \theta^\varepsilon||_{L^2(\Omega)}$")
+pyplot.subplots_adjust(left=0.15)
+pyplot.savefig('deps.eps', )
+pyplot.savefig('deps.png', )

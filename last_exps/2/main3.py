@@ -17,19 +17,6 @@ def fmt(x):
     return s
 
 
-class ThetaN(UserExpression):
-    def __floordiv__(self, other):
-        pass
-
-    @staticmethod
-    def eval(value, x):
-        value[0] = -0.2
-        if x[0] < DOLFIN_EPS or abs(x[0] - 1) < DOLFIN_EPS:
-            value[0] = 0.2
-        if x[1] < DOLFIN_EPS or abs(x[1] - 1) < DOLFIN_EPS:
-            value[0] = -0.2
-
-
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
 
@@ -49,26 +36,36 @@ def solve_optimal(problem, iterations=100):
     theta = project(problem.theta, DefaultValues2D.simple_space)
     return theta
 
+
 result = list()
 
 if __name__ == "__main__":
-    q_b_val = project(ThetaN(), DefaultValues2D.simple_space)
+    theta_orig = project(
+        Expression('(x[0] + x[1])/2', degree=2),
+        DefaultValues2D.simple_space
+    )
+    theta_b_4 = project(
+        Expression('pow(t, 4)', degree=2, t=theta_orig),
+        DefaultValues2D.simple_space
+    )
+    q_b = Constant(0.3)
+    q_b_val = project(q_b, DefaultValues2D.simple_space)
     default_values = DefaultValues2D(
-        q_b=q_b_val, theta_b=Constant(0.5), psi_n_init=0,
+        q_b=q_b_val, theta_b=theta_orig, psi_n_init=0,
     )
 
     problem = Problem(default_values=default_values)
-    theta_orig = solve_optimal(problem)
+    theta_ = solve_optimal(problem)
 
     for eps in range(9):
         noise_eps = 0.1 * (-1 + 2 * eps / 8)
         default_values = DefaultValues2D(
             q_b=project(q_b_val + noise_eps, DefaultValues2D.simple_space),
-            theta_b=Constant(0.5), psi_n_init=0,
+            theta_b=theta_orig, psi_n_init=0,
         )
         problem = Problem(default_values=default_values)
-        new_theta = solve_optimal(problem)
-        scalar = assemble((new_theta - theta_orig) * dx)
+        new_theta = solve_optimal(problem, iterations=100)
+        scalar = assemble((new_theta - theta_) ** 2 * dx)
         result.append(scalar)
         pass
     with open('result.txt', 'w') as f:

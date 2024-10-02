@@ -21,12 +21,12 @@ epsilon = 0.1 ** 10
 a = 0.6
 alpha = 0.333
 ka = 1
-b = 0.025
+b = 1
 beta = 1
 state = Function(state_space)
 theta, phi = split(state)
 
-theta_b = project(Expression('2 * x[1]', degree=2), simple_space)
+theta_b = project(Expression('x[1]', degree=2), simple_space)
 theta_b_4 = project(Expression('pow(t, 4)', degree=2, t=theta_b, ), simple_space)
 gamma = Constant(0.1)
 
@@ -49,7 +49,7 @@ def solve_boundary():
     )
     return state.split()
 
-
+# for
 
 gamma = Constant(0.1)
 theta_ans, _ = solve_boundary()
