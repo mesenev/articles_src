@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 
 from phd_3.experiments.default_values import DefaultValues2D
 from phd_3.experiments.solver import Problem
-
+from simple import draw_eps
 set_log_active(False)
 
 
@@ -56,9 +56,10 @@ if __name__ == "__main__":
 
     problem = Problem(default_values=default_values)
     theta_ = solve_optimal(problem)
+    noise = Expression("sin(314.15 * x[0])", degree=2)
 
     for eps in range(9):
-        noise_eps = 0.1 * (-1 + 2 * eps / 8)
+        noise_eps = 0.1 * (-1 + 2 * eps / 8) * noise
         default_values = DefaultValues2D(
             q_b=project(q_b_val + noise_eps, DefaultValues2D.simple_space),
             theta_b=theta_orig, psi_n_init=0,
@@ -70,6 +71,7 @@ if __name__ == "__main__":
         pass
     with open('result.txt', 'w') as f:
         print(*result, file=f)
+    draw_eps('eps_sin')
 
 # def post_prod():
 #

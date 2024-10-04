@@ -28,7 +28,9 @@ gamma = 1
 p = 1
 lmbd = 1
 epsilon = 0.1 ** 10
-sigma = 600
+tau = 1 / 1200
+sigma_ = 2
+sigma = 1 // tau // 2
 m_param = 0.5
 
 omega = UnitSquareMesh(30, 30)
@@ -86,7 +88,7 @@ def main(n: int):
     theta_avg = list()
     theta_avg.append(assemble(theta_0 * dx))
     for j in range(1):
-        for i in range(1200):
+        for i in range(1 // tau):
             solve(
                 theta_equation + phi_equation - theta_src - phi_src == 0, state,
                 form_compiler_parameters={"optimize": True, 'quadrature_degree': 3}
