@@ -4,6 +4,7 @@ from matplotlib import pyplot
 from mshr import *
 from mshr.cpp import Circle, generate_mesh
 
+from utilities import print_2d_isolines
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
@@ -77,7 +78,7 @@ answers = list()
 images = list()
 
 for j in range(1):
-    for i in range(1000):
+    for i in range(10):
         solve(
             theta_equation + phi_equation - theta_src - phi_src == 0, state,
             form_compiler_parameters={"optimize": True, 'quadrature_degree': 3}
@@ -88,7 +89,6 @@ for j in range(1):
         theta_prev.interpolate(theta)
         qwerty = project(sigma_src(), simple_space)
         print(m_param, a.min(), a.max(), b.min(), b.max())
-
         answers.append((m_param, a.min(), a.max(), b.min(), b.max()))
         plot(theta, range_min=0, range_max=1)
         pyplot.savefig(f'circles/circle{i}.png')

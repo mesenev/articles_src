@@ -33,7 +33,7 @@ sigma_ = 2
 sigma = 1 // tau // 2
 m_param = 0.5
 
-omega = UnitSquareMesh(30, 30)
+omega = UnitSquareMesh(50, 50)
 omega_b = BoundaryMesh(omega, 'exterior')
 finite_element = FiniteElement("CG", omega.ufl_cell(), 1)
 
@@ -140,10 +140,29 @@ def post_prod():
     pyplot.savefig(f'theta_gap/theta_dyn_m.png', )
 
 
+def make_animation():
+    images = []
+    for i in range(1200):
+        images.append(Image.open(f'theta_gap/1/{i}.png'))
+    images[0].save(
+        'animated_plot_1.gif', save_all=True,
+        append_images=images, duration=200, loop=0
+    )
+
+    images = []
+    for i in range(1200):
+        images.append(Image.open(f'theta_gap/2/{i}.png'))
+    images[0].save(
+        'animated_plot_2.gif', save_all=True,
+        append_images=images, duration=200, loop=0
+    )
+
+
 if __name__ == "__main__":
     main(1)
     theta_prev.interpolate(theta_0)
     m_param = 5
     k_theta.interpolate(sigma_src())
     main(2)
-    # post_prod()
+    post_prod()
+    make_animation()

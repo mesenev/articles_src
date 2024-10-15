@@ -11,7 +11,7 @@ from matplotlib import pyplot
 
 from simple import draw_simple
 
-from utilities import print_two_with_colorbar
+from utilities import print_two_with_colorbar, print_2d_isolines
 
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
@@ -95,6 +95,17 @@ def main(n: int):
             theta, phi = state.split()
             a = phi.vector()
             b = theta.vector()
+            if i == 2:
+                print_2d_isolines(
+                    project(abs(theta - theta_prev), simple_space),
+                    'iso_theta1-theta2', folder=''
+                )
+            if i == 100:
+                print_2d_isolines(
+                    project(abs(theta - theta_prev), simple_space),
+                    'iso_theta499-theta500', folder=''
+                )
+
             theta_prev.interpolate(theta)
             k_theta.interpolate(sigma_src())
             print(m_param, a.min(), a.max(), b.min(), b.max())
@@ -108,9 +119,6 @@ def main(n: int):
 
     with open(f"theta_star/theta_avg{n}.txt", "w") as f:
         print(*theta_avg, sep='\n', file=f)
-
-
-
 
 
 if __name__ == "__main__":
