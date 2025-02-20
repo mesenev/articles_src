@@ -83,12 +83,10 @@ phi_equation = \
 answers = list()
 
 
-def main(n: int):
+def main(t):
     images = list()
-    theta_avg = list()
-    theta_avg.append(assemble(theta_0 * dx))
     for j in range(1):
-        for i in range(1 // tau):
+        for i in range(int(1 // tau)):
             solve(
                 theta_equation + phi_equation - theta_src - phi_src == 0, state,
                 form_compiler_parameters={"optimize": True, 'quadrature_degree': 3}
@@ -99,35 +97,10 @@ def main(n: int):
             theta_prev.interpolate(theta)
             k_theta.interpolate(sigma_src())
             print(i, a.min(), a.max(), b.min(), b.max())
-            theta_avg.append(assemble(theta * dx))
 
             answers.append((m_param, a.min(), a.max(), b.min(), b.max()))
-            print_two_with_colorbar(
-                theta, phi, f"{i}", folder=f"theta_gap/animation/{n}"
-            )
-            print_2d_isolines(theta, name=f"theta_iso_{n}", folder="theta_gap")
+    print_2d_isolines(theta, name=f"theta_iso_{t}", folder=".")
 
-    with open(f"theta_gap/data{n}.txt", "w") as f:
-        print(*answers, sep='\n', file=f)
-
-    with open(f"theta_gap/theta_avg{n}.txt", "w") as f:
-        print(*theta_avg, sep='\n', file=f)
-
-
-def post_prod():
-    with open(f'theta_gap/theta_avg1.txt') as f:
-        Y = list(abs(float(xx)) for xx in f.read().split())
-
-    X = list(eps * 1 / len(Y) for eps in range(len(Y)))
-    pyplot.plot(X, Y, '-')
-    with open(f'theta_gap/theta_avg2.txt') as f:
-        Y = list(abs(float(xx)) for xx in f.read().split())
-    pyplot.plot(X, Y, '--')
-    pyplot.ylim(-0, 1.1)
-    pyplot.xlabel(r"$t$")
-    pyplot.ylabel(r"$||\theta||_{L^2(\Omega)}$")
-    pyplot.subplots_adjust(left=0.15)
-    pyplot.grid()
 
     green_legend = lines.Line2D(
         [], [], color='grey', linestyle='-', label=r'$m_1 = 0.5$'
@@ -136,33 +109,11 @@ def post_prod():
         [], [], color='black', linestyle='--', label=r"$m_1 = 5$"
     )
     plt.legend(handles=[green_legend, blue_legend], prop={'size': 10})
-    pyplot.savefig(f'theta_gap/theta_dyn_m.eps', )
-    pyplot.savefig(f'theta_gap/theta_dyn_m.png', )
-
-
-def make_animation():
-    images = []
-    for i in range(1200):
-        images.append(Image.open(f'theta_gap/1/{i}.png'))
-    images[0].save(
-        'animated_plot_1.gif', save_all=True,
-        append_images=images, duration=200, loop=0
-    )
-
-    images = []
-    for i in range(1200):
-        images.append(Image.open(f'theta_gap/2/{i}.png'))
-    images[0].save(
-        'animated_plot_2.gif', save_all=True,
-        append_images=images, duration=200, loop=0
-    )
+    pyplot.savefig(f'theta_dyn_m.eps', )
+    pyplot.savefig(f'theta_dyn_m.png', )
 
 
 if __name__ == "__main__":
-    main(1)
-    theta_prev.interpolate(theta_0)
-    m_param = 5
-    k_theta.interpolate(sigma_src())
     main(2)
-    post_prod()
-    # make_animation()
+    theta_prev.interpolate(theta_0)
+    k_theta.interpolate(sigma_src())

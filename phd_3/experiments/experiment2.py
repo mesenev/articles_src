@@ -33,7 +33,7 @@ class ThetaN(UserExpression):
 parameters["form_compiler"]["optimize"] = True
 parameters["form_compiler"]["cpp_optimize"] = True
 
-folder = 'exp2'
+folder = 'tmp'
 q_b_val = project(ThetaN(), DefaultValues2D.simple_space)
 set_log_active(False)
 default_values = DefaultValues2D(
