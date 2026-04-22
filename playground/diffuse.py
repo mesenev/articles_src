@@ -1,3 +1,4 @@
+# docker run --init -ti -p 8888:8888 dolfinx/lab:stable
 import os
 from pathlib import Path
 
