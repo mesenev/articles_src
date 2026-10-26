@@ -1,13 +1,6 @@
 # docker run --rm -v "$(pwd)":/source -w /source/playground --entrypoint python3 ghcr.io/fenics/dolfinx/lab:stable diffuse.py
 #
-# Проверка решателя методом искусственных решений (MMS) для модели (1.1)-(1.3):
-#   -d Δρ - μ ∇φ·∇ρ + μ/(εε0) |ρ|ρ = f,   -Δφ = ρ/(εε0),   ρ = φ = 0 на Γ   (E = -∇φ)
-# Точное решение обязано удовлетворять тем же граничным условиям, т.е. φ_ex = 0 и Δφ_ex = 0 на Γ
-# (ρ_ex = -εε0 Δφ_ex). Два таких решения:
-#   A: φ_ex = g(x)g(y), g(t) = t - 2t³ + t⁴  (g = g'' = 0 при t = 0, 1)
-#   B: φ_ex = sin(πx)sin(πy)/(2π²),  ρ_ex = εε0 sin(πx)sin(πy)
-# Критерии качества: сходимость Ньютона, порядки сходимости ошибок при измельчении сетки
-# (P1: ≈2 в L2, ≈1 в H1), неотрицательность ρ_h.
+
 import sys
 
 from mpi4py import MPI
@@ -23,9 +16,7 @@ from dolfinx.fem import Function, functionspace, dirichletbc, locate_dofs_topolo
 from dolfinx.fem.petsc import NonlinearProblem
 from dolfinx.mesh import CellType, create_unit_square, exterior_facet_indices
 
-# ================= ПАРАМЕТРЫ =================
-# Для численного теста удобно масштабировать параметры к O(1),
-# чтобы избежать плохой обусловленности матрицы Якоби.
+
 d_val = 1.0
 mu_val = 0.5
 eps0_val = 1.0
@@ -73,7 +64,7 @@ def solve(n, phi_exact=phi_exact_sin):
     phi_ex = phi_exact(x, y)
     rho_ex = -eps_eps0 * div(grad(phi_ex))
 
-    # Правая часть f, вычисленная через UFL (автоматическое символьное дифференцирование)
+
     f_ex = - d_val * div(grad(rho_ex)) \
            - mu_val * inner(grad(phi_ex), grad(rho_ex)) \
            + (mu_val / eps_eps0) * abs(rho_ex) * rho_ex
@@ -86,7 +77,7 @@ def solve(n, phi_exact=phi_exact_sin):
     F_phi = inner(grad(phi), grad(w_phi)) * dx \
             - (1.0 / eps_eps0) * rho * w_phi * dx
 
-    F = F_rho + F_phi  # Монолитная нелинейная система
+    F = F_rho + F_phi
 
     tdim = omega.topology.dim
     omega.topology.create_connectivity(tdim - 1, tdim)
@@ -102,8 +93,6 @@ def solve(n, phi_exact=phi_exact_sin):
     problem.solve()
     snes = problem.solver
 
-    # Интегралы с повышенной квадратурой, чтобы ошибка интегрирования не маскировала ошибку решения.
-    # assemble_scalar считает только локальную часть сетки, поэтому суммируем по процессам.
     dxq = ufl.Measure("dx", domain=omega, metadata={"quadrature_degree": 8})
 
     def integral(expr):
@@ -157,7 +146,7 @@ def check(name, phi_exact):
             print(f"  {name} {norm}: {' '.join(f'{r:5.2f}' for r in rs)}"
                   f"   (ожидается {expected:.1f}) {'PASS' if ok else 'FAIL'}")
 
-    # Точное ρ неотрицательно (лемма 3.1); у P1-решения допустим отрицательный выброс порядка ошибки.
+    
     rho_min = min(r["rho_min"] for r in results)
     ok = rho_min >= -results[-1]["rho_L2"]
     passed &= ok
